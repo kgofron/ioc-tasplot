@@ -120,7 +120,7 @@ Live scan: optional `SCAN` on `Acquire` or separate `Reload` record; Python re-r
 | `tasplot` parsers (SPiCE + SPEC) | Done + tests |
 | `python/graffiti_app.py` | Initial engine |
 | `plotApp/Db/plot.template` | Skeleton |
-| `iocBoot/iocGraffiti/st.cmd` | Example boot |
+| `iocBoot/iocTasplot/st.cmd` | Example boot |
 | Full Makefile / PyDevice submodule | Follow ioc-hkl; deploy-specific |
 
 ## References

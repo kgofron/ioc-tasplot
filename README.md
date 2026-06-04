@@ -41,7 +41,27 @@ See [docs/PYDEVICE_IOC.md](docs/PYDEVICE_IOC.md), `plotApp/Db/plot.template`, `p
 ```bash
 cd /home/kg1/Documents/src/github/ioc-tasplot
 PYTHONPATH=. python3 -m pytest
+pip install -e ".[dev]"   # optional
 ```
+
+## Build EPICS IOC
+
+Requires EPICS Base and Python development headers (`python3-dev`).
+
+```bash
+cd /home/kg1/Documents/src/github/ioc-tasplot
+cp configure/RELEASE.local.example configure/RELEASE.local   # edit EPICS_BASE / PYTHON_CONFIG
+make -j
+```
+
+Boot (after build):
+
+```bash
+cd iocBoot/iocTasplot
+../../bin/linux-x86_64/plotApp st.cmd
+```
+
+`src/` contains [PyDevice](https://github.com/klemenv/PyDevice) device support (vendored for standalone builds).
 
 ## Quick use
 
