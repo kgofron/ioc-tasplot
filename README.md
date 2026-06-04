@@ -46,7 +46,9 @@ pip install -e ".[dev]"   # optional
 
 ## Build EPICS IOC
 
-Requires EPICS Base and Python development headers (`python3-dev`).
+Requires EPICS Base and Python development headers (`python3-dev` on Ubuntu).
+If you see `Python.h: No such file or directory`, install `python3-dev`, then
+`make -C configure clean_pydevice && make` (regenerates `configure/CONFIG.PyDevice`).
 
 ```bash
 cd /home/kg1/Documents/src/github/ioc-tasplot

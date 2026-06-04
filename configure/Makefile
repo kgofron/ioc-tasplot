@@ -4,8 +4,8 @@ include $(TOP)/configure/CONFIG
 include $(TOP)/configure/CONFIG_SITE
 
 TARGETS = $(CONFIG_TARGETS)
-CONFIG_TARGETS += CONFIG.PyDevice
 CONFIGS += $(subst ../,,$(wildcard $(CONFIG_INSTALLS)))
+CONFIGS += CONFIG.PyDevice
 
 include $(TOP)/configure/RULES
 
