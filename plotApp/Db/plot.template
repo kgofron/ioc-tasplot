@@ -1,0 +1,108 @@
+# ioc-tasplot — TAS plot PyDevice records (HB3-oriented prefix)
+# Template follows ioc-hkl PyDevice pattern: DTYP=pydev, INP/OUT=@graffiti_plot.method()
+
+record(longout, "$(P)Acquire") {
+    field(DESC, "Load scan file into waveforms")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.acquire()")
+}
+
+record(waveform, "$(P)Xdata") {
+    field(DESC, "Scan X axis (default def_x or SPEC col 1)")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.xdata()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+}
+
+record(waveform, "$(P)Ydata") {
+    field(DESC, "Scan Y axis (default def_y / Detector)")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.ydata()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+}
+
+record(waveform, "$(P)YdataErr") {
+    field(DESC, "Poisson sqrt(Y) errors")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.ydata_err()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+}
+
+record(longin, "$(P)NRows_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.nrows_rbv()")
+}
+
+record(longin, "$(P)NColumns_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.ncolumns_rbv()")
+}
+
+record(stringin, "$(P)DetX_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.det_x_rbv()")
+}
+
+record(stringin, "$(P)DetY_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.det_y_rbv()")
+}
+
+record(stringin, "$(P)Format_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.format_rbv()")
+}
+
+record(stringin, "$(P)FullFileName_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.full_file_name_rbv()")
+}
+
+record(bi, "$(P)FileExists_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.file_exists_rbv()")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
+record(stringin, "$(P)Command_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.command_rbv()")
+}
+
+record(stringin, "$(P)LastError_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.last_error_rbv()")
+}
+
+record(stringout, "$(P)FilePath") {
+    field(DESC, "Directory (e.g. .../exp382/Datafiles parent=User root)")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_file_path('VAL')")
+}
+
+record(stringout, "$(P)FileName") {
+    field(DESC, "Name stem HB3_exp0382_scan")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_file_name('VAL')")
+}
+
+record(longout, "$(P)FileNumber") {
+    field(DESC, "Scan number (template %04d)")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_file_number(VAL)")
+}
+
+record(longout, "$(P)SpecScanNumber") {
+    field(DESC, "SPEC #S scan number when file is multi-scan")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_spec_scan_number(VAL)")
+}
+
+record(longin, "$(P)ScanNumber_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.scan_number_rbv()")
+}

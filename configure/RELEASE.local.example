@@ -1,0 +1,9 @@
+# Copy to configure/RELEASE.local (not committed)
+
+EPICS_BASE=/epics/base
+
+# PyDevice — same layout as ioc-hkl / ioc-pymca
+PYDEVICE=/epics/support/pydevice/main
+
+# Optional: add PVXS/QSRV per facility add_pvxs.py (BL14B pattern)
+# See ioc-hkl Makefile and beamline pvxs migration docs
