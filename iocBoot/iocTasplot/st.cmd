@@ -1,29 +1,31 @@
-# Example startup for ioc-tasplot PyDevice IOC
-# Deploy under /epics/iocs/ioc-tasplot; adjust paths like ioc-hkl.
+#!../../bin/linux-x86_64/plotApp
 
-epicsEnvSet("TOP", "/epics/iocs/ioc-tasplot")
-epicsEnvSet("PYDEVICE", "/epics/support/pydevice/main")
+< envPaths
 
-# Python: tasplot + graffiti_app (this repository)
+epicsEnvSet("IOC", "iocTasplot")
+
+# tasplot package + graffiti_app (repository root on PYTHONPATH)
 epicsEnvSet("PYTHONPATH", "$(TOP)/python")
 epicsEnvSet("PYTHONPATH", "$(PYTHONPATH):$(TOP)")
 
 cd "${TOP}"
 
-## Register PyDevice (see ioc-hkl / ioc-pymca Makefiles for link lines)
-# dbLoadDatabase("$(PYDEVICE)/dbd/pydev.dbd")
-# plotApp_registerRecordDeviceDriver pdb
+dbLoadDatabase "${TOP}/dbd/plotApp.dbd"
+plotApp_registerRecordDeviceDriver pdbbase
+
+dbLoadTemplate("$(TOP)/db/plot.substitutions")
+
+cd "${TOP}/iocBoot/${IOC}"
 
 pydev("from graffiti_app import graffiti_plot")
 
-## Optional defaults for HB3 archive development tree
+## Development defaults (override via caput or edit)
 pydev("graffiti_plot.set_file_path('/home/kg1/Documents/Detector/HB3/HB3_data/User/exp382/Datafiles')")
 pydev("graffiti_plot.set_file_name('HB3_exp0382_scan')")
 pydev("graffiti_plot.set_file_number(1)")
 
-dbLoadTemplate("plotApp/Db/plot.substitutions")
+iocInit
 
-iocInit()
-
-# caput HB3:Plot:Acquire 1
-# caget HB3:Plot:Xdata
+## Smoke test after boot:
+## caput HB3:Plot:Acquire 1
+## caget HB3:Plot:NRows_RBV

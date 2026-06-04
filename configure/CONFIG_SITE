@@ -1,0 +1,6 @@
+# CONFIG_SITE
+
+CHECK_RELEASE = WARN
+
+# INSTALL_LOCATION=
+# IOCS_APPL_TOP = </IOC/path/to/application/top>

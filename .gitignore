@@ -6,3 +6,18 @@ __pycache__/
 dist/
 build/
 *.I
+
+# EPICS build products
+/bin/
+/lib/
+/dbd/
+/db/
+/include/
+/configure/CONFIG.PyDevice
+**/O.*/
+**/O.Common/
+*.d
+*.so
+*.a
+envPaths
+configure/RELEASE.local

@@ -1,4 +1,5 @@
-file "$(TOP)/plotApp/Db/plot.template" {
-    P = HB3:Plot:
-    MAXPTS = 4000
+file "$(TOP)/plotApp/Db/plot.template"
+{
+pattern {P, MAXPTS}
+{ HB3:Plot:, 4000 }
 }

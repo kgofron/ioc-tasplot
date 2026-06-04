@@ -8,7 +8,7 @@ record(longout, "$(P)Acquire") {
 }
 
 record(waveform, "$(P)Xdata") {
-    field(DESC, "Scan X axis (default def_x or SPEC col 1)")
+    field(DESC, "X axis (def_x or SPEC col 1)")
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.xdata()")
     field(NELM, "$(MAXPTS)")
@@ -79,7 +79,7 @@ record(stringin, "$(P)LastError_RBV") {
 }
 
 record(stringout, "$(P)FilePath") {
-    field(DESC, "Directory (e.g. .../exp382/Datafiles parent=User root)")
+    field(DESC, "Data directory path")
     field(DTYP, "pydev")
     field(OUT, "@graffiti_plot.set_file_path('VAL')")
 }
@@ -97,7 +97,7 @@ record(longout, "$(P)FileNumber") {
 }
 
 record(longout, "$(P)SpecScanNumber") {
-    field(DESC, "SPEC #S scan number when file is multi-scan")
+    field(DESC, "SPEC scan number (#S)")
     field(DTYP, "pydev")
     field(OUT, "@graffiti_plot.set_spec_scan_number(VAL)")
 }
