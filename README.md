@@ -80,12 +80,19 @@ spec_path = "tests/fixtures/spec_yongcai_sample.spec"
 scan2 = load_spec_file(spec_path, scan_number=2)
 ```
 
+## Phoebus
+
+Minimal OPI (Browse + Graph Data): `plotApp/op/bob/HB3Plot.bob` — see [plotApp/op/README.md](plotApp/op/README.md).
+
+SPiCE GUI reference images: [docs/reference/spice-gui/](docs/reference/spice-gui/README.md).
+
 ## Repository layout
 
 ```
 tasplot/              # Python library (parsers)
 python/               # PyDevice backend (graffiti_app.py)
 plotApp/Db/           # EPICS database templates
+plotApp/op/bob/       # Phoebus displays
 iocBoot/iocTasplot/   # st.cmd
 docs/
 tests/

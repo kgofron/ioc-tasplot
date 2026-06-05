@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>HB3Plot</name>
+  <macros>
+    <P>$(P=HB3:Plot:)</P>
+  </macros>
+  <width>1100</width>
+  <height>720</height>
+  <widget type="label" version="2.0.0">
+    <name>Title</name>
+    <text>ioc-tasplot — Browse + Graph (SPiCE Data tab successor)</text>
+    <x>10</x>
+    <y>8</y>
+    <width>1080</width>
+    <height>28</height>
+    <font>
+      <font family="Sans" style="BOLD" size="16.0">
+      </font>
+    </font>
+  </widget>
+  <widget type="group" version="3.0.0">
+    <name>BrowseData</name>
+    <x>10</x>
+    <y>40</y>
+    <width>1080</width>
+    <height>130</height>
+    <widget type="label" version="2.0.0">
+      <name>BrowseHdr</name>
+      <text>Browse Data (file selection)</text>
+      <x>8</x>
+      <y>5</y>
+      <width>300</width>
+      <height>22</height>
+      <font>
+        <font family="Sans" style="BOLD" size="12.0">
+        </font>
+      </font>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FilePathLbl</name>
+      <text>Directory</text>
+      <x>8</x>
+      <y>32</y>
+      <width>70</width>
+      <height>25</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>FilePath</name>
+      <pv_name>$(P)FilePath</pv_name>
+      <x>82</x>
+      <y>30</y>
+      <width>620</width>
+      <height>28</height>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FileNameLbl</name>
+      <text>Name stem</text>
+      <x>8</x>
+      <y>65</y>
+      <width>70</width>
+      <height>25</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>FileName</name>
+      <pv_name>$(P)FileName</pv_name>
+      <x>82</x>
+      <y>63</y>
+      <width>280</width>
+      <height>28</height>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FileNumLbl</name>
+      <text>Scan #</text>
+      <x>372</x>
+      <y>65</y>
+      <width>55</width>
+      <height>25</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>FileNumber</name>
+      <pv_name>$(P)FileNumber</pv_name>
+      <x>430</x>
+      <y>63</y>
+      <width>70</width>
+      <height>28</height>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>SpecScanLbl</name>
+      <text>SPEC #S</text>
+      <x>510</x>
+      <y>65</y>
+      <width>60</width>
+      <height>25</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>SpecScanNumber</name>
+      <pv_name>$(P)SpecScanNumber</pv_name>
+      <x>572</x>
+      <y>63</y>
+      <width>55</width>
+      <height>28</height>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>AcquireBtn</name>
+      <actions>
+        <action type="write_pv">
+          <description>Load scan</description>
+          <pv_name>$(P)Acquire</pv_name>
+          <value>1</value>
+        </action>
+      </actions>
+      <text>Acquire</text>
+      <x>710</x>
+      <y>58</y>
+      <width>90</width>
+      <height>35</height>
+      <tooltip>Load file into Xdata/Ydata waveforms (SPiCE Graph Data)</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>ExistsLbl</name>
+      <text>File OK</text>
+      <x>810</x>
+      <y>65</y>
+      <width>55</width>
+      <height>25</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="led" version="2.0.0">
+      <name>FileExists</name>
+      <pv_name>$(P)FileExists_RBV</pv_name>
+      <x>868</x>
+      <y>62</y>
+      <width>30</width>
+      <height>30</height>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FullPathLbl</name>
+      <text>Full path</text>
+      <x>8</x>
+      <y>98</y>
+      <width>70</width>
+      <height>22</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>FullFileName</name>
+      <pv_name>$(P)FullFileName_RBV</pv_name>
+      <x>82</x>
+      <y>96</y>
+      <width>815</width>
+      <height>24</height>
+    </widget>
+  </widget>
+  <widget type="group" version="3.0.0">
+    <name>GraphData</name>
+    <x>10</x>
+    <y>178</y>
+    <width>1080</width>
+    <height>530</height>
+    <widget type="label" version="2.0.0">
+      <name>GraphHdr</name>
+      <text>Graph Data</text>
+      <x>8</x>
+      <y>5</y>
+      <width>200</width>
+      <height>22</height>
+      <font>
+        <font family="Sans" style="BOLD" size="12.0">
+        </font>
+      </font>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>DetXLbl</name>
+      <text>X col</text>
+      <x>8</x>
+      <y>30</y>
+      <width>45</width>
+      <height>22</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>DetX</name>
+      <pv_name>$(P)DetX_RBV</pv_name>
+      <x>55</x>
+      <y>28</y>
+      <width>100</width>
+      <height>24</height>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>DetYLbl</name>
+      <text>Y col</text>
+      <x>165</x>
+      <y>30</y>
+      <width>45</width>
+      <height>22</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>DetY</name>
+      <pv_name>$(P)DetY_RBV</pv_name>
+      <x>212</x>
+      <y>28</y>
+      <width>100</width>
+      <height>24</height>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FormatLbl</name>
+      <text>Format</text>
+      <x>325</x>
+      <y>30</y>
+      <width>55</width>
+      <height>22</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Format</name>
+      <pv_name>$(P)Format_RBV</pv_name>
+      <x>382</x>
+      <y>28</y>
+      <width>70</width>
+      <height>24</height>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>RowsLbl</name>
+      <text>Rows</text>
+      <x>465</x>
+      <y>30</y>
+      <width>40</width>
+      <height>22</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>NRows</name>
+      <pv_name>$(P)NRows_RBV</pv_name>
+      <x>507</x>
+      <y>28</y>
+      <width>55</width>
+      <height>24</height>
+      <format>1</format>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>ColsLbl</name>
+      <text>Cols</text>
+      <x>572</x>
+      <y>30</y>
+      <width>40</width>
+      <height>22</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>NColumns</name>
+      <pv_name>$(P)NColumns_RBV</pv_name>
+      <x>614</x>
+      <y>28</y>
+      <width>55</width>
+      <height>24</height>
+      <format>1</format>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>ErrLbl</name>
+      <text>Last error</text>
+      <x>680</x>
+      <y>30</y>
+      <width>70</width>
+      <height>22</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>LastError</name>
+      <pv_name>$(P)LastError_RBV</pv_name>
+      <x>752</x>
+      <y>28</y>
+      <width>310</width>
+      <height>24</height>
+      <foreground_color>
+        <color red="180" green="0" blue="0">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="xyplot" version="3.0.0">
+      <name>ScanPlot</name>
+      <x>8</x>
+      <y>58</y>
+      <width>1055</width>
+      <height>460</height>
+      <title>Scan (default def_x / def_y)</title>
+      <x_axis>
+        <title>X</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>1.0</maximum>
+        <show_grid>true</show_grid>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>Y</title>
+          <autoscale>true</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>0.0</minimum>
+          <maximum>1.0</maximum>
+          <show_grid>true</show_grid>
+          <on_right>false</on_right>
+          <visible>true</visible>
+          <color>
+            <color red="0" green="0" blue="200">
+            </color>
+          </color>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>scan</name>
+          <x_pv>$(P)Xdata</x_pv>
+          <y_pv>$(P)Ydata</y_pv>
+          <err_pv>$(P)YdataErr</err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="0" green="80" blue="200">
+            </color>
+          </color>
+          <line_width>1</line_width>
+          <line_style>0</line_style>
+          <point_type>2</point_type>
+          <point_size>6</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+  </widget>
+</display>
