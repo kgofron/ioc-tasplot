@@ -1,5 +1,6 @@
 # ioc-tasplot — TAS plot PyDevice records (default prefix TAS:Plot:)
 # Template follows ioc-hkl PyDevice pattern: DTYP=pydev, INP/OUT=@graffiti_plot.method()
+# Long paths use lsi/lso (EPICS 3.15+); stringin/out are limited to 40 chars.
 
 record(longout, "$(P)Acquire") {
     field(DESC, "Load scan file into waveforms")
@@ -13,6 +14,7 @@ record(waveform, "$(P)Xdata") {
     field(INP, "@graffiti_plot.xdata()")
     field(NELM, "$(MAXPTS)")
     field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
 }
 
 record(waveform, "$(P)Ydata") {
@@ -21,6 +23,7 @@ record(waveform, "$(P)Ydata") {
     field(INP, "@graffiti_plot.ydata()")
     field(NELM, "$(MAXPTS)")
     field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
 }
 
 record(waveform, "$(P)YdataErr") {
@@ -29,36 +32,44 @@ record(waveform, "$(P)YdataErr") {
     field(INP, "@graffiti_plot.ydata_err()")
     field(NELM, "$(MAXPTS)")
     field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
 }
 
 record(longin, "$(P)NRows_RBV") {
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.nrows_rbv()")
+    field(SCAN, ".5 second")
 }
 
 record(longin, "$(P)NColumns_RBV") {
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.ncolumns_rbv()")
+    field(SCAN, ".5 second")
 }
 
 record(stringin, "$(P)DetX_RBV") {
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.det_x_rbv()")
+    field(SCAN, ".5 second")
 }
 
 record(stringin, "$(P)DetY_RBV") {
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.det_y_rbv()")
+    field(SCAN, ".5 second")
 }
 
 record(stringin, "$(P)Format_RBV") {
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.format_rbv()")
+    field(SCAN, ".5 second")
 }
 
-record(stringin, "$(P)FullFileName_RBV") {
+record(lsi, "$(P)FullFileName_RBV") {
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.full_file_name_rbv()")
+    field(SIZV, "255")
+    field(SCAN, ".5 second")
 }
 
 record(bi, "$(P)FileExists_RBV") {
@@ -66,28 +77,43 @@ record(bi, "$(P)FileExists_RBV") {
     field(INP, "@graffiti_plot.file_exists_rbv()")
     field(ZNAM, "No")
     field(ONAM, "Yes")
+    field(SCAN, ".5 second")
 }
 
-record(stringin, "$(P)Command_RBV") {
+record(lsi, "$(P)Command_RBV") {
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.command_rbv()")
+    field(SIZV, "255")
+    field(SCAN, ".5 second")
 }
 
-record(stringin, "$(P)LastError_RBV") {
+record(lsi, "$(P)LastError_RBV") {
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.last_error_rbv()")
+    field(SIZV, "255")
+    field(SCAN, ".5 second")
 }
 
-record(stringout, "$(P)FilePath") {
-    field(DESC, "Data directory path")
+record(lso, "$(P)FilePath") {
+    field(DESC, "Data directory")
     field(DTYP, "pydev")
     field(OUT, "@graffiti_plot.set_file_path('VAL')")
+    field(SIZV, "255")
 }
 
-record(stringout, "$(P)FileName") {
-    field(DESC, "Name stem HB3_exp0382_scan")
+record(lsi, "$(P)FilePath_RBV") {
+    field(DESC, "Directory readback")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.file_path_rbv()")
+    field(SIZV, "255")
+    field(SCAN, ".5 second")
+}
+
+record(lso, "$(P)FileName") {
+    field(DESC, "Name stem")
     field(DTYP, "pydev")
     field(OUT, "@graffiti_plot.set_file_name('VAL')")
+    field(SIZV, "128")
 }
 
 record(longout, "$(P)FileNumber") {

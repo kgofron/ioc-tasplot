@@ -53,6 +53,12 @@ class GraffitiPlotEngine:
     def set_spec_scan_number(self, number: int) -> None:
         self.spec_scan_number = int(number)
 
+    def file_path_rbv(self) -> str:
+        return self.file_path
+
+    def file_name_rbv(self) -> str:
+        return self.file_name
+
     def full_file_name_rbv(self) -> str:
         return self._full_path()
 
@@ -108,40 +114,55 @@ class GraffitiPlotEngine:
         return self._scan
 
     def nrows_rbv(self) -> int:
-        return self._require_scan().nrows
+        if self._scan is None:
+            return 0
+        return self._scan.nrows
 
     def ncolumns_rbv(self) -> int:
-        return self._require_scan().ncols
+        if self._scan is None:
+            return 0
+        return self._scan.ncols
 
     def det_x_rbv(self) -> str:
-        return self._require_scan().default_x or ""
+        if self._scan is None:
+            return ""
+        return self._scan.default_x or ""
 
     def det_y_rbv(self) -> str:
-        return self._require_scan().default_y or ""
+        if self._scan is None:
+            return ""
+        return self._scan.default_y or ""
 
     def scan_number_rbv(self) -> int:
-        s = self._require_scan().scan_number
+        if self._scan is None:
+            return 0
+        s = self._scan.scan_number
         return int(s) if s is not None else 0
 
     def command_rbv(self) -> str:
-        return self._require_scan().command or ""
+        if self._scan is None:
+            return ""
+        return self._scan.command or ""
 
     def last_error_rbv(self) -> str:
         return self._last_error
 
     def xdata(self) -> list[float]:
-        scan = self._require_scan()
-        x = scan.axis(scan.default_x)
+        if self._scan is None:
+            return []
+        x = self._scan.axis(self._scan.default_x)
         return _clip_waveform(x)
 
     def ydata(self) -> list[float]:
-        scan = self._require_scan()
-        y = scan.axis(scan.default_y)
+        if self._scan is None:
+            return []
+        y = self._scan.axis(self._scan.default_y)
         return _clip_waveform(y)
 
     def ydata_err(self) -> list[float]:
-        scan = self._require_scan()
-        err = scan.poisson_errors()
+        if self._scan is None:
+            return []
+        err = self._scan.poisson_errors()
         return _clip_waveform(err)
 
     def column(self, name: str) -> list[float]:

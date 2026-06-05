@@ -8,6 +8,7 @@ DBD += plotApp.dbd
 
 plotApp_DBD += base.dbd
 plotApp_DBD += pydev.dbd
+plotApp_DBD += pydev315.dbd
 plotApp_DBD += pycalcRecord.dbd
 
 plotApp_LIBS += pydev

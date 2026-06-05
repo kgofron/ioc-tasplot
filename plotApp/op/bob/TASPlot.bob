@@ -47,7 +47,7 @@
     </widget>
     <widget type="textentry" version="3.0.0">
       <name>FilePath</name>
-      <pv_name>$(P)FilePath</pv_name>
+      <pv_name>$(P)FilePath_RBV</pv_name>
       <x>82</x>
       <y>30</y>
       <width>620</width>
