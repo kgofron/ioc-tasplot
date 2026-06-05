@@ -3,6 +3,7 @@
 < envPaths
 
 epicsEnvSet("IOC", "iocTasplot")
+epicsEnvSet("PREFIX", "TAS:Plot:")
 
 # tasplot package + graffiti_app (repository root on PYTHONPATH)
 epicsEnvSet("PYTHONPATH", "$(TOP)/python")
@@ -26,6 +27,6 @@ pydev("graffiti_plot.set_file_number(1)")
 
 iocInit
 
-## Smoke test after boot:
-## caput HB3:Plot:Acquire 1
-## caget HB3:Plot:NRows_RBV
+## Smoke test after boot (PREFIX from epicsEnvSet above):
+## caput TAS:Plot:Acquire 1
+## caget TAS:Plot:NRows_RBV

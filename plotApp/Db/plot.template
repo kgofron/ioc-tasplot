@@ -1,4 +1,4 @@
-# ioc-tasplot — TAS plot PyDevice records (HB3-oriented prefix)
+# ioc-tasplot — TAS plot PyDevice records (default prefix TAS:Plot:)
 # Template follows ioc-hkl PyDevice pattern: DTYP=pydev, INP/OUT=@graffiti_plot.method()
 
 record(longout, "$(P)Acquire") {

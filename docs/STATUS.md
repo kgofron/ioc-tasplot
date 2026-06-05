@@ -36,7 +36,7 @@ cd iocBoot/iocTasplot
 # or: ../../bin/linux-x86_64/plotApp st.cmd
 ```
 
-**PV prefix:** `HB3:Plot:` (18 records; see `dbl` after `iocInit`)
+**PV prefix:** `TAS:Plot:` (`PREFIX` in `st.cmd`; 18 records — see `dbl` after `iocInit`)
 
 **Dev defaults in st.cmd:** HB3 exp382 scan 1 under  
 `/home/kg1/Documents/Detector/HB3/HB3_data/User/exp382/Datafiles`
@@ -44,10 +44,10 @@ cd iocBoot/iocTasplot
 **Smoke test (second terminal):**
 
 ```bash
-caput HB3:Plot:Acquire 1
-caget HB3:Plot:NRows_RBV
-caget HB3:Plot:FullFileName_RBV
-caget HB3:Plot:LastError_RBV
+caput TAS:Plot:Acquire 1
+caget TAS:Plot:NRows_RBV
+caget TAS:Plot:FullFileName_RBV
+caget TAS:Plot:LastError_RBV
 ```
 
 ## Tests
@@ -70,7 +70,7 @@ GitHub Actions: `.github/workflows/test.yml` on push/PR.
 ## Next (in order)
 
 1. **Runtime validation** — `caput`/`caget` with real `.dat` / SPEC file
-2. **Phoebus** — open `plotApp/op/bob/TASPlot.bob` (set `P=HB3:Plot:` for current `st.cmd`); **Acquire**; verify XY plot
+2. **Phoebus** — open `plotApp/op/bob/TASPlot.bob`; **Acquire**; verify XY plot
 3. **Beamline deploy** — `/epics/iocs/ioc-tasplot`, production `st.cmd`, autosave
 4. **Live reload** — periodic `Acquire` or inotify while scan grows
 5. **Facility** — PVXS/QSRV 2; fits / column picker (Graffiti parity)

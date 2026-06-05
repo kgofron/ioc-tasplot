@@ -1,5 +1,5 @@
 file "$(TOP)/plotApp/Db/plot.template"
 {
 pattern {P, MAXPTS}
-{ HB3:Plot:, 4000 }
+{ TAS:Plot:, 4000 }
 }

@@ -82,9 +82,9 @@ flowchart LR
 - **`plotApp/Db`** — file selection, `Acquire`, `Xdata`/`Ydata`/`YdataErr`, column names, scan info strings.
 - **QSRV 2** — add via facility `add_pvxs.py` / Makefile pattern when building for BL14B/HFIR PVXS rollout.
 
-## PV namespace (HB3-oriented)
+## PV namespace (TAS default)
 
-Prefix example: `HB3:Plot:` (adjust per `st.cmd`).
+Default prefix: `TAS:Plot:` (`PREFIX` in `st.cmd` / `plot.substitutions`; beamline deploy may override, e.g. `HB3:Plot:`).
 
 | Record | Type | Role |
 |--------|------|------|
@@ -107,7 +107,7 @@ Live scan: optional `SCAN` on `Acquire` or separate `Reload` record; Python re-r
 3. `make` in `plotApp` and `iocBoot`.
 4. `st.cmd`: `epicsEnvSet("PYTHONPATH", "$(TOP)/python:...")`, `pydev("from graffiti_app import graffiti_plot")`, `dbLoadRecords`, `iocInit`.
 5. Facility step: add **pvxs** / QSRV 2 to Makefile for **PVXS** and Secure EPICS testing.
-6. **Autosave**: include `HB3:Plot:` PVs in beamline `.sav` like any motor IOC.
+6. **Autosave**: include plot PVs (e.g. `TAS:Plot:`) in beamline `.sav` like any motor IOC.
 
 ## Relation to ioc-pymca
 

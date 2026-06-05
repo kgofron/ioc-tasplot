@@ -8,7 +8,7 @@
 
 1. Start IOC: `iocBoot/iocTasplot/./st.cmd`
 2. Phoebus → **File → Open** → `plotApp/op/bob/TASPlot.bob`
-3. Set macro **`P`** to match `plot.substitutions` (e.g. `HB3:Plot:` on HB3 dev `st.cmd`, or `TAS:Plot:`)
+3. Macro **`P`** defaults to `TAS:Plot:` (matches `PREFIX` in `st.cmd` and `plot.substitutions`)
 4. CA gateway: same host as IOC (or set `EPICS_CA_ADDR_LIST`)
 5. Click **Acquire** after adjusting path/name/scan number
 
