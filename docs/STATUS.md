@@ -70,7 +70,7 @@ GitHub Actions: `.github/workflows/test.yml` on push/PR.
 ## Next (in order)
 
 1. **Runtime validation** — `caput`/`caget` with real `.dat` / SPEC file
-2. **Phoebus** — open `plotApp/op/bob/HB3Plot.bob`; click **Acquire**; verify XY plot
+2. **Phoebus** — open `plotApp/op/bob/TASPlot.bob` (set `P=HB3:Plot:` for current `st.cmd`); **Acquire**; verify XY plot
 3. **Beamline deploy** — `/epics/iocs/ioc-tasplot`, production `st.cmd`, autosave
 4. **Live reload** — periodic `Acquire` or inotify while scan grows
 5. **Facility** — PVXS/QSRV 2; fits / column picker (Graffiti parity)

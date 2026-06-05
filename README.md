@@ -82,7 +82,7 @@ scan2 = load_spec_file(spec_path, scan_number=2)
 
 ## Phoebus
 
-Minimal OPI (Browse + Graph Data): `plotApp/op/bob/HB3Plot.bob` — see [plotApp/op/README.md](plotApp/op/README.md).
+Minimal OPI (Browse + Graph Data): `plotApp/op/bob/TASPlot.bob` — see [plotApp/op/README.md](plotApp/op/README.md).
 
 SPiCE GUI reference images: [docs/reference/spice-gui/](docs/reference/spice-gui/README.md).
 

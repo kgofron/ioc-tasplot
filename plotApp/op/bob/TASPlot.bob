@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <display version="2.0.0">
-  <name>HB3Plot</name>
+  <name>TASPlot</name>
   <macros>
-    <P>$(P=HB3:Plot:)</P>
+    <P>$(P=TAS:Plot:)</P>
   </macros>
   <width>1100</width>
   <height>720</height>

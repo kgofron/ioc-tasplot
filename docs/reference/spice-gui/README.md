@@ -10,4 +10,4 @@ Used as UX reference for **ioc-tasplot** Phoebus OPIs — not a pixel-perfect ta
 | [CombineData.png](CombineData.png) | Combine Data | **Later** — multi-scan merge/normalize |
 | [DataBuffers.png](DataBuffers.png) | Data Buffers | **Later** — scratch buffers / export |
 
-Modern UI: single Phoebus panel ([`plotApp/op/bob/HB3Plot.bob`](../../../plotApp/op/bob/HB3Plot.bob)) instead of nested LabVIEW tabs.
+Modern UI: single Phoebus panel ([`plotApp/op/bob/TASPlot.bob`](../../../plotApp/op/bob/TASPlot.bob)) instead of nested LabVIEW tabs.
