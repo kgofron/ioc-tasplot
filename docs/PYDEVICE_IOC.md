@@ -88,11 +88,11 @@ Default prefix: `TAS:Plot:` (`PREFIX` in `st.cmd` / `plot.substitutions`; beamli
 
 | Record | Type | Role |
 |--------|------|------|
-| `SelectedFile` | lso | Full path (Phoebus File + FileSelector); use `.$` for long strings |
+| `SelectedFile` | lso | Full path (File + FileSelector); auto-loads on browse (`.$` long strings) |
 | `FileNumber` | longout | Scan # spinner — rebuilds `*_scanNNNN.dat` and auto-reloads (SPiCE scroll) |
 | `FullFileName_RBV` | lsi | Resolved path IOC will load (use `.$`; may differ from `SelectedFile` after Scan #) |
 | `FileExists_RBV` | bi | Readable file |
-| `Acquire` | longout | Load scan via `tasplot` |
+| `Acquire` | longout | Manual reload (`Reload` button); browse/Scan # auto-load |
 | `DetX_RBV`, `DetY_RBV` | stringin | Default axes from file |
 | `NColumns_RBV`, `NRows_RBV` | longin | Table shape |
 | `Xdata`, `Ydata`, `YdataErr` | waveform | Plot arrays (Phoebus strip chart) |

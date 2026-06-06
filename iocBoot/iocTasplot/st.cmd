@@ -30,8 +30,6 @@ pydev("graffiti_plot.set_selected_file('/home/kg1/Documents/Detector/HB3/HB3_dat
 
 iocInit
 
-pydev("graffiti_plot.acquire()")
-
 ## Smoke test after boot (PREFIX from epicsEnvSet above):
 ## caget TAS:Plot:NRows_RBV
 ## caget -S TAS:Plot:SelectedFile.$

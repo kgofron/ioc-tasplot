@@ -35,7 +35,8 @@ def test_set_selected_file_acquire_fixture():
     path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
     eng.set_selected_file(path)
     assert eng.full_file_name_rbv() == path
-    assert eng.acquire() == 1
+    assert eng.nrows_rbv() >= 10
+    assert eng.format_rbv() == "spice"
 
 
 def test_set_file_number_rebuilds_template_path():

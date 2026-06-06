@@ -3,7 +3,7 @@
 # Long paths use lsi/lso (EPICS 3.15+); stringin/out are limited to 40 chars.
 
 record(longout, "$(P)Acquire") {
-    field(DESC, "Load scan file into waveforms")
+    field(DESC, "Reload current scan file")
     field(DTYP, "pydev")
     field(OUT, "@graffiti_plot.acquire()")
 }

@@ -102,20 +102,20 @@
       <height>28</height>
     </widget>
     <widget type="action_button" version="3.0.0">
-      <name>AcquireBtn</name>
+      <name>ReloadBtn</name>
       <actions>
         <action type="write_pv">
-          <description>Load scan</description>
+          <description>Reload scan</description>
           <pv_name>$(P)Acquire</pv_name>
           <value>1</value>
         </action>
       </actions>
-      <text>Acquire</text>
+      <text>Reload</text>
       <x>278</x>
       <y>61</y>
       <width>90</width>
       <height>35</height>
-      <tooltip>Reload file into Xdata/Ydata (also runs automatically when Scan # changes)</tooltip>
+      <tooltip>Re-read current file (browse and Scan # reload automatically)</tooltip>
     </widget>
     <widget type="label" version="2.0.0">
       <name>ExistsLbl</name>

@@ -79,6 +79,7 @@ class GraffitiPlotEngine:
             self.file_number = int(match.group(2))
         else:
             self.file_name = base
+        self.acquire()
 
     def set_spec_scan_number(self, number: int) -> None:
         self.spec_scan_number = int(number)
@@ -136,7 +137,7 @@ class GraffitiPlotEngine:
 
     def _require_scan(self) -> ScanDataset:
         if self._scan is None:
-            raise RuntimeError(self._last_error or "no scan loaded; process Acquire")
+            raise RuntimeError(self._last_error or "no scan loaded; browse or reload")
         return self._scan
 
     def nrows_rbv(self) -> int:
