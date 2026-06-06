@@ -21,9 +21,7 @@ cd "${TOP}/iocBoot/${IOC}"
 pydev("from graffiti_app import graffiti_plot")
 
 ## Development defaults (override via caput or edit)
-pydev("graffiti_plot.set_file_path('/home/kg1/Documents/Detector/HB3/HB3_data/User/exp382/Datafiles')")
-pydev("graffiti_plot.set_file_name('HB3_exp0382_scan')")
-pydev("graffiti_plot.set_file_number(1)")
+pydev("graffiti_plot.set_selected_file('/home/kg1/Documents/Detector/HB3/HB3_data/User/exp382/Datafiles/HB3_exp0382_scan0001.dat')")
 
 ## Dedicated CA TCP port (avoid collision with other local IOCs on 5064/44029)
 #epicsEnvSet("EPICS_CAS_SERVER_PORT", "50950")
@@ -32,9 +30,6 @@ pydev("graffiti_plot.set_file_number(1)")
 
 iocInit
 
-## Load scan 1 (do not dbpf FilePath — iocsh truncates lso strings to 40 chars)
-dbpf("TAS:Plot:FileName", "HB3_exp0382_scan")
-dbpf("TAS:Plot:FileNumber", "1")
 pydev("graffiti_plot.acquire()")
 
 ## Smoke test after boot (PREFIX from epicsEnvSet above):

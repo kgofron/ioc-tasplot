@@ -94,6 +94,13 @@ record(lsi, "$(P)LastError_RBV") {
     field(SCAN, ".5 second")
 }
 
+record(lso, "$(P)SelectedFile") {
+    field(DESC, "Full path to scan file (FileSelector)")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_selected_file('VAL')")
+    field(SIZV, "255")
+}
+
 record(lso, "$(P)FilePath") {
     field(DESC, "Data directory")
     field(DTYP, "pydev")

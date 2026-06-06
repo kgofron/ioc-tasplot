@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import math
 import os
+import re
 from typing import Optional
 
 from tasplot import FormatError, ScanDataset, load_scan, load_spec_file
@@ -27,10 +28,13 @@ class GraffitiPlotEngine:
         self.file_extension = ".dat"
         self.file_template = "%s%04d%s"
         self.spec_scan_number: Optional[int] = None
+        self._explicit_file: Optional[str] = None
         self._scan: Optional[ScanDataset] = None
         self._last_error = ""
 
     def _full_path(self) -> str:
+        if self._explicit_file:
+            return self._explicit_file
         if "%04d" in self.file_template:
             name = self.file_template % (
                 self.file_name,
@@ -42,13 +46,38 @@ class GraffitiPlotEngine:
         return os.path.join(self.file_path, name)
 
     def set_file_path(self, path: str) -> None:
+        self._explicit_file = None
         self.file_path = path.rstrip("/")
 
     def set_file_name(self, name: str) -> None:
+        self._explicit_file = None
         self.file_name = name
 
     def set_file_number(self, number: int) -> None:
+        self._explicit_file = None
         self.file_number = int(number)
+
+    def set_selected_file(self, path: str) -> None:
+        """Set full file path from Phoebus FileSelector or text entry."""
+        path = path.strip()
+        if not path:
+            self._explicit_file = None
+            return
+        if os.path.isdir(path):
+            self._explicit_file = None
+            self.file_path = path.rstrip("/")
+            return
+        self._explicit_file = path
+        self.file_path = os.path.dirname(path)
+        base, ext = os.path.splitext(os.path.basename(path))
+        if ext:
+            self.file_extension = ext
+        match = re.match(r"^(.+_scan)(\d+)$", base) or re.match(r"^(.+?)(\d+)$", base)
+        if match:
+            self.file_name = match.group(1)
+            self.file_number = int(match.group(2))
+        else:
+            self.file_name = base
 
     def set_spec_scan_number(self, number: int) -> None:
         self.spec_scan_number = int(number)
