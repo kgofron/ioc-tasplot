@@ -82,12 +82,6 @@ class GraffitiPlotEngine:
     def set_spec_scan_number(self, number: int) -> None:
         self.spec_scan_number = int(number)
 
-    def file_path_rbv(self) -> str:
-        return self.file_path
-
-    def file_name_rbv(self) -> str:
-        return self.file_name
-
     def full_file_name_rbv(self) -> str:
         return self._full_path()
 

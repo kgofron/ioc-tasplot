@@ -101,28 +101,6 @@ record(lso, "$(P)SelectedFile") {
     field(SIZV, "255")
 }
 
-record(lso, "$(P)FilePath") {
-    field(DESC, "Data directory")
-    field(DTYP, "pydev")
-    field(OUT, "@graffiti_plot.set_file_path('VAL')")
-    field(SIZV, "255")
-}
-
-record(lsi, "$(P)FilePath_RBV") {
-    field(DESC, "Directory readback")
-    field(DTYP, "pydev")
-    field(INP, "@graffiti_plot.file_path_rbv()")
-    field(SIZV, "255")
-    field(SCAN, ".5 second")
-}
-
-record(lso, "$(P)FileName") {
-    field(DESC, "Name stem")
-    field(DTYP, "pydev")
-    field(OUT, "@graffiti_plot.set_file_name('VAL')")
-    field(SIZV, "128")
-}
-
 record(longout, "$(P)FileNumber") {
     field(DESC, "Scan number (template %04d)")
     field(DTYP, "pydev")

@@ -46,7 +46,7 @@ cd iocBoot/iocTasplot
 ```bash
 caput TAS:Plot:Acquire 1
 caget TAS:Plot:NRows_RBV
-caget TAS:Plot:FullFileName_RBV
+caget -S TAS:Plot:FullFileName_RBV.$
 caget TAS:Plot:LastError_RBV
 ```
 

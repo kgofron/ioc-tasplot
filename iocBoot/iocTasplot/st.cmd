@@ -34,4 +34,5 @@ pydev("graffiti_plot.acquire()")
 
 ## Smoke test after boot (PREFIX from epicsEnvSet above):
 ## caget TAS:Plot:NRows_RBV
-## caget TAS:Plot:FullFileName_RBV
+## caget -S TAS:Plot:SelectedFile.$
+## caget -S TAS:Plot:FullFileName_RBV.$
