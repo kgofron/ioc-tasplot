@@ -56,6 +56,7 @@ class GraffitiPlotEngine:
     def set_file_number(self, number: int) -> None:
         self._explicit_file = None
         self.file_number = int(number)
+        self.acquire()
 
     def set_selected_file(self, path: str) -> None:
         """Set full file path from Phoebus FileSelector or text entry."""
@@ -81,6 +82,8 @@ class GraffitiPlotEngine:
 
     def set_spec_scan_number(self, number: int) -> None:
         self.spec_scan_number = int(number)
+        if self.format_rbv() == "spec":
+            self.acquire()
 
     def full_file_name_rbv(self) -> str:
         return self._full_path()

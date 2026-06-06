@@ -89,7 +89,7 @@ Default prefix: `TAS:Plot:` (`PREFIX` in `st.cmd` / `plot.substitutions`; beamli
 | Record | Type | Role |
 |--------|------|------|
 | `SelectedFile` | lso | Full path (Phoebus File + FileSelector); use `.$` for long strings |
-| `FileNumber` | longout | Scan # — rebuilds `*_scanNNNN.dat` in same directory |
+| `FileNumber` | longout | Scan # spinner — rebuilds `*_scanNNNN.dat` and auto-reloads (SPiCE scroll) |
 | `FullFileName_RBV` | lsi | Resolved path IOC will load (use `.$`; may differ from `SelectedFile` after Scan #) |
 | `FileExists_RBV` | bi | Readable file |
 | `Acquire` | longout | Load scan via `tasplot` |

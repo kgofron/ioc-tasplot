@@ -11,8 +11,8 @@
 3. Phoebus → **File → Open** → `plotApp/op/bob/TASPlot.bob`
 4. Macro **`P`** defaults to `TAS:Plot:` (matches `PREFIX` in `st.cmd` and `plot.substitutions`)
 5. If widgets show pink borders or **"multiple servers"** warnings: **Preferences → EPICS** → set **CA Address List** to the IOC host (optionally `:50950` if `EPICS_CAS_SERVER_PORT` is enabled in `st.cmd`) and disable auto address list
-6. **File** field + folder button use `SelectedFile.$` (`lso`, full path); **Scan #** rebuilds `HB3_*_scanNNNN.dat` in the same directory after a browse
+6. **File** field + folder button use `SelectedFile.$` (`lso`, full path); **Scan #** spinner (SPiCE-style scroll) rebuilds `HB3_*_scanNNNN.dat` in the same directory and reloads the plot
 7. Long-string PVs need the `.$` suffix (`SelectedFile.$`, `FullFileName_RBV.$`); plain names truncate at 40 chars
-8. Click **Acquire** after picking or editing the file path
+8. Click **Acquire** after picking or editing the file path (Scan # changes reload automatically)
 
 SPiCE reference screenshots: [docs/reference/spice-gui/](../../docs/reference/spice-gui/README.md).

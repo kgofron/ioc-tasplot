@@ -102,7 +102,7 @@ record(lso, "$(P)SelectedFile") {
 }
 
 record(longout, "$(P)FileNumber") {
-    field(DESC, "Scan number (template %04d)")
+    field(DESC, "Scan #; auto-reload plot")
     field(DTYP, "pydev")
     field(OUT, "@graffiti_plot.set_file_number(VAL)")
 }

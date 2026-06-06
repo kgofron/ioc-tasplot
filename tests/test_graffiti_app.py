@@ -49,6 +49,20 @@ def test_set_file_number_rebuilds_template_path():
     )
 
 
+def test_set_file_number_auto_acquires_hb3_scan():
+    if not HB3_USER.is_dir():
+        return
+    data = HB3_USER / "exp382" / "Datafiles"
+    if not (data / "HB3_exp0382_scan0001.dat").is_file():
+        return
+    eng = GraffitiPlotEngine()
+    eng.set_selected_file(str(data / "HB3_exp0382_scan0001.dat"))
+    rows1 = eng.nrows_rbv()
+    eng.set_file_number(2)
+    assert "scan0002.dat" in eng.full_file_name_rbv()
+    assert eng.nrows_rbv() != rows1
+
+
 def test_acquire_spec_fixture():
     eng = GraffitiPlotEngine()
     eng.set_file_path(str(FIXTURES))

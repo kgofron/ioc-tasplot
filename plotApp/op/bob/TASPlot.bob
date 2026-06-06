@@ -71,18 +71,23 @@
       <height>25</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
-    <widget type="textentry" version="3.0.0">
+    <widget type="spinner" version="2.0.0">
       <name>FileNumber</name>
       <pv_name>$(P)FileNumber</pv_name>
       <x>65</x>
       <y>66</y>
-      <width>55</width>
+      <width>75</width>
       <height>28</height>
+      <format>1</format>
+      <precision>0</precision>
+      <tooltip>Scan # (SPiCE scroll) — step arrows browse *_scanNNNN.dat in same directory</tooltip>
+      <minimum>1.0</minimum>
+      <maximum>9999.0</maximum>
     </widget>
     <widget type="label" version="2.0.0">
       <name>SpecScanLbl</name>
       <text>SPEC #S</text>
-      <x>130</x>
+      <x>148</x>
       <y>68</y>
       <width>60</width>
       <height>25</height>
@@ -91,7 +96,7 @@
     <widget type="textentry" version="3.0.0">
       <name>SpecScanNumber</name>
       <pv_name>$(P)SpecScanNumber</pv_name>
-      <x>192</x>
+      <x>210</x>
       <y>66</y>
       <width>55</width>
       <height>28</height>
@@ -106,16 +111,16 @@
         </action>
       </actions>
       <text>Acquire</text>
-      <x>260</x>
+      <x>278</x>
       <y>61</y>
       <width>90</width>
       <height>35</height>
-      <tooltip>Load file into Xdata/Ydata waveforms (SPiCE Graph Data)</tooltip>
+      <tooltip>Reload file into Xdata/Ydata (also runs automatically when Scan # changes)</tooltip>
     </widget>
     <widget type="label" version="2.0.0">
       <name>ExistsLbl</name>
       <text>File OK</text>
-      <x>360</x>
+      <x>378</x>
       <y>68</y>
       <width>55</width>
       <height>25</height>
@@ -124,7 +129,7 @@
     <widget type="led" version="2.0.0">
       <name>FileExists</name>
       <pv_name>$(P)FileExists_RBV</pv_name>
-      <x>418</x>
+      <x>436</x>
       <y>65</y>
       <width>30</width>
       <height>30</height>
