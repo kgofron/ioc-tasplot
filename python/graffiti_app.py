@@ -16,9 +16,8 @@ from tasplot import FormatError, ScanDataset, load_scan, load_spec_file
 from tasplot.paths import hb3_scan_path
 
 MAX_WAVEFORM_POINTS = 4000
-DATA_FILE_TEXT_MAX = 32768
+DATA_FILE_TEXT_MAX = 65536
 PATH_TEXT_MAX = 512
-DATA_FILE_PREVIEW_ROWS = 30
 
 
 class GraffitiPlotEngine:
@@ -146,6 +145,7 @@ class GraffitiPlotEngine:
             self._data_file_text = _read_data_file_text(
                 path, spec_scan_number=self.spec_scan_number
             )
+            self._publish_data_file_text()
             return 1
         except Exception as exc:
             self._scan = None
@@ -153,6 +153,7 @@ class GraffitiPlotEngine:
             self.y_col = ""
             self._data_file_text = ""
             self._last_error = str(exc)
+            self._publish_data_file_text()
             return 0
 
     def load_hb3(self, experiment: int, scan: int) -> int:
@@ -167,6 +168,7 @@ class GraffitiPlotEngine:
             self._data_file_text = _read_data_file_text(
                 path, spec_scan_number=self.spec_scan_number
             )
+            self._publish_data_file_text()
             return 1
         except Exception as exc:
             self._scan = None
@@ -174,7 +176,17 @@ class GraffitiPlotEngine:
             self.y_col = ""
             self._data_file_text = ""
             self._last_error = str(exc)
+            self._publish_data_file_text()
             return 0
+
+    def _publish_data_file_text(self) -> None:
+        """Notify DataFileText waveform (I/O Intr; avoids Phoebus scroll reset)."""
+        try:
+            import pydev
+
+            pydev.iointr("data_file_text", self.data_file_text())
+        except Exception:
+            pass
 
     def data_file_text(self) -> list[int]:
         """CHAR waveform text (pcaspy SpecFile pattern) for Phoebus multi-line display."""
@@ -325,10 +337,15 @@ def _decode_char_waveform(val) -> str:
 
 def _read_data_file_text(
     path: str,
-    preview_rows: int = DATA_FILE_PREVIEW_ROWS,
     spec_scan_number: Optional[int] = None,
 ) -> str:
-    """Build bounded file text for CHAR waveform (pcaspy SpecFile style)."""
+    """Read file text for CHAR waveform, truncated to DATAFILETEXT NELM."""
+    try:
+        with open(path, encoding="utf-8", errors="replace") as handle:
+            lines = [line.rstrip("\n\r") for line in handle.readlines()]
+    except OSError as exc:
+        return str(exc)
+
     try:
         from tasplot.load import detect_format
 
@@ -337,10 +354,34 @@ def _read_data_file_text(
         fmt = "unknown"
 
     if fmt == "spec":
-        lines = _read_spec_lines(path, preview_rows, spec_scan_number)
+        text = _read_spec_file_text(lines, spec_scan_number)
     else:
-        lines = _read_spice_lines(path, preview_rows)
-    return _truncate_data_file_text("\n".join(lines))
+        text = "\n".join(lines)
+
+    return _truncate_data_file_text(text)
+
+
+def _read_spec_file_text(lines: list[str], scan_number: Optional[int]) -> str:
+    """Whole SPEC file, or one scan block when scan_number is set."""
+    if scan_number is None:
+        return "\n".join(lines)
+
+    scan_start = _find_spec_scan_start(lines, scan_number)
+    if scan_start is None:
+        return "\n".join(lines)
+
+    out: list[str] = []
+    for raw in lines[:scan_start]:
+        if raw.strip().startswith("#"):
+            out.append(raw)
+
+    for i in range(scan_start, len(lines)):
+        raw = lines[i]
+        if i > scan_start and _SCAN_START.match(raw.strip()):
+            break
+        out.append(raw)
+
+    return "\n".join(out)
 
 
 def _truncate_data_file_text(
@@ -354,101 +395,6 @@ def _truncate_data_file_text(
     return encoded[:keep].decode("utf-8", errors="ignore") + note
 
 
-def _read_spice_lines(path: str, preview_rows: int) -> list[str]:
-    try:
-        with open(path, encoding="utf-8", errors="replace") as handle:
-            lines = handle.readlines()
-    except OSError as exc:
-        return [str(exc)]
-
-    out: list[str] = []
-    preview_count = 0
-    past_columns = False
-
-    for line in lines:
-        raw = line.rstrip("\n\r")
-        stripped = raw.strip()
-        if not stripped:
-            continue
-
-        if stripped.startswith("#"):
-            if preview_count > 0:
-                break
-            out.append(raw)
-            continue
-
-        if "Pt." in raw:
-            out.append(raw)
-            past_columns = True
-            preview_count = 0
-            continue
-
-        if not past_columns:
-            continue
-
-        parts = stripped.split()
-        if not parts or not _looks_numeric_row(parts):
-            break
-        out.append(raw)
-        preview_count += 1
-        if preview_count >= preview_rows:
-            break
-
-    return out
-
-
-def _read_spec_lines(
-    path: str, preview_rows: int, scan_number: Optional[int]
-) -> list[str]:
-    try:
-        with open(path, encoding="utf-8", errors="replace") as handle:
-            lines = [line.rstrip("\n\r") for line in handle.readlines()]
-    except OSError as exc:
-        return [str(exc)]
-
-    scan_start = _find_spec_scan_start(lines, scan_number)
-    if scan_start is None:
-        return _read_spice_lines(path, preview_rows)
-
-    out: list[str] = []
-    for raw in lines[:scan_start]:
-        if raw.strip().startswith("#"):
-            out.append(raw)
-            if len(out) >= 3:
-                break
-
-    preview_count = 0
-    past_columns = False
-    for raw in lines[scan_start:]:
-        stripped = raw.strip()
-        if not stripped:
-            continue
-
-        if stripped.startswith("#"):
-            if preview_count > 0:
-                break
-            if stripped.startswith(("#P", "#G")):
-                continue
-            out.append(raw)
-            if stripped.startswith("#L"):
-                past_columns = True
-                preview_count = 0
-            continue
-
-        if not past_columns:
-            continue
-
-        parts = stripped.split()
-        if not parts or not _looks_numeric_row(parts):
-            break
-        out.append(raw)
-        preview_count += 1
-        if preview_count >= preview_rows:
-            break
-
-    return out
-
-
 def _find_spec_scan_start(lines: list[str], scan_number: Optional[int]) -> Optional[int]:
     last_match: Optional[int] = None
     for i, raw in enumerate(lines):
@@ -458,14 +404,6 @@ def _find_spec_scan_start(lines: list[str], scan_number: Optional[int]) -> Optio
         if scan_number is None or int(match.group(1)) == scan_number:
             last_match = i
     return last_match
-
-
-def _looks_numeric_row(parts: list[str]) -> bool:
-    try:
-        float(parts[0])
-        return True
-    except ValueError:
-        return False
 
 
 def _clip_waveform(arr) -> list[float]:

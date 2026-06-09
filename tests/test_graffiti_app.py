@@ -96,7 +96,7 @@ def test_col_headers_text_waveform():
     assert "s1" in blob
 
 
-def test_data_file_text_spice_excerpt():
+def test_data_file_text_spice_full_file():
     eng = GraffitiPlotEngine()
     path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
     eng.set_selected_file(path)
@@ -105,7 +105,9 @@ def test_data_file_text_spice_excerpt():
     assert "# def_x = s1" in blob
     assert "# def_y = detector" in blob
     assert "Pt." in blob
-    assert len(eng.data_file_text()) <= 32768
+    assert "126.4328" in blob
+    assert "scan completed" in blob
+    assert len(eng.data_file_text()) <= 65536
 
 
 def test_selected_file_path_waveform_read_write():

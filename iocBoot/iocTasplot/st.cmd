@@ -31,6 +31,9 @@ pydev("graffiti_plot.set_selected_file('/home/kg1/Documents/Detector/HB3/HB3_dat
 
 iocInit
 
+## DataFileText uses I/O Intr (updated on load, not periodic SCAN)
+pydev("import pydev; pydev.iointr('data_file_text', graffiti_plot.data_file_text())")
+
 ## Sync spinner after pydev boot
 dbpf("TAS:Plot:FileNumber", "1")
 

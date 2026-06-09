@@ -165,10 +165,10 @@ record(lsi, "$(P)PlotAxisLabel_RBV") {
 record(waveform, "$(P)DataFileText") {
     field(DESC, "File text (Browse Data, SpecFile style)")
     field(DTYP, "pydev")
-    field(INP, "@graffiti_plot.data_file_text()")
+    field(INP, "@pydev.iointr('data_file_text')")
     field(NELM, "$(DATAFILETEXT)")
     field(FTVL, "CHAR")
-    field(SCAN, ".5 second")
+    field(SCAN, "I/O Intr")
 }
 
 record(waveform, "$(P)SelectedFilePath") {
