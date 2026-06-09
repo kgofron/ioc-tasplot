@@ -16,8 +16,9 @@ from tasplot import FormatError, ScanDataset, load_scan, load_spec_file
 from tasplot.paths import hb3_scan_path
 
 MAX_WAVEFORM_POINTS = 4000
-DATA_FILE_CONTENTS_MAX = 1024
-DATA_FILE_PREVIEW_ROWS = 3
+DATA_FILE_TEXT_MAX = 32768
+PATH_TEXT_MAX = 512
+DATA_FILE_PREVIEW_ROWS = 30
 
 
 class GraffitiPlotEngine:
@@ -33,7 +34,7 @@ class GraffitiPlotEngine:
         self._explicit_file: Optional[str] = None
         self._scan: Optional[ScanDataset] = None
         self._last_error = ""
-        self._data_file_contents = ""
+        self._data_file_text = ""
         self.x_col = ""
         self.y_col = ""
 
@@ -142,7 +143,7 @@ class GraffitiPlotEngine:
                 self._scan = load_scan(path)
             self._sync_axes_from_scan()
             self._last_error = ""
-            self._data_file_contents = _read_data_file_excerpt(
+            self._data_file_text = _read_data_file_text(
                 path, spec_scan_number=self.spec_scan_number
             )
             return 1
@@ -150,7 +151,7 @@ class GraffitiPlotEngine:
             self._scan = None
             self.x_col = ""
             self.y_col = ""
-            self._data_file_contents = ""
+            self._data_file_text = ""
             self._last_error = str(exc)
             return 0
 
@@ -163,7 +164,7 @@ class GraffitiPlotEngine:
             self._scan = load_scan(path)
             self._sync_axes_from_scan()
             self._last_error = ""
-            self._data_file_contents = _read_data_file_excerpt(
+            self._data_file_text = _read_data_file_text(
                 path, spec_scan_number=self.spec_scan_number
             )
             return 1
@@ -171,20 +172,37 @@ class GraffitiPlotEngine:
             self._scan = None
             self.x_col = ""
             self.y_col = ""
-            self._data_file_contents = ""
+            self._data_file_text = ""
             self._last_error = str(exc)
             return 0
 
-    def data_file_contents_rbv(self) -> str:
-        """SPiCE DataFileContents-style excerpt: # headers, column line, first rows."""
-        if self._data_file_contents:
-            return self._data_file_contents
-        path = self._full_path()
-        if os.path.isfile(path) and os.access(path, os.R_OK):
-            return _read_data_file_excerpt(
-                path, spec_scan_number=self.spec_scan_number
-            )
-        return ""
+    def data_file_text(self) -> list[int]:
+        """CHAR waveform text (pcaspy SpecFile pattern) for Phoebus multi-line display."""
+        text = self._data_file_text
+        if not text:
+            path = self._full_path()
+            if os.path.isfile(path) and os.access(path, os.R_OK):
+                text = _read_data_file_text(
+                    path, spec_scan_number=self.spec_scan_number
+                )
+        return _encode_text_waveform(text, DATA_FILE_TEXT_MAX)
+
+    def selected_file_path(self, val=None, tpro=0) -> list[int]:
+        """CHAR waveform: browse/paste/edit path (pcaspy FilePath pattern)."""
+        if str(tpro) == "1" and val is not None:
+            path = _decode_char_waveform(val)
+            if path:
+                self.set_selected_file(path)
+        return _encode_text_waveform(self.full_file_name_rbv(), PATH_TEXT_MAX)
+
+    def full_file_name_text(self) -> list[int]:
+        return _encode_text_waveform(self.full_file_name_rbv(), PATH_TEXT_MAX)
+
+    def col_headers_text(self) -> list[int]:
+        return _encode_text_waveform(self.col_headers_rbv(), PATH_TEXT_MAX)
+
+    def command_text(self) -> list[int]:
+        return _encode_text_waveform(self.command_rbv(), PATH_TEXT_MAX)
 
     def _require_scan(self) -> ScanDataset:
         if self._scan is None:
@@ -279,13 +297,38 @@ class GraffitiPlotEngine:
 _SCAN_START = re.compile(r"^#S\s+(\d+)\b")
 
 
-def _read_data_file_excerpt(
+def _encode_text_waveform(text: str, max_bytes: int) -> list[int]:
+    if not text:
+        return [0]
+    data = text.encode("utf-8", errors="replace")[:max_bytes]
+    return list(data) if data else [0]
+
+
+def _decode_char_waveform(val) -> str:
+    """Decode PyDevice CHAR waveform VAL (list of byte codes) to UTF-8 string."""
+    if val is None:
+        return ""
+    if isinstance(val, str):
+        return val.strip()
+    if isinstance(val, (list, tuple)):
+        codes: list[int] = []
+        for item in val:
+            code = int(item)
+            if code == 0:
+                break
+            codes.append(code)
+        if not codes:
+            return ""
+        return bytes(codes).decode("utf-8", errors="replace").strip()
+    return str(val).strip()
+
+
+def _read_data_file_text(
     path: str,
-    max_chars: int = DATA_FILE_CONTENTS_MAX,
     preview_rows: int = DATA_FILE_PREVIEW_ROWS,
     spec_scan_number: Optional[int] = None,
 ) -> str:
-    """Build a bounded text excerpt for Phoebus DataFileContents display."""
+    """Build bounded file text for CHAR waveform (pcaspy SpecFile style)."""
     try:
         from tasplot.load import detect_format
 
@@ -294,26 +337,29 @@ def _read_data_file_excerpt(
         fmt = "unknown"
 
     if fmt == "spec":
-        return _truncate_excerpt(
-            _read_spec_excerpt(path, preview_rows, spec_scan_number), max_chars
-        )
-    return _truncate_excerpt(_read_spice_excerpt(path, preview_rows), max_chars)
+        lines = _read_spec_lines(path, preview_rows, spec_scan_number)
+    else:
+        lines = _read_spice_lines(path, preview_rows)
+    return _truncate_data_file_text("\n".join(lines))
 
 
-def _truncate_excerpt(text: str, max_chars: int) -> str:
-    if len(text) <= max_chars:
+def _truncate_data_file_text(
+    text: str, max_bytes: int = DATA_FILE_TEXT_MAX
+) -> str:
+    encoded = text.encode("utf-8", errors="replace")
+    if len(encoded) <= max_bytes:
         return text
     note = "\n… (truncated)"
-    keep = max(0, max_chars - len(note))
-    return text[:keep].rstrip() + note
+    keep = max(0, max_bytes - len(note.encode("utf-8")))
+    return encoded[:keep].decode("utf-8", errors="ignore") + note
 
 
-def _read_spice_excerpt(path: str, preview_rows: int) -> str:
+def _read_spice_lines(path: str, preview_rows: int) -> list[str]:
     try:
         with open(path, encoding="utf-8", errors="replace") as handle:
             lines = handle.readlines()
     except OSError as exc:
-        return str(exc)
+        return [str(exc)]
 
     out: list[str] = []
     preview_count = 0
@@ -348,21 +394,21 @@ def _read_spice_excerpt(path: str, preview_rows: int) -> str:
         if preview_count >= preview_rows:
             break
 
-    return "\n".join(out)
+    return out
 
 
-def _read_spec_excerpt(
+def _read_spec_lines(
     path: str, preview_rows: int, scan_number: Optional[int]
-) -> str:
+) -> list[str]:
     try:
         with open(path, encoding="utf-8", errors="replace") as handle:
             lines = [line.rstrip("\n\r") for line in handle.readlines()]
     except OSError as exc:
-        return str(exc)
+        return [str(exc)]
 
     scan_start = _find_spec_scan_start(lines, scan_number)
     if scan_start is None:
-        return _read_spice_excerpt(path, preview_rows)
+        return _read_spice_lines(path, preview_rows)
 
     out: list[str] = []
     for raw in lines[:scan_start]:
@@ -400,7 +446,7 @@ def _read_spec_excerpt(
         if preview_count >= preview_rows:
             break
 
-    return "\n".join(out)
+    return out
 
 
 def _find_spec_scan_start(lines: list[str], scan_number: Optional[int]) -> Optional[int]:

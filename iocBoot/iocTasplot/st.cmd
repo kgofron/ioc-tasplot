@@ -30,7 +30,10 @@ pydev("graffiti_plot.set_selected_file('/home/kg1/Documents/Detector/HB3/HB3_dat
 
 iocInit
 
+## Sync spinner after pydev boot (path comes from set_selected_file + SelectedFilePath scan)
+dbpf("TAS:Plot:FileNumber", "1")
+
 ## Smoke test after boot (PREFIX from epicsEnvSet above):
 ## caget TAS:Plot:NRows_RBV
-## caget -S TAS:Plot:SelectedFile.$
-## caget -S TAS:Plot:FullFileName_RBV.$
+## caget -S TAS:Plot:SelectedFile.VAL$
+## caget -S TAS:Plot:FullFileName_RBV.VAL$

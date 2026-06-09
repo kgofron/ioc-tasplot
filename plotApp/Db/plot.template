@@ -162,10 +162,47 @@ record(lsi, "$(P)PlotAxisLabel_RBV") {
     field(SCAN, ".5 second")
 }
 
-record(lsi, "$(P)DataFileContents_RBV") {
-    field(DESC, "File header excerpt (Browse Data)")
+record(waveform, "$(P)DataFileText") {
+    field(DESC, "File text (Browse Data, SpecFile style)")
     field(DTYP, "pydev")
-    field(INP, "@graffiti_plot.data_file_contents_rbv()")
-    field(SIZV, "1024")
+    field(INP, "@graffiti_plot.data_file_text()")
+    field(NELM, "$(DATAFILETEXT)")
+    field(FTVL, "CHAR")
+    field(SCAN, ".5 second")
+}
+
+record(waveform, "$(P)SelectedFilePath") {
+    field(DESC, "Full path read/write (CHAR, Phoebus)")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.selected_file_path('VAL', 'TPRO')")
+    field(NELM, "$(PATHCHAR)")
+    field(FTVL, "CHAR")
+    field(SCAN, ".5 second")
+}
+
+record(waveform, "$(P)FullFileNameText") {
+    field(DESC, "Resolved path (CHAR, Phoebus)")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.full_file_name_text()")
+    field(NELM, "$(PATHCHAR)")
+    field(FTVL, "CHAR")
+    field(SCAN, ".5 second")
+}
+
+record(waveform, "$(P)ColHeadersText") {
+    field(DESC, "Column list (CHAR, Phoebus)")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.col_headers_text()")
+    field(NELM, "$(PATHCHAR)")
+    field(FTVL, "CHAR")
+    field(SCAN, ".5 second")
+}
+
+record(waveform, "$(P)CommandText") {
+    field(DESC, "Scan command (CHAR, Phoebus plot title)")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.command_text()")
+    field(NELM, "$(PATHCHAR)")
+    field(FTVL, "CHAR")
     field(SCAN, ".5 second")
 }

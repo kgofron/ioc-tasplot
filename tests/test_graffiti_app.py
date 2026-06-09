@@ -79,26 +79,59 @@ def test_set_y_col_changes_plot_data():
     assert eng.y_col_rbv() == "time"
 
 
-def test_data_file_contents_spice_excerpt():
+def test_full_file_name_text_waveform():
     eng = GraffitiPlotEngine()
     path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
     eng.set_selected_file(path)
-    text = eng.data_file_contents_rbv()
-    assert "# scan = 1" in text
-    assert "# def_x = s1" in text
-    assert "# def_y = detector" in text
-    assert "Pt." in text
-    assert len(text) <= 1024
-    lines = text.splitlines()
-    data_lines = [ln for ln in lines if ln.strip() and not ln.lstrip().startswith("#")]
-    assert 1 <= len(data_lines) <= 3
+    blob = bytes(eng.full_file_name_text()).decode("utf-8", errors="replace")
+    assert path in blob
+    assert len(eng.full_file_name_text()) <= 512
 
 
-def test_data_file_contents_empty_without_scan():
+def test_col_headers_text_waveform():
+    eng = GraffitiPlotEngine()
+    eng.set_selected_file(str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat"))
+    blob = bytes(eng.col_headers_text()).decode("utf-8", errors="replace")
+    assert "detector" in blob
+    assert "s1" in blob
+
+
+def test_data_file_text_spice_excerpt():
+    eng = GraffitiPlotEngine()
+    path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
+    eng.set_selected_file(path)
+    blob = bytes(eng.data_file_text()).decode("utf-8", errors="replace")
+    assert "# scan = 1" in blob
+    assert "# def_x = s1" in blob
+    assert "# def_y = detector" in blob
+    assert "Pt." in blob
+    assert len(eng.data_file_text()) <= 32768
+
+
+def test_selected_file_path_waveform_read_write():
+    eng = GraffitiPlotEngine()
+    path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
+    eng.set_selected_file(path)
+    blob = bytes(eng.selected_file_path()).decode("utf-8", errors="replace")
+    assert path in blob or path.endswith(blob.strip("\x00"))
+    eng.selected_file_path(val=list(path.encode("utf-8")), tpro=1)
+    assert eng.full_file_name_rbv() == path
+
+
+def test_command_text_waveform():
+    eng = GraffitiPlotEngine()
+    path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
+    eng.set_selected_file(path)
+    eng.acquire()
+    blob = bytes(eng.command_text()).decode("utf-8", errors="replace")
+    assert "scan" in blob.lower()
+
+
+def test_data_file_text_empty_without_scan():
     eng = GraffitiPlotEngine()
     eng.file_path = "/nonexistent"
     eng.file_name = "missing"
-    assert eng.data_file_contents_rbv() == ""
+    assert eng.data_file_text() == [0]
 
 
 def test_acquire_spec_fixture():
@@ -113,7 +146,7 @@ def test_acquire_spec_fixture():
     assert eng.format_rbv() == "spec"
     assert eng.nrows_rbv() == 11
     assert eng.det_y_rbv() == "Detector"
-    text = eng.data_file_contents_rbv()
-    assert "#S 2" in text
-    assert "#L" in text
-    assert "Detector" in text
+    blob = bytes(eng.data_file_text()).decode("utf-8", errors="replace")
+    assert "#S 2" in blob
+    assert "#L" in blob
+    assert "Detector" in blob
