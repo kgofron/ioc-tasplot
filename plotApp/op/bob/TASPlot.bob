@@ -169,7 +169,7 @@ items = [h.strip() for h in headers.split(';') if h.strip()]
 if not items:
     items = [' ']
 
-for wname in ('XCol', 'YCol'):
+for wname in ('XCol', 'YCol', 'NormCol'):
     w = ScriptUtil.findWidgetByName(widget, wname)
     if w is not None:
         w.setItems(items)
@@ -190,7 +190,7 @@ if yact in items:
     <widget type="label" version="2.0.0">
       <name>GraphHdr</name>
       <text>Graph Data</text>
-      <x>930</x>
+      <x>985</x>
       <y>5</y>
       <height>22</height>
       <font>
@@ -247,9 +247,60 @@ if yact in items:
       <items_from_pv>false</items_from_pv>
     </widget>
     <widget type="label" version="2.0.0">
+      <name>NormLbl</name>
+      <text>Norm</text>
+      <x>358</x>
+      <y>5</y>
+      <width>38</width>
+      <height>22</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="combo" version="2.0.0">
+      <name>NormMode</name>
+      <pv_name>$(P)NormMode</pv_name>
+      <x>398</x>
+      <y>3</y>
+      <width>88</width>
+      <height>24</height>
+      <tooltip>SPiCE Normalize to: None, column, or fixed value</tooltip>
+      <items>
+        <item>None</item>
+        <item>Column</item>
+        <item>Fixed</item>
+      </items>
+      <items_from_pv>false</items_from_pv>
+    </widget>
+    <widget type="combo" version="2.0.0">
+      <name>NormCol</name>
+      <pv_name>$(P)NormCol</pv_name>
+      <x>490</x>
+      <y>3</y>
+      <width>100</width>
+      <height>24</height>
+      <tooltip>Normalization column (monitor, mcu, time, …)</tooltip>
+      <items>
+        <item>monitor</item>
+        <item>mcu</item>
+        <item>time</item>
+      </items>
+      <items_from_pv>false</items_from_pv>
+    </widget>
+    <widget type="spinner" version="2.0.0">
+      <name>NormValue</name>
+      <pv_name>$(P)NormValue</pv_name>
+      <x>595</x>
+      <y>3</y>
+      <width>72</width>
+      <height>24</height>
+      <tooltip>Fixed divisor when Norm mode is Fixed</tooltip>
+      <minimum>1.0</minimum>
+      <maximum>1000000.0</maximum>
+      <value>1.0</value>
+    </widget>
+    <widget type="label" version="2.0.0">
       <name>FormatLbl</name>
       <text>Format</text>
-      <x>365</x>
+      <x>675</x>
       <y>5</y>
       <width>55</width>
       <height>22</height>
@@ -258,7 +309,7 @@ if yact in items:
     <widget type="textupdate" version="2.0.0">
       <name>Format</name>
       <pv_name>$(P)Format_RBV</pv_name>
-      <x>422</x>
+      <x>732</x>
       <y>3</y>
       <width>55</width>
       <height>24</height>
@@ -266,7 +317,7 @@ if yact in items:
     <widget type="label" version="2.0.0">
       <name>RowsLbl</name>
       <text>Rows</text>
-      <x>485</x>
+      <x>795</x>
       <y>5</y>
       <width>40</width>
       <height>22</height>
@@ -275,7 +326,7 @@ if yact in items:
     <widget type="textupdate" version="2.0.0">
       <name>NRows</name>
       <pv_name>$(P)NRows_RBV</pv_name>
-      <x>527</x>
+      <x>837</x>
       <y>3</y>
       <width>45</width>
       <height>24</height>
@@ -284,7 +335,7 @@ if yact in items:
     <widget type="label" version="2.0.0">
       <name>ColsLbl</name>
       <text>Cols</text>
-      <x>580</x>
+      <x>890</x>
       <y>5</y>
       <width>40</width>
       <height>22</height>
@@ -293,7 +344,7 @@ if yact in items:
     <widget type="textupdate" version="2.0.0">
       <name>NColumns</name>
       <pv_name>$(P)NColumns_RBV</pv_name>
-      <x>622</x>
+      <x>932</x>
       <y>3</y>
       <width>45</width>
       <height>24</height>

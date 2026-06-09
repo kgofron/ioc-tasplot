@@ -162,6 +162,42 @@ record(lsi, "$(P)PlotAxisLabel_RBV") {
     field(SCAN, ".5 second")
 }
 
+record(mbbo, "$(P)NormMode") {
+    field(DESC, "Normalize: None / Column / Fixed")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_norm_mode(VAL)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(ZRST, "None")
+    field(ONST, "Column")
+    field(TWST, "Fixed")
+}
+
+record(lso, "$(P)NormCol") {
+    field(DESC, "Normalization column")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_norm_col('VAL')")
+    field(SIZV, "64")
+}
+
+record(ao, "$(P)NormValue") {
+    field(DESC, "Fixed normalization divisor")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_norm_value(VAL)")
+    field(PREC, "4")
+    field(EGU, "counts")
+    field(HOPR, "1e6")
+    field(LOPR, "1")
+}
+
+record(lsi, "$(P)NormCol_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.norm_col_rbv()")
+    field(SIZV, "64")
+    field(SCAN, ".5 second")
+}
+
 record(waveform, "$(P)DataFileText") {
     field(DESC, "File text (Browse Data, SpecFile style)")
     field(DTYP, "pydev")

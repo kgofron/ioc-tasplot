@@ -94,6 +94,9 @@ Default prefix: `TAS:Plot:` (`PREFIX` in `st.cmd` / `plot.substitutions`; beamli
 | `FileExists_RBV` | bi | Readable file |
 | `Acquire` | longout | Manual reload (`Reload` button); browse/Scan # auto-load |
 | `XCol`, `YCol` | lso | Plot column names (any column; replot on write) |
+| `NormMode` | mbbo | None / Column / Fixed normalization |
+| `NormCol` | lso | Normalization column (e.g. `monitor`, `mcu`) |
+| `NormValue` | ao | Fixed divisor when `NormMode` = Fixed |
 | `XCol_RBV`, `YCol_RBV` | lsi | Active X/Y after load |
 | `ColHeaders_RBV` | lsi | Semicolon-separated column list (`.$`) |
 | `PlotAxisLabel_RBV` | lsi | Y-axis title for Phoebus xyplot |

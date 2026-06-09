@@ -15,7 +15,7 @@
 7. **Scan #** spinner rebuilds `HB3_*_scanNNNN.dat`, reloads, and syncs **File** (`SelectedFile.$`)
 8. Long `lsi`/`lso` paths use `.$` + `format=String` (`SelectedFile.$`, `FullFileName_RBV.$`, …); **DataFileContents** uses CHAR waveform `DataFileText` (no `.$` needed)
 9. **Reload** re-reads the current file (e.g. while a scan is still growing)
-10. **Graph Data** — **X col** / **Y col** pull-downs (`XCol`, `YCol` combo, items from `ColHeaders_RBV`); **Columns** line lists all names
+10. **Graph Data** — **X col** / **Y col** pull-downs (`XCol`, `YCol` combo, items from `ColHeaders_RBV`); **Norm** (`NormMode`, `NormCol`, `NormValue`) SPiCE-style divide-by-column or fixed value; **Columns** line lists all names
 11. **DataFileContents** — multi-line `textentry` on `DataFileText` CHAR waveform (pcaspy `SpecFile` pattern; format=String)
 
 SPiCE reference screenshots: [docs/reference/spice-gui/](../../docs/reference/spice-gui/README.md).

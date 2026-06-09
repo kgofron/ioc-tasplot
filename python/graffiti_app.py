@@ -10,7 +10,9 @@ from __future__ import annotations
 import math
 import os
 import re
-from typing import Optional
+from typing import Optional, Union
+
+import numpy as np
 
 from tasplot import FormatError, ScanDataset, load_scan, load_spec_file
 from tasplot.paths import hb3_scan_path
@@ -18,6 +20,10 @@ from tasplot.paths import hb3_scan_path
 MAX_WAVEFORM_POINTS = 4000
 DATA_FILE_TEXT_MAX = 65536
 PATH_TEXT_MAX = 512
+
+NORM_NONE = 0
+NORM_COLUMN = 1
+NORM_FIXED = 2
 
 
 class GraffitiPlotEngine:
@@ -36,6 +42,9 @@ class GraffitiPlotEngine:
         self._data_file_text = ""
         self.x_col = ""
         self.y_col = ""
+        self.norm_mode = NORM_NONE
+        self.norm_col = "monitor"
+        self.norm_value = 1.0
 
     def _full_path(self) -> str:
         if self._explicit_file:
@@ -97,6 +106,21 @@ class GraffitiPlotEngine:
     def set_y_col(self, name: str) -> None:
         self.y_col = name.strip()
 
+    def set_norm_mode(self, mode: int) -> None:
+        self.norm_mode = int(mode)
+
+    def set_norm_col(self, name: str) -> None:
+        self.norm_col = name.strip()
+
+    def set_norm_value(self, value: float) -> None:
+        self.norm_value = float(value)
+
+    def norm_mode_rbv(self) -> int:
+        return int(self.norm_mode)
+
+    def norm_col_rbv(self) -> str:
+        return self.norm_col
+
     def col_headers_rbv(self) -> str:
         if self._scan is None or not self._scan.columns:
             return ""
@@ -109,8 +133,22 @@ class GraffitiPlotEngine:
         return self.y_col or self.det_y_rbv()
 
     def plot_axis_label_rbv(self) -> str:
-        """Y-axis label for Phoebus (normalization suffix in Phase 2)."""
-        return self.y_col_rbv()
+        """Y-axis label for Phoebus xyplot (includes normalization suffix)."""
+        y = self.y_col_rbv()
+        if not y:
+            return ""
+        mode = int(self.norm_mode)
+        if mode == NORM_COLUMN:
+            col = self.norm_col or "monitor"
+            return f"{y}/{col}"
+        if mode == NORM_FIXED:
+            val = float(self.norm_value)
+            if val == 1.0:
+                return y
+            if val == int(val):
+                return f"{y}/{int(val)}"
+            return f"{y}/{val:g}"
+        return y
 
     def full_file_name_rbv(self) -> str:
         return self._full_path()
@@ -284,29 +322,71 @@ class GraffitiPlotEngine:
             return []
 
     def ydata(self) -> list[float]:
-        if self._scan is None:
-            return []
-        try:
-            col = self._resolve_column(self.y_col or self._scan.default_y or "")
-            return _clip_waveform(self._scan.column(col))
-        except (KeyError, ValueError):
-            return []
+        y, _ = self._ydata_and_errors()
+        return y
 
     def ydata_err(self) -> list[float]:
+        _, err = self._ydata_and_errors()
+        return err
+
+    def _ydata_and_errors(self) -> tuple[list[float], list[float]]:
         if self._scan is None:
-            return []
+            return [], []
         try:
             col = self._resolve_column(self.y_col or self._scan.default_y or "")
+            y = self._scan.column(col)
             err = self._scan.poisson_errors(y_column=col)
-            return _clip_waveform(err)
+            y, err = _apply_normalization(
+                y, err, int(self.norm_mode), self._scan, self.norm_col, self.norm_value, self._resolve_column
+            )
+            return _clip_waveform(y), _clip_waveform(err)
         except (KeyError, ValueError):
-            return []
+            return [], []
 
     def column(self, name: str) -> list[float]:
         return _clip_waveform(self._require_scan().column(name))
 
 
 _SCAN_START = re.compile(r"^#S\s+(\d+)\b")
+
+
+def _apply_normalization(
+    y: np.ndarray,
+    err: np.ndarray,
+    mode: int,
+    scan: ScanDataset,
+    norm_col: str,
+    norm_value: float,
+    resolve_column,
+) -> tuple[np.ndarray, np.ndarray]:
+    """SPiCE-style Y normalization: none, divide by column, or fixed value."""
+    if mode == NORM_NONE:
+        return y, err
+    if mode == NORM_COLUMN:
+        col = resolve_column(norm_col or "monitor")
+        divisor = scan.column(col)
+        return _divide_by(divisor, y, err)
+    if mode == NORM_FIXED:
+        divisor = float(norm_value)
+        if divisor <= 0:
+            return y, err
+        return y / divisor, err / divisor
+    return y, err
+
+
+def _divide_by(
+    divisor: Union[np.ndarray, float], y: np.ndarray, err: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    out_y = np.zeros_like(y, dtype=float)
+    out_err = np.zeros_like(err, dtype=float)
+    if isinstance(divisor, np.ndarray):
+        valid = divisor > 0
+        out_y[valid] = y[valid] / divisor[valid]
+        out_err[valid] = err[valid] / divisor[valid]
+    else:
+        out_y = y / divisor
+        out_err = err / divisor
+    return out_y, out_err
 
 
 def _encode_text_waveform(text: str, max_bytes: int) -> list[int]:

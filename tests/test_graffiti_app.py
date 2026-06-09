@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from graffiti_app import GraffitiPlotEngine
+from graffiti_app import NORM_COLUMN, NORM_FIXED, NORM_NONE, GraffitiPlotEngine
 
 FIXTURES = Path(__file__).parent / "fixtures"
 HB3_USER = Path("/home/kg1/Documents/Detector/HB3/HB3_data/User")
@@ -62,6 +62,49 @@ def test_set_file_number_auto_acquires_hb3_scan():
     eng.set_file_number(2)
     assert "scan0002.dat" in eng.full_file_name_rbv()
     assert eng.nrows_rbv() != rows1
+
+
+def test_normalize_to_monitor_column():
+    eng = GraffitiPlotEngine()
+    path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
+    eng.set_selected_file(path)
+    raw = eng.ydata()
+    eng.set_norm_mode(NORM_COLUMN)
+    eng.set_norm_col("monitor")
+    norm = eng.ydata()
+    assert raw != norm
+    assert len(norm) == len(raw)
+    scan = eng._scan
+    monitor = scan.column("monitor")
+    for r, n, m in zip(raw, norm, monitor):
+        if m > 0:
+            assert abs(r / m - n) < 1e-6
+    assert eng.plot_axis_label_rbv() == "detector/monitor"
+
+
+def test_normalize_to_fixed_value():
+    eng = GraffitiPlotEngine()
+    eng.set_selected_file(str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat"))
+    eng.set_norm_mode(NORM_FIXED)
+    eng.set_norm_value(1000.0)
+    norm = eng.ydata()
+    raw = eng._scan.column("detector")
+    for r, n in zip(raw[:5], norm[:5]):
+        assert abs(float(r) / 1000.0 - n) < 1e-6
+    assert eng.plot_axis_label_rbv() == "detector/1000"
+
+
+def test_normalize_none_matches_raw():
+    eng = GraffitiPlotEngine()
+    eng.set_selected_file(str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat"))
+    eng.set_norm_mode(NORM_NONE)
+    y1 = eng.ydata()
+    eng.set_norm_mode(NORM_COLUMN)
+    eng.set_norm_col("monitor")
+    eng.set_norm_mode(NORM_NONE)
+    y2 = eng.ydata()
+    assert y1 == y2
+    assert eng.plot_axis_label_rbv() == "detector"
 
 
 def test_set_y_col_changes_plot_data():

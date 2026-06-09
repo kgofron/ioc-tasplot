@@ -62,7 +62,7 @@ A **PyDevice soft IOC** that **reads completed (or growing) scan files** from di
 | Load errors, file presence | **Done** | `LastError_RBV`, `FileExists_RBV` |
 | Poisson Y errors | **Done** | `YdataErr` |
 | Long file paths in Phoebus | **Done** | `lsi`/`lso` + `.$` suffix |
-| Normalization (e.g. to monitor / MCU) | **Planned** | Phase 2 — `NormMode`, `NormCol`, `NormValue` |
+| Normalization (e.g. to monitor / MCU) | **Done** | `NormMode`, `NormCol`, `NormValue` |
 
 ---
 
@@ -142,7 +142,7 @@ flowchart TB
 | Phase | HB2D-related deliverable | Reference |
 |-------|--------------------------|-----------|
 | **v1 (done)** | Browse, Graph Data, Scan #, X/Y columns, DataFileContents | `TASPlot.bob`, `STATUS.md` |
-| **Phase 2** | Normalization (`mcu`, `monitor`, …) | spice-gui BrowseData-norm |
+| **Phase 2 (done)** | Normalization (`mcu`, `monitor`, fixed value) | spice-gui BrowseData-norm |
 | **Live reload** | Plot while scan file grows | STATUS “Next” |
 | **Phase 4–5** | Log scales, combine scans, overlays | spice-gui README |
 | **Phase 6** | Peak / Gaussian fit | spice-gui GraphData-peak-fit |
