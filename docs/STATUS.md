@@ -71,7 +71,7 @@ If pink borders or **“multiple servers”**: Preferences → EPICS → set CA 
 |----|------|
 | `SelectedFile` (`lso`, use `.$`) | Write: full path from File / FileSelector; auto-loads |
 | `FileNumber` (`longout`) | Scan # spinner; auto-reload |
-| `FullFileName_RBV` (`lsi`, use `.$`) | Resolved path IOC loads (grey header; matches File after Scan #) |
+| `FullFileName_RBV` (`lsi`, use `.$`) | Resolved path IOC loads (grey header; updates on Scan #) |
 | `FileExists_RBV` | File readable |
 | `Acquire` (`longout`) | Manual reload only (**Reload** button in OPI) |
 | `Xdata` / `Ydata` / `YdataErr` | Plot waveforms (SCAN 1 s) |
@@ -109,6 +109,6 @@ SPiCE GUI reference: [docs/reference/spice-gui/](reference/spice-gui/README.md)
 ## Operational notes
 
 - Plain `caget TAS:Plot:SelectedFile` truncates at 40 chars; use **`caget -S TAS:Plot:SelectedFile.$`**
-- After Scan # change, **File** field may show original browse path; grey **FullFileName_RBV** shows resolved path
+- **File** (`SelectedFile.$`) is for paste/browse entry; after Scan # change, grey **FullFileName_RBV** shows the path IOC actually loads
 - EPICS `DESC` fields max **40 characters** (boot fails if exceeded)
 - Old Graffiti C IOC: `Detector/HB3/applications/hb3-Graffiti` (separate tree)

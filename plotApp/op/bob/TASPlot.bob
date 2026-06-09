@@ -45,15 +45,15 @@
       <height>25</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
-    <widget type="textupdate" version="2.0.0">
+    <widget type="textentry" version="3.0.0">
       <name>SelectedFile</name>
-      <pv_name>$(P)FullFileName_RBV.$</pv_name>
+      <pv_name>$(P)SelectedFile.$</pv_name>
       <x>50</x>
       <y>30</y>
       <width>960</width>
       <height>28</height>
       <format>6</format>
-      <tooltip>Resolved path (updates on Scan # and browse)</tooltip>
+      <tooltip>Paste or type path (writes SelectedFile); folder button also writes here. Grey header shows resolved path after Scan #.</tooltip>
     </widget>
     <widget type="fileselector" version="2.0.0">
       <name>FileSelector</name>
