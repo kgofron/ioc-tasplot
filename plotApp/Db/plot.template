@@ -161,3 +161,11 @@ record(lsi, "$(P)PlotAxisLabel_RBV") {
     field(SIZV, "128")
     field(SCAN, ".5 second")
 }
+
+record(lsi, "$(P)DataFileContents_RBV") {
+    field(DESC, "File header excerpt (Browse Data)")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.data_file_contents_rbv()")
+    field(SIZV, "1024")
+    field(SCAN, ".5 second")
+}

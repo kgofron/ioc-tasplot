@@ -16,5 +16,6 @@
 8. Long-string PVs need the `.$` suffix (`SelectedFile.$`, `FullFileName_RBV.$`); plain names truncate at 40 chars
 9. **Reload** re-reads the current file (e.g. while a scan is still growing)
 10. **Graph Data** — **X col** / **Y col** pull-downs (`XCol`, `YCol` combo, items from `ColHeaders_RBV`); **Columns** line lists all names
+11. **DataFileContents** — scrollable header excerpt from `DataFileContents_RBV.$` (SPiCE Browse Data parity)
 
 SPiCE reference screenshots: [docs/reference/spice-gui/](../../docs/reference/spice-gui/README.md).

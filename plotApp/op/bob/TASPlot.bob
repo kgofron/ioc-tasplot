@@ -342,7 +342,7 @@ if yact in items:
       <x>8</x>
       <y>104</y>
       <width>1040</width>
-      <height>414</height>
+      <height>280</height>
       <rules>
         <rule name="XlabelAx" prop_id="x_axis.title" out_exp="true">
           <exp bool_exp="True">
@@ -423,6 +423,43 @@ if yact in items:
           <visible>true</visible>
         </trace>
       </traces>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>DataFileHdr</name>
+      <text>DataFileContents</text>
+      <x>8</x>
+      <y>388</y>
+      <width>160</width>
+      <height>22</height>
+      <font>
+        <font family="Sans" style="BOLD" size="11.0">
+        </font>
+      </font>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>DataFileContents</name>
+      <pv_name>$(P)DataFileContents_RBV.$</pv_name>
+      <x>8</x>
+      <y>412</y>
+      <width>1040</width>
+      <height>130</height>
+      <format>6</format>
+      <horizontal_alignment>0</horizontal_alignment>
+      <vertical_alignment>0</vertical_alignment>
+      <wrap_words>true</wrap_words>
+      <foreground_color>
+        <color red="40" green="40" blue="40">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="240" green="240" blue="240">
+        </color>
+      </background_color>
+      <font>
+        <font family="Monospace" style="REGULAR" size="11.0">
+        </font>
+      </font>
+      <tooltip>SPiCE-style file header excerpt (# metadata, column line, first data rows)</tooltip>
     </widget>
   </widget>
 </display>

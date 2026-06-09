@@ -79,6 +79,28 @@ def test_set_y_col_changes_plot_data():
     assert eng.y_col_rbv() == "time"
 
 
+def test_data_file_contents_spice_excerpt():
+    eng = GraffitiPlotEngine()
+    path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
+    eng.set_selected_file(path)
+    text = eng.data_file_contents_rbv()
+    assert "# scan = 1" in text
+    assert "# def_x = s1" in text
+    assert "# def_y = detector" in text
+    assert "Pt." in text
+    assert len(text) <= 1024
+    lines = text.splitlines()
+    data_lines = [ln for ln in lines if ln.strip() and not ln.lstrip().startswith("#")]
+    assert 1 <= len(data_lines) <= 3
+
+
+def test_data_file_contents_empty_without_scan():
+    eng = GraffitiPlotEngine()
+    eng.file_path = "/nonexistent"
+    eng.file_name = "missing"
+    assert eng.data_file_contents_rbv() == ""
+
+
 def test_acquire_spec_fixture():
     eng = GraffitiPlotEngine()
     eng.set_file_path(str(FIXTURES))
@@ -91,3 +113,7 @@ def test_acquire_spec_fixture():
     assert eng.format_rbv() == "spec"
     assert eng.nrows_rbv() == 11
     assert eng.det_y_rbv() == "Detector"
+    text = eng.data_file_contents_rbv()
+    assert "#S 2" in text
+    assert "#L" in text
+    assert "Detector" in text

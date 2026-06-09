@@ -16,6 +16,8 @@ from tasplot import FormatError, ScanDataset, load_scan, load_spec_file
 from tasplot.paths import hb3_scan_path
 
 MAX_WAVEFORM_POINTS = 4000
+DATA_FILE_CONTENTS_MAX = 1024
+DATA_FILE_PREVIEW_ROWS = 3
 
 
 class GraffitiPlotEngine:
@@ -31,6 +33,7 @@ class GraffitiPlotEngine:
         self._explicit_file: Optional[str] = None
         self._scan: Optional[ScanDataset] = None
         self._last_error = ""
+        self._data_file_contents = ""
         self.x_col = ""
         self.y_col = ""
 
@@ -139,11 +142,15 @@ class GraffitiPlotEngine:
                 self._scan = load_scan(path)
             self._sync_axes_from_scan()
             self._last_error = ""
+            self._data_file_contents = _read_data_file_excerpt(
+                path, spec_scan_number=self.spec_scan_number
+            )
             return 1
         except Exception as exc:
             self._scan = None
             self.x_col = ""
             self.y_col = ""
+            self._data_file_contents = ""
             self._last_error = str(exc)
             return 0
 
@@ -156,13 +163,28 @@ class GraffitiPlotEngine:
             self._scan = load_scan(path)
             self._sync_axes_from_scan()
             self._last_error = ""
+            self._data_file_contents = _read_data_file_excerpt(
+                path, spec_scan_number=self.spec_scan_number
+            )
             return 1
         except Exception as exc:
             self._scan = None
             self.x_col = ""
             self.y_col = ""
+            self._data_file_contents = ""
             self._last_error = str(exc)
             return 0
+
+    def data_file_contents_rbv(self) -> str:
+        """SPiCE DataFileContents-style excerpt: # headers, column line, first rows."""
+        if self._data_file_contents:
+            return self._data_file_contents
+        path = self._full_path()
+        if os.path.isfile(path) and os.access(path, os.R_OK):
+            return _read_data_file_excerpt(
+                path, spec_scan_number=self.spec_scan_number
+            )
+        return ""
 
     def _require_scan(self) -> ScanDataset:
         if self._scan is None:
@@ -252,6 +274,152 @@ class GraffitiPlotEngine:
 
     def column(self, name: str) -> list[float]:
         return _clip_waveform(self._require_scan().column(name))
+
+
+_SCAN_START = re.compile(r"^#S\s+(\d+)\b")
+
+
+def _read_data_file_excerpt(
+    path: str,
+    max_chars: int = DATA_FILE_CONTENTS_MAX,
+    preview_rows: int = DATA_FILE_PREVIEW_ROWS,
+    spec_scan_number: Optional[int] = None,
+) -> str:
+    """Build a bounded text excerpt for Phoebus DataFileContents display."""
+    try:
+        from tasplot.load import detect_format
+
+        fmt = detect_format(path)
+    except (FormatError, OSError):
+        fmt = "unknown"
+
+    if fmt == "spec":
+        return _truncate_excerpt(
+            _read_spec_excerpt(path, preview_rows, spec_scan_number), max_chars
+        )
+    return _truncate_excerpt(_read_spice_excerpt(path, preview_rows), max_chars)
+
+
+def _truncate_excerpt(text: str, max_chars: int) -> str:
+    if len(text) <= max_chars:
+        return text
+    note = "\n… (truncated)"
+    keep = max(0, max_chars - len(note))
+    return text[:keep].rstrip() + note
+
+
+def _read_spice_excerpt(path: str, preview_rows: int) -> str:
+    try:
+        with open(path, encoding="utf-8", errors="replace") as handle:
+            lines = handle.readlines()
+    except OSError as exc:
+        return str(exc)
+
+    out: list[str] = []
+    preview_count = 0
+    past_columns = False
+
+    for line in lines:
+        raw = line.rstrip("\n\r")
+        stripped = raw.strip()
+        if not stripped:
+            continue
+
+        if stripped.startswith("#"):
+            if preview_count > 0:
+                break
+            out.append(raw)
+            continue
+
+        if "Pt." in raw:
+            out.append(raw)
+            past_columns = True
+            preview_count = 0
+            continue
+
+        if not past_columns:
+            continue
+
+        parts = stripped.split()
+        if not parts or not _looks_numeric_row(parts):
+            break
+        out.append(raw)
+        preview_count += 1
+        if preview_count >= preview_rows:
+            break
+
+    return "\n".join(out)
+
+
+def _read_spec_excerpt(
+    path: str, preview_rows: int, scan_number: Optional[int]
+) -> str:
+    try:
+        with open(path, encoding="utf-8", errors="replace") as handle:
+            lines = [line.rstrip("\n\r") for line in handle.readlines()]
+    except OSError as exc:
+        return str(exc)
+
+    scan_start = _find_spec_scan_start(lines, scan_number)
+    if scan_start is None:
+        return _read_spice_excerpt(path, preview_rows)
+
+    out: list[str] = []
+    for raw in lines[:scan_start]:
+        if raw.strip().startswith("#"):
+            out.append(raw)
+            if len(out) >= 3:
+                break
+
+    preview_count = 0
+    past_columns = False
+    for raw in lines[scan_start:]:
+        stripped = raw.strip()
+        if not stripped:
+            continue
+
+        if stripped.startswith("#"):
+            if preview_count > 0:
+                break
+            if stripped.startswith(("#P", "#G")):
+                continue
+            out.append(raw)
+            if stripped.startswith("#L"):
+                past_columns = True
+                preview_count = 0
+            continue
+
+        if not past_columns:
+            continue
+
+        parts = stripped.split()
+        if not parts or not _looks_numeric_row(parts):
+            break
+        out.append(raw)
+        preview_count += 1
+        if preview_count >= preview_rows:
+            break
+
+    return "\n".join(out)
+
+
+def _find_spec_scan_start(lines: list[str], scan_number: Optional[int]) -> Optional[int]:
+    last_match: Optional[int] = None
+    for i, raw in enumerate(lines):
+        match = _SCAN_START.match(raw.strip())
+        if not match:
+            continue
+        if scan_number is None or int(match.group(1)) == scan_number:
+            last_match = i
+    return last_match
+
+
+def _looks_numeric_row(parts: list[str]) -> bool:
+    try:
+        float(parts[0])
+        return True
+    except ValueError:
+        return False
 
 
 def _clip_waveform(arr) -> list[float]:
