@@ -5,7 +5,7 @@
     <P>$(P=TAS:Plot:)</P>
   </macros>
   <width>1100</width>
-  <height>1100</height>
+  <height>1160</height>
   <widget type="label" version="2.0.0">
     <name>Title</name>
     <text>ioc-tasplot — Browse + Graph (SPiCE Data tab successor)</text>
@@ -27,9 +27,9 @@
     <widget type="label" version="2.0.0">
       <name>BrowseHdr</name>
       <text>Browse Data (file selection)</text>
-      <x>8</x>
+      <x>5</x>
       <y>5</y>
-      <width>300</width>
+      <width>200</width>
       <height>22</height>
       <font>
         <font family="Sans" style="BOLD" size="12.0">
@@ -39,18 +39,18 @@
     <widget type="label" version="2.0.0">
       <name>FileLbl</name>
       <text>File</text>
-      <x>8</x>
+      <x>5</x>
       <y>32</y>
-      <width>40</width>
+      <width>35</width>
       <height>25</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
     <widget type="textentry" version="3.0.0">
       <name>SelectedFile</name>
       <pv_name>$(P)SelectedFile.$</pv_name>
-      <x>52</x>
+      <x>50</x>
       <y>30</y>
-      <width>950</width>
+      <width>960</width>
       <height>28</height>
       <format>6</format>
       <tooltip>Full path; browse, paste, or edit (lso long string)</tooltip>
@@ -67,9 +67,9 @@
     <widget type="label" version="2.0.0">
       <name>FileNumLbl</name>
       <text>Scan #</text>
-      <x>8</x>
-      <y>68</y>
-      <width>55</width>
+      <x>5</x>
+      <y>70</y>
+      <width>50</width>
       <height>25</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
@@ -77,7 +77,7 @@
       <name>FileNumber</name>
       <pv_name>$(P)FileNumber</pv_name>
       <x>65</x>
-      <y>66</y>
+      <y>68</y>
       <width>75</width>
       <height>28</height>
       <precision>0</precision>
@@ -89,18 +89,10 @@
       <name>SpecScanLbl</name>
       <text>SPEC #S</text>
       <x>148</x>
-      <y>68</y>
+      <y>70</y>
       <width>60</width>
       <height>25</height>
       <horizontal_alignment>2</horizontal_alignment>
-    </widget>
-    <widget type="textentry" version="3.0.0">
-      <name>SpecScanNumber</name>
-      <pv_name>$(P)SpecScanNumber</pv_name>
-      <x>210</x>
-      <y>66</y>
-      <width>55</width>
-      <height>28</height>
     </widget>
     <widget type="action_button" version="3.0.0">
       <name>ReloadBtn</name>
@@ -112,7 +104,7 @@
         </action>
       </actions>
       <text>Reload</text>
-      <x>278</x>
+      <x>300</x>
       <y>61</y>
       <width>90</width>
       <height>35</height>
@@ -121,8 +113,8 @@
     <widget type="label" version="2.0.0">
       <name>ExistsLbl</name>
       <text>File OK</text>
-      <x>378</x>
-      <y>68</y>
+      <x>400</x>
+      <y>70</y>
       <width>55</width>
       <height>25</height>
       <horizontal_alignment>2</horizontal_alignment>
@@ -130,7 +122,7 @@
     <widget type="led" version="2.0.0">
       <name>FileExists</name>
       <pv_name>$(P)FileExists_RBV</pv_name>
-      <x>436</x>
+      <x>460</x>
       <y>65</y>
       <width>30</width>
       <height>30</height>
@@ -139,7 +131,7 @@
       <name>FullFileName</name>
       <pv_name>$(P)FullFileName_RBV.$</pv_name>
       <x>213</x>
-      <y>5</y>
+      <y>3</y>
       <width>830</width>
       <height>24</height>
       <foreground_color>
@@ -149,13 +141,25 @@
       <format>6</format>
       <tooltip>Resolved path IOC loads (may differ from File after Scan # change)</tooltip>
     </widget>
+    <widget type="spinner" version="2.0.0">
+      <name>SpecScanNumber</name>
+      <pv_name>$(P)SpecScanNumber</pv_name>
+      <x>210</x>
+      <y>68</y>
+      <width>75</width>
+      <height>28</height>
+      <precision>0</precision>
+      <tooltip>Scan # (SPiCE scroll) — step arrows browse *_scanNNNN.dat in same directory</tooltip>
+      <minimum>1.0</minimum>
+      <maximum>9999.0</maximum>
+    </widget>
   </widget>
   <widget type="group" version="3.0.0">
     <name>GraphData</name>
     <x>10</x>
     <y>180</y>
     <width>1080</width>
-    <height>550</height>
+    <height>560</height>
     <scripts>
       <script file="EmbeddedPy">
         <text><![CDATA[from org.csstudio.display.builder.runtime.script import PVUtil, ScriptUtil
@@ -186,9 +190,8 @@ if yact in items:
     <widget type="label" version="2.0.0">
       <name>GraphHdr</name>
       <text>Graph Data</text>
-      <x>8</x>
+      <x>930</x>
       <y>5</y>
-      <width>200</width>
       <height>22</height>
       <font>
         <font family="Sans" style="BOLD" size="12.0">
@@ -198,9 +201,9 @@ if yact in items:
     <widget type="label" version="2.0.0">
       <name>XColLbl</name>
       <text>X col</text>
-      <x>8</x>
-      <y>30</y>
-      <width>45</width>
+      <x>5</x>
+      <y>5</y>
+      <width>40</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
@@ -208,7 +211,7 @@ if yact in items:
       <name>XCol</name>
       <pv_name>$(P)XCol</pv_name>
       <x>55</x>
-      <y>28</y>
+      <y>3</y>
       <width>120</width>
       <height>24</height>
       <tooltip>X column (list from ColHeaders_RBV)</tooltip>
@@ -223,7 +226,7 @@ if yact in items:
       <name>YColLbl</name>
       <text>Y col</text>
       <x>185</x>
-      <y>30</y>
+      <y>5</y>
       <width>45</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
@@ -232,7 +235,7 @@ if yact in items:
       <name>YCol</name>
       <pv_name>$(P)YCol</pv_name>
       <x>232</x>
-      <y>28</y>
+      <y>3</y>
       <width>120</width>
       <height>24</height>
       <tooltip>Y column; Poisson errors on Y</tooltip>
@@ -247,7 +250,7 @@ if yact in items:
       <name>FormatLbl</name>
       <text>Format</text>
       <x>365</x>
-      <y>30</y>
+      <y>5</y>
       <width>55</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
@@ -256,7 +259,7 @@ if yact in items:
       <name>Format</name>
       <pv_name>$(P)Format_RBV</pv_name>
       <x>422</x>
-      <y>28</y>
+      <y>3</y>
       <width>55</width>
       <height>24</height>
     </widget>
@@ -264,7 +267,7 @@ if yact in items:
       <name>RowsLbl</name>
       <text>Rows</text>
       <x>485</x>
-      <y>30</y>
+      <y>5</y>
       <width>40</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
@@ -273,7 +276,7 @@ if yact in items:
       <name>NRows</name>
       <pv_name>$(P)NRows_RBV</pv_name>
       <x>527</x>
-      <y>28</y>
+      <y>3</y>
       <width>45</width>
       <height>24</height>
       <format>1</format>
@@ -282,7 +285,7 @@ if yact in items:
       <name>ColsLbl</name>
       <text>Cols</text>
       <x>580</x>
-      <y>30</y>
+      <y>5</y>
       <width>40</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
@@ -291,7 +294,7 @@ if yact in items:
       <name>NColumns</name>
       <pv_name>$(P)NColumns_RBV</pv_name>
       <x>622</x>
-      <y>28</y>
+      <y>3</y>
       <width>45</width>
       <height>24</height>
       <format>1</format>
@@ -299,9 +302,9 @@ if yact in items:
     <widget type="label" version="2.0.0">
       <name>ColHdrLbl</name>
       <text>Columns</text>
-      <x>8</x>
-      <y>54</y>
-      <width>55</width>
+      <x>5</x>
+      <y>35</y>
+      <width>50</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
@@ -309,7 +312,7 @@ if yact in items:
       <name>ColHeaders</name>
       <pv_name>$(P)ColHeaders_RBV.$</pv_name>
       <x>65</x>
-      <y>52</y>
+      <y>33</y>
       <width>980</width>
       <height>22</height>
       <foreground_color>
@@ -322,8 +325,8 @@ if yact in items:
       <name>ErrLbl</name>
       <text>Last error</text>
       <x>8</x>
-      <y>78</y>
-      <width>70</width>
+      <y>60</y>
+      <width>60</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
@@ -331,7 +334,7 @@ if yact in items:
       <name>LastError</name>
       <pv_name>$(P)LastError_RBV</pv_name>
       <x>80</x>
-      <y>76</y>
+      <y>58</y>
       <width>965</width>
       <height>24</height>
       <foreground_color>
@@ -341,10 +344,10 @@ if yact in items:
     </widget>
     <widget type="xyplot" version="3.0.0">
       <name>ScanPlot</name>
-      <x>8</x>
-      <y>105</y>
+      <x>5</x>
+      <y>90</y>
       <width>1040</width>
-      <height>400</height>
+      <height>430</height>
       <rules>
         <rule name="XlabelAx" prop_id="x_axis.title" out_exp="true">
           <exp bool_exp="True">
@@ -426,11 +429,18 @@ if yact in items:
         </trace>
       </traces>
     </widget>
+  </widget>
+  <widget type="group" version="3.0.0">
+    <name>DataFileContents</name>
+    <x>10</x>
+    <y>740</y>
+    <width>1080</width>
+    <height>410</height>
     <widget type="label" version="2.0.0">
       <name>DataFileHdr</name>
       <text>DataFileContents</text>
-      <x>8</x>
-      <y>530</y>
+      <x>5</x>
+      <y>5</y>
       <width>160</width>
       <height>22</height>
       <font>
@@ -438,30 +448,30 @@ if yact in items:
         </font>
       </font>
     </widget>
-  </widget>
-  <widget type="textentry" version="3.0.0">
-    <name>DataFileContents</name>
-    <pv_name>$(P)DataFileText</pv_name>
-    <x>36</x>
-    <y>750</y>
-    <width>1040</width>
-    <height>340</height>
-    <font>
-      <font family="Monospace" style="REGULAR" size="11.0">
+    <widget type="textentry" version="3.0.0">
+      <name>DataFileText</name>
+      <pv_name>$(P)DataFileText</pv_name>
+      <x>5</x>
+      <y>5</y>
+      <width>1040</width>
+      <height>360</height>
+      <font>
+        <font family="Monospace" style="REGULAR" size="11.0">
+        </font>
       </font>
-    </font>
-    <foreground_color>
-      <color red="40" green="40" blue="40">
-      </color>
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240">
-      </color>
-    </background_color>
-    <format>6</format>
-    <vertical_alignment>0</vertical_alignment>
-    <wrap_words>true</wrap_words>
-    <multi_line>true</multi_line>
-    <tooltip>SPiCE DataFileContents — CHAR waveform (pcaspy SpecFile pattern)</tooltip>
+      <foreground_color>
+        <color red="40" green="40" blue="40">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="240" green="240" blue="240">
+        </color>
+      </background_color>
+      <format>6</format>
+      <vertical_alignment>0</vertical_alignment>
+      <wrap_words>true</wrap_words>
+      <multi_line>true</multi_line>
+      <tooltip>SPiCE DataFileContents — CHAR waveform (pcaspy SpecFile pattern)</tooltip>
+    </widget>
   </widget>
 </display>
