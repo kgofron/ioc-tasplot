@@ -102,7 +102,7 @@ SPiCE GUI reference: [docs/reference/spice-gui/](reference/spice-gui/README.md)
 
 1. **Phoebus polish** — axis labels, plot title from scan metadata, DataFileContents-style text panel (SPiCE parity)
 2. **Live reload** — periodic Reload or file watch while scan grows
-3. **Column picker** — choose X/Y beyond default def_x/def_y
+3. **Normalization** — `NormMode`, `NormCol`, `NormValue` (SPiCE “Normalize to”)
 4. **Beamline deploy** — `/epics/iocs/ioc-tasplot`, production paths in `st.cmd`, autosave
 5. **Facility** — PVXS/QSRV 2; Combine Data / Data Buffers (later SPiCE tabs)
 

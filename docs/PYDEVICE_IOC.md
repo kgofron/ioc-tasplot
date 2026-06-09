@@ -93,7 +93,11 @@ Default prefix: `TAS:Plot:` (`PREFIX` in `st.cmd` / `plot.substitutions`; beamli
 | `FullFileName_RBV` | lsi | Resolved path IOC will load (use `.$`; may differ from `SelectedFile` after Scan #) |
 | `FileExists_RBV` | bi | Readable file |
 | `Acquire` | longout | Manual reload (`Reload` button); browse/Scan # auto-load |
-| `DetX_RBV`, `DetY_RBV` | stringin | Default axes from file |
+| `XCol`, `YCol` | lso | Plot column names (any column; replot on write) |
+| `XCol_RBV`, `YCol_RBV` | lsi | Active X/Y after load |
+| `ColHeaders_RBV` | lsi | Semicolon-separated column list (`.$`) |
+| `PlotAxisLabel_RBV` | lsi | Y-axis title for Phoebus xyplot |
+| `DetX_RBV`, `DetY_RBV` | stringin | File defaults (`def_x` / `def_y`) |
 | `NColumns_RBV`, `NRows_RBV` | longin | Table shape |
 | `Xdata`, `Ydata`, `YdataErr` | waveform | Plot arrays (Phoebus strip chart) |
 | `SpecScanNumber` | longout | When file is SPEC, select `#S` scan |

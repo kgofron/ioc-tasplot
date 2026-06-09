@@ -9,7 +9,7 @@ record(longout, "$(P)Acquire") {
 }
 
 record(waveform, "$(P)Xdata") {
-    field(DESC, "X axis (def_x or SPEC col 1)")
+    field(DESC, "X axis (XCol)")
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.xdata()")
     field(NELM, "$(MAXPTS)")
@@ -18,7 +18,7 @@ record(waveform, "$(P)Xdata") {
 }
 
 record(waveform, "$(P)Ydata") {
-    field(DESC, "Scan Y axis (default def_y / Detector)")
+    field(DESC, "Y axis (YCol)")
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.ydata()")
     field(NELM, "$(MAXPTS)")
@@ -116,4 +116,48 @@ record(longout, "$(P)SpecScanNumber") {
 record(longin, "$(P)ScanNumber_RBV") {
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.scan_number_rbv()")
+}
+
+record(lso, "$(P)XCol") {
+    field(DESC, "X column name")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_x_col('VAL')")
+    field(SIZV, "64")
+}
+
+record(lso, "$(P)YCol") {
+    field(DESC, "Y column name")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_y_col('VAL')")
+    field(SIZV, "64")
+}
+
+record(lsi, "$(P)XCol_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.x_col_rbv()")
+    field(SIZV, "64")
+    field(SCAN, ".5 second")
+}
+
+record(lsi, "$(P)YCol_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.y_col_rbv()")
+    field(SIZV, "64")
+    field(SCAN, ".5 second")
+}
+
+record(lsi, "$(P)ColHeaders_RBV") {
+    field(DESC, "Column names (semicolon list)")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.col_headers_rbv()")
+    field(SIZV, "255")
+    field(SCAN, ".5 second")
+}
+
+record(lsi, "$(P)PlotAxisLabel_RBV") {
+    field(DESC, "Y axis label for plot")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.plot_axis_label_rbv()")
+    field(SIZV, "128")
+    field(SCAN, ".5 second")
 }

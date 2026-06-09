@@ -154,6 +154,33 @@
     <y>190</y>
     <width>1080</width>
     <height>550</height>
+    <scripts>
+      <script file="EmbeddedPy">
+        <text><![CDATA[from org.csstudio.display.builder.runtime.script import PVUtil, ScriptUtil
+
+headers = PVUtil.getString(pvs[0])
+items = [h.strip() for h in headers.split(';') if h.strip()]
+if not items:
+    items = [' ']
+
+for wname in ('XCol', 'YCol'):
+    w = ScriptUtil.findWidgetByName(widget, wname)
+    if w is not None:
+        w.setItems(items)
+
+xact = PVUtil.getString(pvs[1])
+if xact in items:
+    pvs[2].write(xact)
+yact = PVUtil.getString(pvs[3])
+if yact in items:
+    pvs[4].write(yact)]]></text>
+        <pv_name>$(P)ColHeaders_RBV.$</pv_name>
+        <pv_name>$(P)XCol_RBV</pv_name>
+        <pv_name trigger="false">$(P)XCol</pv_name>
+        <pv_name>$(P)YCol_RBV</pv_name>
+        <pv_name trigger="false">$(P)YCol</pv_name>
+      </script>
+    </scripts>
     <widget type="label" version="2.0.0">
       <name>GraphHdr</name>
       <text>Graph Data</text>
@@ -167,7 +194,7 @@
       </font>
     </widget>
     <widget type="label" version="2.0.0">
-      <name>DetXLbl</name>
+      <name>XColLbl</name>
       <text>X col</text>
       <x>8</x>
       <y>30</y>
@@ -175,33 +202,83 @@
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
+    <widget type="combo" version="2.0.0">
+      <name>XCol</name>
+      <pv_name>$(P)XCol</pv_name>
+      <x>55</x>
+      <y>28</y>
+      <width>120</width>
+      <height>24</height>
+      <tooltip>X column (list from ColHeaders_RBV)</tooltip>
+      <items>
+        <item>s1</item>
+        <item>detector</item>
+        <item>time</item>
+      </items>
+      <items_from_pv>false</items_from_pv>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>YColLbl</name>
+      <text>Y col</text>
+      <x>185</x>
+      <y>30</y>
+      <width>45</width>
+      <height>22</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="combo" version="2.0.0">
+      <name>YCol</name>
+      <pv_name>$(P)YCol</pv_name>
+      <x>232</x>
+      <y>28</y>
+      <width>120</width>
+      <height>24</height>
+      <tooltip>Y column; Poisson errors on Y</tooltip>
+      <items>
+        <item>detector</item>
+        <item>monitor</item>
+        <item>mcu</item>
+      </items>
+      <items_from_pv>false</items_from_pv>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>DefXLbl</name>
+      <text>def_x</text>
+      <x>365</x>
+      <y>30</y>
+      <width>40</width>
+      <height>22</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
     <widget type="textupdate" version="2.0.0">
       <name>DetX</name>
       <pv_name>$(P)DetX_RBV</pv_name>
-      <x>55</x>
+      <x>407</x>
       <y>28</y>
+      <width>55</width>
       <height>24</height>
     </widget>
     <widget type="label" version="2.0.0">
-      <name>DetYLbl</name>
-      <text>Y col</text>
-      <x>165</x>
+      <name>DefYLbl</name>
+      <text>def_y</text>
+      <x>470</x>
       <y>30</y>
-      <width>45</width>
+      <width>40</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
     <widget type="textupdate" version="2.0.0">
       <name>DetY</name>
       <pv_name>$(P)DetY_RBV</pv_name>
-      <x>212</x>
+      <x>512</x>
       <y>28</y>
+      <width>65</width>
       <height>24</height>
     </widget>
     <widget type="label" version="2.0.0">
       <name>FormatLbl</name>
       <text>Format</text>
-      <x>325</x>
+      <x>585</x>
       <y>30</y>
       <width>55</width>
       <height>22</height>
@@ -210,15 +287,15 @@
     <widget type="textupdate" version="2.0.0">
       <name>Format</name>
       <pv_name>$(P)Format_RBV</pv_name>
-      <x>382</x>
+      <x>642</x>
       <y>28</y>
-      <width>70</width>
+      <width>55</width>
       <height>24</height>
     </widget>
     <widget type="label" version="2.0.0">
       <name>RowsLbl</name>
       <text>Rows</text>
-      <x>465</x>
+      <x>705</x>
       <y>30</y>
       <width>40</width>
       <height>22</height>
@@ -227,16 +304,16 @@
     <widget type="textupdate" version="2.0.0">
       <name>NRows</name>
       <pv_name>$(P)NRows_RBV</pv_name>
-      <x>507</x>
+      <x>747</x>
       <y>28</y>
-      <width>55</width>
+      <width>45</width>
       <height>24</height>
       <format>1</format>
     </widget>
     <widget type="label" version="2.0.0">
       <name>ColsLbl</name>
       <text>Cols</text>
-      <x>572</x>
+      <x>800</x>
       <y>30</y>
       <width>40</width>
       <height>22</height>
@@ -245,17 +322,39 @@
     <widget type="textupdate" version="2.0.0">
       <name>NColumns</name>
       <pv_name>$(P)NColumns_RBV</pv_name>
-      <x>614</x>
+      <x>842</x>
       <y>28</y>
-      <width>55</width>
+      <width>45</width>
       <height>24</height>
       <format>1</format>
     </widget>
     <widget type="label" version="2.0.0">
+      <name>ColHdrLbl</name>
+      <text>Columns</text>
+      <x>8</x>
+      <y>54</y>
+      <width>55</width>
+      <height>22</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>ColHeaders</name>
+      <pv_name>$(P)ColHeaders_RBV.$</pv_name>
+      <x>65</x>
+      <y>52</y>
+      <width>980</width>
+      <height>22</height>
+      <format>6</format>
+      <foreground_color>
+        <color red="80" green="80" blue="80">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="label" version="2.0.0">
       <name>ErrLbl</name>
       <text>Last error</text>
-      <x>680</x>
-      <y>30</y>
+      <x>8</x>
+      <y>78</y>
       <width>70</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
@@ -263,9 +362,9 @@
     <widget type="textupdate" version="2.0.0">
       <name>LastError</name>
       <pv_name>$(P)LastError_RBV</pv_name>
-      <x>752</x>
-      <y>28</y>
-      <width>300</width>
+      <x>80</x>
+      <y>76</y>
+      <width>965</width>
       <height>24</height>
       <foreground_color>
         <color red="180" green="0" blue="0">
@@ -275,10 +374,29 @@
     <widget type="xyplot" version="3.0.0">
       <name>ScanPlot</name>
       <x>8</x>
-      <y>58</y>
+      <y>104</y>
       <width>1040</width>
-      <height>460</height>
-      <title>Scan (default def_x / def_y)</title>
+      <height>414</height>
+      <rules>
+        <rule name="XlabelAx" prop_id="x_axis.title" out_exp="true">
+          <exp bool_exp="True">
+            <expression>pvStr0</expression>
+          </exp>
+          <pv_name>$(P)XCol_RBV</pv_name>
+        </rule>
+        <rule name="YlabelAx" prop_id="y_axes[0].title" out_exp="true">
+          <exp bool_exp="True">
+            <expression>pvStr0</expression>
+          </exp>
+          <pv_name>$(P)PlotAxisLabel_RBV</pv_name>
+        </rule>
+        <rule name="PlotTitle" prop_id="title" out_exp="true">
+          <exp bool_exp="True">
+            <expression>pvStr0</expression>
+          </exp>
+          <pv_name>$(P)Command_RBV.$</pv_name>
+        </rule>
+      </rules>
       <x_axis>
         <title>X</title>
         <autoscale>true</autoscale>

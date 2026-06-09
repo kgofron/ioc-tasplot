@@ -64,6 +64,21 @@ def test_set_file_number_auto_acquires_hb3_scan():
     assert eng.nrows_rbv() != rows1
 
 
+def test_set_y_col_changes_plot_data():
+    eng = GraffitiPlotEngine()
+    path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
+    eng.set_selected_file(path)
+    y_det = eng.ydata()
+    eng.set_y_col("time")
+    y_time = eng.ydata()
+    assert y_det != y_time
+    assert len(y_time) == eng.nrows_rbv()
+    assert eng.col_headers_rbv()
+    assert "detector" in eng.col_headers_rbv()
+    assert eng.x_col_rbv() == "s1"
+    assert eng.y_col_rbv() == "time"
+
+
 def test_acquire_spec_fixture():
     eng = GraffitiPlotEngine()
     eng.set_file_path(str(FIXTURES))

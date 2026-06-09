@@ -31,6 +31,8 @@ class GraffitiPlotEngine:
         self._explicit_file: Optional[str] = None
         self._scan: Optional[ScanDataset] = None
         self._last_error = ""
+        self.x_col = ""
+        self.y_col = ""
 
     def _full_path(self) -> str:
         if self._explicit_file:
@@ -86,6 +88,27 @@ class GraffitiPlotEngine:
         if self.format_rbv() == "spec":
             self.acquire()
 
+    def set_x_col(self, name: str) -> None:
+        self.x_col = name.strip()
+
+    def set_y_col(self, name: str) -> None:
+        self.y_col = name.strip()
+
+    def col_headers_rbv(self) -> str:
+        if self._scan is None or not self._scan.columns:
+            return ""
+        return "; ".join(self._scan.columns)
+
+    def x_col_rbv(self) -> str:
+        return self.x_col or self.det_x_rbv()
+
+    def y_col_rbv(self) -> str:
+        return self.y_col or self.det_y_rbv()
+
+    def plot_axis_label_rbv(self) -> str:
+        """Y-axis label for Phoebus (normalization suffix in Phase 2)."""
+        return self.y_col_rbv()
+
     def full_file_name_rbv(self) -> str:
         return self._full_path()
 
@@ -114,10 +137,13 @@ class GraffitiPlotEngine:
                 self._scan = load_spec_file(path, scan_number=self.spec_scan_number)
             else:
                 self._scan = load_scan(path)
+            self._sync_axes_from_scan()
             self._last_error = ""
             return 1
         except Exception as exc:
             self._scan = None
+            self.x_col = ""
+            self.y_col = ""
             self._last_error = str(exc)
             return 0
 
@@ -128,10 +154,13 @@ class GraffitiPlotEngine:
         self.spec_scan_number = None
         try:
             self._scan = load_scan(path)
+            self._sync_axes_from_scan()
             self._last_error = ""
             return 1
         except Exception as exc:
             self._scan = None
+            self.x_col = ""
+            self.y_col = ""
             self._last_error = str(exc)
             return 0
 
@@ -139,6 +168,25 @@ class GraffitiPlotEngine:
         if self._scan is None:
             raise RuntimeError(self._last_error or "no scan loaded; browse or reload")
         return self._scan
+
+    def _sync_axes_from_scan(self) -> None:
+        if self._scan is None:
+            return
+        scan = self._scan
+        self.x_col = scan.default_x or (scan.columns[0] if scan.columns else "")
+        self.y_col = scan.default_y or (scan.columns[-1] if scan.columns else "")
+
+    def _resolve_column(self, name: str) -> str:
+        scan = self._require_scan()
+        if not name:
+            raise KeyError("column name is empty")
+        if name in scan.columns:
+            return name
+        lower_map = {col.lower(): col for col in scan.columns}
+        resolved = lower_map.get(name.lower())
+        if resolved is None:
+            raise KeyError(name)
+        return resolved
 
     def nrows_rbv(self) -> int:
         if self._scan is None:
@@ -177,20 +225,30 @@ class GraffitiPlotEngine:
     def xdata(self) -> list[float]:
         if self._scan is None:
             return []
-        x = self._scan.axis(self._scan.default_x)
-        return _clip_waveform(x)
+        try:
+            col = self._resolve_column(self.x_col or self._scan.default_x or "")
+            return _clip_waveform(self._scan.column(col))
+        except (KeyError, ValueError):
+            return []
 
     def ydata(self) -> list[float]:
         if self._scan is None:
             return []
-        y = self._scan.axis(self._scan.default_y)
-        return _clip_waveform(y)
+        try:
+            col = self._resolve_column(self.y_col or self._scan.default_y or "")
+            return _clip_waveform(self._scan.column(col))
+        except (KeyError, ValueError):
+            return []
 
     def ydata_err(self) -> list[float]:
         if self._scan is None:
             return []
-        err = self._scan.poisson_errors()
-        return _clip_waveform(err)
+        try:
+            col = self._resolve_column(self.y_col or self._scan.default_y or "")
+            err = self._scan.poisson_errors(y_column=col)
+            return _clip_waveform(err)
+        except (KeyError, ValueError):
+            return []
 
     def column(self, name: str) -> list[float]:
         return _clip_waveform(self._require_scan().column(name))

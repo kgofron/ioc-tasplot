@@ -15,5 +15,6 @@
 7. **Scan #** spinner rebuilds `HB3_*_scanNNNN.dat` in the same directory and reloads automatically
 8. Long-string PVs need the `.$` suffix (`SelectedFile.$`, `FullFileName_RBV.$`); plain names truncate at 40 chars
 9. **Reload** re-reads the current file (e.g. while a scan is still growing)
+10. **Graph Data** — **X col** / **Y col** pull-downs (`XCol`, `YCol` combo, items from `ColHeaders_RBV`); **Columns** line lists all names
 
 SPiCE reference screenshots: [docs/reference/spice-gui/](../../docs/reference/spice-gui/README.md).
