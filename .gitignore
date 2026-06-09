@@ -21,3 +21,6 @@ build/
 *.a
 envPaths
 configure/RELEASE.local
+
+# Local drafts (not for commit)
+docs/drafts/
