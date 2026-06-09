@@ -242,43 +242,9 @@ if yact in items:
       <items_from_pv>false</items_from_pv>
     </widget>
     <widget type="label" version="2.0.0">
-      <name>DefXLbl</name>
-      <text>def_x</text>
-      <x>365</x>
-      <y>30</y>
-      <width>40</width>
-      <height>22</height>
-      <horizontal_alignment>2</horizontal_alignment>
-    </widget>
-    <widget type="textupdate" version="2.0.0">
-      <name>DetX</name>
-      <pv_name>$(P)DetX_RBV</pv_name>
-      <x>407</x>
-      <y>28</y>
-      <width>55</width>
-      <height>24</height>
-    </widget>
-    <widget type="label" version="2.0.0">
-      <name>DefYLbl</name>
-      <text>def_y</text>
-      <x>470</x>
-      <y>30</y>
-      <width>40</width>
-      <height>22</height>
-      <horizontal_alignment>2</horizontal_alignment>
-    </widget>
-    <widget type="textupdate" version="2.0.0">
-      <name>DetY</name>
-      <pv_name>$(P)DetY_RBV</pv_name>
-      <x>512</x>
-      <y>28</y>
-      <width>65</width>
-      <height>24</height>
-    </widget>
-    <widget type="label" version="2.0.0">
       <name>FormatLbl</name>
       <text>Format</text>
-      <x>585</x>
+      <x>365</x>
       <y>30</y>
       <width>55</width>
       <height>22</height>
@@ -287,7 +253,7 @@ if yact in items:
     <widget type="textupdate" version="2.0.0">
       <name>Format</name>
       <pv_name>$(P)Format_RBV</pv_name>
-      <x>642</x>
+      <x>422</x>
       <y>28</y>
       <width>55</width>
       <height>24</height>
@@ -295,7 +261,7 @@ if yact in items:
     <widget type="label" version="2.0.0">
       <name>RowsLbl</name>
       <text>Rows</text>
-      <x>705</x>
+      <x>485</x>
       <y>30</y>
       <width>40</width>
       <height>22</height>
@@ -304,7 +270,7 @@ if yact in items:
     <widget type="textupdate" version="2.0.0">
       <name>NRows</name>
       <pv_name>$(P)NRows_RBV</pv_name>
-      <x>747</x>
+      <x>527</x>
       <y>28</y>
       <width>45</width>
       <height>24</height>
@@ -313,7 +279,7 @@ if yact in items:
     <widget type="label" version="2.0.0">
       <name>ColsLbl</name>
       <text>Cols</text>
-      <x>800</x>
+      <x>580</x>
       <y>30</y>
       <width>40</width>
       <height>22</height>
@@ -322,7 +288,7 @@ if yact in items:
     <widget type="textupdate" version="2.0.0">
       <name>NColumns</name>
       <pv_name>$(P)NColumns_RBV</pv_name>
-      <x>842</x>
+      <x>622</x>
       <y>28</y>
       <width>45</width>
       <height>24</height>
