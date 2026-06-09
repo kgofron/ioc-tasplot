@@ -5,7 +5,7 @@
     <P>$(P=TAS:Plot:)</P>
   </macros>
   <width>1100</width>
-  <height>750</height>
+  <height>1100</height>
   <widget type="label" version="2.0.0">
     <name>Title</name>
     <text>ioc-tasplot — Browse + Graph (SPiCE Data tab successor)</text>
@@ -23,7 +23,7 @@
     <x>10</x>
     <y>40</y>
     <width>1080</width>
-    <height>150</height>
+    <height>140</height>
     <widget type="label" version="2.0.0">
       <name>BrowseHdr</name>
       <text>Browse Data (file selection)</text>
@@ -80,7 +80,6 @@
       <y>66</y>
       <width>75</width>
       <height>28</height>
-      <format>1</format>
       <precision>0</precision>
       <tooltip>Scan # (SPiCE scroll) — step arrows browse *_scanNNNN.dat in same directory</tooltip>
       <minimum>1.0</minimum>
@@ -143,18 +142,18 @@
       <y>5</y>
       <width>830</width>
       <height>24</height>
-      <format>6</format>
-      <tooltip>Resolved path IOC loads (may differ from File after Scan # change)</tooltip>
       <foreground_color>
         <color red="100" green="100" blue="100">
         </color>
       </foreground_color>
+      <format>6</format>
+      <tooltip>Resolved path IOC loads (may differ from File after Scan # change)</tooltip>
     </widget>
   </widget>
   <widget type="group" version="3.0.0">
     <name>GraphData</name>
     <x>10</x>
-    <y>190</y>
+    <y>180</y>
     <width>1080</width>
     <height>550</height>
     <scripts>
@@ -313,11 +312,11 @@ if yact in items:
       <y>52</y>
       <width>980</width>
       <height>22</height>
-      <format>6</format>
       <foreground_color>
         <color red="80" green="80" blue="80">
         </color>
       </foreground_color>
+      <format>6</format>
     </widget>
     <widget type="label" version="2.0.0">
       <name>ErrLbl</name>
@@ -343,9 +342,9 @@ if yact in items:
     <widget type="xyplot" version="3.0.0">
       <name>ScanPlot</name>
       <x>8</x>
-      <y>104</y>
+      <y>105</y>
       <width>1040</width>
-      <height>280</height>
+      <height>400</height>
       <rules>
         <rule name="XlabelAx" prop_id="x_axis.title" out_exp="true">
           <exp bool_exp="True">
@@ -431,7 +430,7 @@ if yact in items:
       <name>DataFileHdr</name>
       <text>DataFileContents</text>
       <x>8</x>
-      <y>388</y>
+      <y>530</y>
       <width>160</width>
       <height>22</height>
       <font>
@@ -439,30 +438,30 @@ if yact in items:
         </font>
       </font>
     </widget>
-    <widget type="textentry" version="3.0.0">
-      <name>DataFileContents</name>
-      <pv_name>$(P)DataFileText</pv_name>
-      <x>8</x>
-      <y>412</y>
-      <width>1040</width>
-      <height>130</height>
-      <format>6</format>
-      <vertical_alignment>0</vertical_alignment>
-      <wrap_words>true</wrap_words>
-      <multi_line>true</multi_line>
-      <foreground_color>
-        <color red="40" green="40" blue="40">
-        </color>
-      </foreground_color>
-      <background_color>
-        <color red="240" green="240" blue="240">
-        </color>
-      </background_color>
-      <font>
-        <font family="Monospace" style="REGULAR" size="11.0">
-        </font>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>DataFileContents</name>
+    <pv_name>$(P)DataFileText</pv_name>
+    <x>36</x>
+    <y>750</y>
+    <width>1040</width>
+    <height>340</height>
+    <font>
+      <font family="Monospace" style="REGULAR" size="11.0">
       </font>
-      <tooltip>SPiCE DataFileContents — CHAR waveform (pcaspy SpecFile pattern)</tooltip>
-    </widget>
+    </font>
+    <foreground_color>
+      <color red="40" green="40" blue="40">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240">
+      </color>
+    </background_color>
+    <format>6</format>
+    <vertical_alignment>0</vertical_alignment>
+    <wrap_words>true</wrap_words>
+    <multi_line>true</multi_line>
+    <tooltip>SPiCE DataFileContents — CHAR waveform (pcaspy SpecFile pattern)</tooltip>
   </widget>
 </display>
