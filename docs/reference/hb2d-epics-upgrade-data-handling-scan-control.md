@@ -7,6 +7,8 @@ Reference notes from the HB2D instrument requirements review. Shared for TAX-tea
 
 **Relevance to ioc-tasplot:** The **Graph Data** items align with the SpICE *Data → Graph data* tab and this repository’s Browse + Graph OPI (`TASPlot.bob`). Real-time plotting, scan selection, and axis choice are in scope for future phases; MCU-based scan control and motor orchestration are out of scope here.
 
+**Scope mapping:** [hb2d-ioc-tasplot-scope-mapping.md](hb2d-ioc-tasplot-scope-mapping.md) — requirement-by-requirement status for the HB2D / TAX discussion.
+
 ---
 
 ## Meeting context
