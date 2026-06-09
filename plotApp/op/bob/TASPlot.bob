@@ -47,22 +47,22 @@
     </widget>
     <widget type="textentry" version="3.0.0">
       <name>SelectedFile</name>
-      <pv_name>$(P)SelectedFilePath</pv_name>
+      <pv_name>$(P)SelectedFile.$</pv_name>
       <x>52</x>
       <y>30</y>
       <width>950</width>
       <height>28</height>
       <format>6</format>
-      <tooltip>Full path; browse, paste, or edit (CHAR waveform)</tooltip>
+      <tooltip>Full path; browse, paste, or edit (lso long string)</tooltip>
     </widget>
     <widget type="fileselector" version="2.0.0">
       <name>FileSelector</name>
-      <pv_name>$(P)SelectedFilePath</pv_name>
+      <pv_name>$(P)SelectedFile.$</pv_name>
       <x>1010</x>
       <y>30</y>
       <width>30</width>
       <height>30</height>
-      <tooltip>Browse for scan file (writes SelectedFilePath)</tooltip>
+      <tooltip>Browse for scan file (writes SelectedFile)</tooltip>
     </widget>
     <widget type="label" version="2.0.0">
       <name>FileNumLbl</name>
@@ -138,7 +138,7 @@
     </widget>
     <widget type="textupdate" version="2.0.0">
       <name>FullFileName</name>
-      <pv_name>$(P)FullFileNameText</pv_name>
+      <pv_name>$(P)FullFileName_RBV.$</pv_name>
       <x>213</x>
       <y>5</y>
       <width>830</width>
@@ -177,7 +177,7 @@ if xact in items:
 yact = PVUtil.getString(pvs[3])
 if yact in items:
     pvs[4].write(yact)]]></text>
-        <pv_name>$(P)ColHeadersText</pv_name>
+        <pv_name>$(P)ColHeaders_RBV.$</pv_name>
         <pv_name>$(P)XCol_RBV</pv_name>
         <pv_name trigger="false">$(P)XCol</pv_name>
         <pv_name>$(P)YCol_RBV</pv_name>
@@ -308,13 +308,12 @@ if yact in items:
     </widget>
     <widget type="textupdate" version="2.0.0">
       <name>ColHeaders</name>
-      <pv_name>$(P)ColHeadersText</pv_name>
+      <pv_name>$(P)ColHeaders_RBV.$</pv_name>
       <x>65</x>
       <y>52</y>
       <width>980</width>
       <height>22</height>
       <format>6</format>
-      <tooltip>Semicolon-separated column names</tooltip>
       <foreground_color>
         <color red="80" green="80" blue="80">
         </color>
@@ -364,7 +363,7 @@ if yact in items:
           <exp bool_exp="True">
             <expression>pvStr0</expression>
           </exp>
-          <pv_name>$(P)CommandText</pv_name>
+          <pv_name>$(P)Command_RBV.$</pv_name>
         </rule>
       </rules>
       <x_axis>
