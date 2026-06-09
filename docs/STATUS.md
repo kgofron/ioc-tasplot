@@ -71,7 +71,7 @@ If pink borders or **“multiple servers”**: Preferences → EPICS → set CA 
 |----|------|
 | `SelectedFile` (`lso`, use `.$`) | Write: full path from File / FileSelector; auto-loads |
 | `FileNumber` (`longout`) | Scan # spinner; auto-reload |
-| `FullFileName_RBV` (`lsi`, use `.$`) | Resolved path IOC loads (may differ from `SelectedFile` after Scan #) |
+| `FullFileName_RBV` (`lsi`, use `.$`) | Resolved path IOC loads (grey header; matches File after Scan #) |
 | `FileExists_RBV` | File readable |
 | `Acquire` (`longout`) | Manual reload only (**Reload** button in OPI) |
 | `Xdata` / `Ydata` / `YdataErr` | Plot waveforms (SCAN 1 s) |

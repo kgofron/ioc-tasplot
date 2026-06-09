@@ -18,6 +18,7 @@ dbLoadTemplate("$(TOP)/db/plot.substitutions")
 
 cd "${TOP}/iocBoot/${IOC}"
 
+pydev("import os; os.environ.setdefault('PREFIX', 'TAS:Plot:')")
 pydev("from graffiti_app import graffiti_plot")
 
 ## Development defaults (override via caput or edit)
@@ -30,7 +31,7 @@ pydev("graffiti_plot.set_selected_file('/home/kg1/Documents/Detector/HB3/HB3_dat
 
 iocInit
 
-## Sync spinner after pydev boot (path comes from set_selected_file + SelectedFilePath scan)
+## Sync spinner after pydev boot
 dbpf("TAS:Plot:FileNumber", "1")
 
 ## Smoke test after boot (PREFIX from epicsEnvSet above):

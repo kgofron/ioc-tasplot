@@ -90,7 +90,7 @@ Default prefix: `TAS:Plot:` (`PREFIX` in `st.cmd` / `plot.substitutions`; beamli
 |--------|------|------|
 | `SelectedFile` | lso | Full path (File + FileSelector); auto-loads on browse (`.$` long strings) |
 | `FileNumber` | longout | Scan # spinner — rebuilds `*_scanNNNN.dat` and auto-reloads (SPiCE scroll) |
-| `FullFileName_RBV` | lsi | Resolved path IOC will load (use `.$`; may differ from `SelectedFile` after Scan #) |
+| `FullFileName_RBV` | lsi | Resolved path IOC loads (use `.$`; synced with `SelectedFile` on Scan #) |
 | `FileExists_RBV` | bi | Readable file |
 | `Acquire` | longout | Manual reload (`Reload` button); browse/Scan # auto-load |
 | `XCol`, `YCol` | lso | Plot column names (any column; replot on write) |
