@@ -153,6 +153,7 @@ flowchart TB
 ## References
 
 - [HB2D requirements brief](hb2d-epics-upgrade-data-handling-scan-control.md)
+- [TAS plotting tools landscape](tas-plotting-tools-landscape.md) — TAVI vs ioc-tasplot vs SpICE/Graffiti
 - [SPiCE GUI phase map](spice-gui/README.md)
 - [PyDevice IOC architecture](../PYDEVICE_IOC.md)
 - [Session status / PV list](../STATUS.md)

@@ -9,6 +9,8 @@ Reference notes from the HB2D instrument requirements review. Shared for TAX-tea
 
 **Scope mapping:** [hb2d-ioc-tasplot-scope-mapping.md](hb2d-ioc-tasplot-scope-mapping.md) — requirement-by-requirement status for the HB2D / TAX discussion.
 
+**Tool landscape (TAVI vs ioc-tasplot vs SpICE/Graffiti):** [tas-plotting-tools-landscape.md](tas-plotting-tools-landscape.md) — HFIR instrument-scientist meeting prep.
+
 ---
 
 ## Meeting context
