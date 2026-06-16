@@ -1,5 +1,5 @@
 file "$(TOP)/plotApp/Db/plot.template"
 {
-pattern {P, MAXPTS, DATAFILETEXT, PATHCHAR}
-{ TAS:Plot:, 4000, 65536, 512 }
+pattern {P, MAXPTS, DATAFILETEXT}
+{ TAS:Plot:, 4000, 65536 }
 }

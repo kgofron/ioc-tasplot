@@ -19,8 +19,6 @@ from tasplot.paths import hb3_scan_path
 
 MAX_WAVEFORM_POINTS = 4000
 DATA_FILE_TEXT_MAX = 65536
-PATH_TEXT_MAX = 512
-
 NORM_NONE = 0
 NORM_COLUMN = 1
 NORM_FIXED = 2
@@ -237,23 +235,6 @@ class GraffitiPlotEngine:
                 )
         return _encode_text_waveform(text, DATA_FILE_TEXT_MAX)
 
-    def selected_file_path(self, val=None, tpro=0) -> list[int]:
-        """CHAR waveform: browse/paste/edit path (pcaspy FilePath pattern)."""
-        if str(tpro) == "1" and val is not None:
-            path = _decode_char_waveform(val)
-            if path:
-                self.set_selected_file(path)
-        return _encode_text_waveform(self.full_file_name_rbv(), PATH_TEXT_MAX)
-
-    def full_file_name_text(self) -> list[int]:
-        return _encode_text_waveform(self.full_file_name_rbv(), PATH_TEXT_MAX)
-
-    def col_headers_text(self) -> list[int]:
-        return _encode_text_waveform(self.col_headers_rbv(), PATH_TEXT_MAX)
-
-    def command_text(self) -> list[int]:
-        return _encode_text_waveform(self.command_rbv(), PATH_TEXT_MAX)
-
     def _require_scan(self) -> ScanDataset:
         if self._scan is None:
             raise RuntimeError(self._last_error or "no scan loaded; browse or reload")
@@ -394,25 +375,6 @@ def _encode_text_waveform(text: str, max_bytes: int) -> list[int]:
         return [0]
     data = text.encode("utf-8", errors="replace")[:max_bytes]
     return list(data) if data else [0]
-
-
-def _decode_char_waveform(val) -> str:
-    """Decode PyDevice CHAR waveform VAL (list of byte codes) to UTF-8 string."""
-    if val is None:
-        return ""
-    if isinstance(val, str):
-        return val.strip()
-    if isinstance(val, (list, tuple)):
-        codes: list[int] = []
-        for item in val:
-            code = int(item)
-            if code == 0:
-                break
-            codes.append(code)
-        if not codes:
-            return ""
-        return bytes(codes).decode("utf-8", errors="replace").strip()
-    return str(val).strip()
 
 
 def _read_data_file_text(
