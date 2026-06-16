@@ -8,11 +8,11 @@ Handoff for resuming work after a break.
 - **Branch:** `main` (sync with `origin/main` before long breaks)
 - **Tests:** `23 passed` (`python3 -m pytest -q`)
 - **Latest commits (newest first):**
+  - `e7b9af6` chore: refresh STATUS, drop legacy CHAR PVs, add PyMca launcher
   - `94ed04c` docs(reference): add TAS plotting tools landscape for meeting prep
   - `865bb9d` style(op): tighten Graph Data toolbar layout in TASPlot.bob
   - `5d8e234` fix(phoebus): bind File field to SelectedFile for path entry
   - `22ce8fd` feat(plot): add SpICE-style Y normalization (Phase 2)
-  - `d5cffb6` docs(reference): map HB2D requirements to ioc-tasplot scope
 
 ## What works (validated)
 

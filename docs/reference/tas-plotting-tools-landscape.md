@@ -2,6 +2,14 @@
 
 Context for the HFIR instrument-scientist meeting on **SpICE plot/graphing use cases** (Gary Tufer, DAQ developers). Goal: one path forward for a **local, current-experiment** graphing tool with overlay, dynamic axes, and basic fitting — while preserving data integrity and security.
 
+## Executive summary
+
+1. **On disk:** keep **SPICE `.dat`** under `User/expNNN/Datafiles/` as the shared format for local tools.
+2. **Control room:** **ioc-tasplot + Phoebus** — browse, plot, normalization, reload; replaces Graffiti/SpICE Browse+Graph at the desk.
+3. **Offline TAS analysis:** **TAVI** on analysis PCs — resolution, combine, richer TAS physics (no EPICS required).
+4. **Peak fit / overlay depth:** **PyMca desktop** optional on the same files; do not promote **ioc-pymca/pcaspy** as the primary plot IOC.
+5. **Crystal HKL ↔ motor:** **ioc-hkl** is a **parallel** stack for four-circle instruments — not the inelastic TAS strip-chart solution.
+
 **Related docs in this repo:**
 
 - [hb2d-epics-upgrade-data-handling-scan-control.md](hb2d-epics-upgrade-data-handling-scan-control.md) — HB2D requirements brief
