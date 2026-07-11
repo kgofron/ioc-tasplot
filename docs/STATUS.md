@@ -114,18 +114,18 @@ SPiCE GUI reference: [docs/reference/spice-gui/](reference/spice-gui/README.md)
 - [x] Reload button for growing scans / retry
 - [x] DataFileContents full file (I/O Intr, 64 KB)
 - [x] Normalization (`NormMode`, `NormCol`, `NormValue`)
+- [x] Phoebus polish — plot title (`Command_RBV`), X/Y labels (`XCol_RBV`, `PlotAxisLabel_RBV` norm-aware)
 - [x] Landscape doc (TAVI, PyMca, ioc-hkl evaluation)
 - [x] Docs: `PYDEVICE_IOC.md`, `plotApp/op/README.md`
 
 ## Next (when resuming)
 
-1. **Phoebus polish** — plot title from scan metadata, axis labels from norm mode
-2. **Live reload** — file watch or periodic reload while scan grows
-3. **Phase 4** — log scales (SPiCE Graph Data)
-4. **Phase 5** — combine scans / overlay traces
-5. **Phase 6** — peak fit in OPI or delegate to PyMca
-6. **Beamline deploy** — `/epics/iocs/ioc-tasplot`, production paths in `st.cmd`, autosave
-7. **Facility** — PVXS/QSRV 2; Data Buffers tab (later SpICE parity)
+1. **Live reload** — file watch or periodic reload while scan grows
+2. **Phase 4** — log scales (SPiCE Graph Data)
+3. **Phase 5** — combine scans / overlay traces
+4. **Phase 6** — peak fit in OPI or deepen PyMca
+5. **Beamline deploy** — `/epics/iocs/ioc-tasplot`, production paths in `st.cmd`, autosave
+6. **Facility** — PVXS/QSRV 2; Data Buffers tab (later SpICE parity)
 
 ## Operational notes
 
