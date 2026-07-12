@@ -22,6 +22,32 @@ if [[ -d "${_APT_PY}/PyMca5" && -d "${_APT_PY}/numpy" ]]; then
     export PYTHONPATH="${_APT_PY}${PYTHONPATH:+:${PYTHONPATH}}"
 fi
 
+# tasplot (SPiCE → temp SPEC). Prefer env; else locate checkout with tasplot/.
+_find_tasplot_root() {
+    local cand
+    for cand in \
+        "${IOC_TASPLOT_ROOT:-}" \
+        "${TASPLOT_ROOT:-}" \
+        "${SCRIPT_DIR}/../../.." \
+        "${HOME}/Documents/src/github/ioc-tasplot" \
+        "/home/kg1/Documents/src/github/ioc-tasplot"; do
+        [[ -n "${cand}" ]] || continue
+        if [[ -f "${cand}/tasplot/__init__.py" ]]; then
+            (cd "${cand}" && pwd)
+            return 0
+        fi
+    done
+    return 1
+}
+REPO_ROOT="$(_find_tasplot_root || true)"
+if [[ -n "${REPO_ROOT}" ]]; then
+    export PYTHONPATH="${PYTHONPATH:+${PYTHONPATH}:}${REPO_ROOT}"
+    export IOC_TASPLOT_ROOT="${REPO_ROOT}"
+else
+    log_err "open_in_pymca: tasplot not found; set IOC_TASPLOT_ROOT to ioc-tasplot checkout"
+    exit 1
+fi
+
 # Phoebus may not inherit EPICS bin on PATH.
 CAGET="$(command -v caget || true)"
 if [[ -z "${CAGET}" ]]; then

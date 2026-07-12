@@ -22,7 +22,7 @@ Handoff for resuming work after a break.
 - **Log X / Log Y** — Phoebus local checkboxes → xyplot log scales
 - **Errors** (`ShowErrors`) — Poisson √N on selected Y (`YdataErr`); works for **detector** and **monitor** (both count-like). Band looks thin at high *N* on a full-scale axis; zoom Y (or Log Y) to see it. Toggle Off → empty err waveform.
 - **Overlay** — `OverlayEnable` + `OverlayFileNumber` second trace (orange)
-- **PyMca** button — opens current file for peak fit / rich overlay
+- **PyMca** button — opens current file for peak fit / rich overlay (SPEC pass-through; **SPiCE → temp SPEC** with named `#L` columns)
 - **DataFileContents** — full-file text via I/O Intr (`DataFileText`, 64 KB)
 - Plot title from `Command_RBV`; Y label from `PlotAxisLabel_RBV` (norm-aware)
 
