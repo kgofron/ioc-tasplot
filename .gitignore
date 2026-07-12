@@ -24,3 +24,8 @@ configure/RELEASE.local
 
 # Local drafts (not for commit)
 docs/drafts/
+
+# Local demo data (Monday Live / Overlay demos — do not commit scan files)
+demo/**
+!demo/README.md
+!demo/.gitkeep
