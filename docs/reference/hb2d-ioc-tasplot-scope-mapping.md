@@ -143,9 +143,11 @@ flowchart TB
 |-------|--------------------------|-----------|
 | **v1 (done)** | Browse, Graph Data, Scan #, X/Y columns, DataFileContents | `TASPlot.bob`, `STATUS.md` |
 | **Phase 2 (done)** | Normalization (`mcu`, `monitor`, fixed value) | spice-gui BrowseData-norm |
-| **Live reload** | Plot while scan file grows | STATUS “Next” |
-| **Phase 4–5** | Log scales, combine scans, overlays | spice-gui README |
-| **Phase 6** | Peak / Gaussian fit | spice-gui GraphData-peak-fit |
+| **Phase 4 (done)** | Log X / Log Y | spice-gui GraphData-log-scales |
+| **Live reload (done)** | `AutoReload` polls mtime while scan grows | STATUS |
+| **Phase 5 (done)** | Overlay second scan # | spice-gui GraphData-new-plot-menu |
+| **Phase 6 (done)** | Peak fit via PyMca button | spice-gui GraphData-peak-fit |
+| **Combine / Data Buffers** | Multi-scan merge, scratch buffers | spice-gui Combine / DataBuffers |
 | **Facility** | PVXS / QSRV 2 | `PYDEVICE_IOC.md` |
 
 ---

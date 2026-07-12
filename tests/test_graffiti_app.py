@@ -122,6 +122,51 @@ def test_set_y_col_changes_plot_data():
     assert eng.y_col_rbv() == "time"
 
 
+def test_acquire_preserves_y_col():
+    eng = GraffitiPlotEngine()
+    path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
+    eng.set_selected_file(path)
+    eng.set_y_col("time")
+    y_time = eng.ydata()
+    assert eng.acquire() == 1
+    assert eng.y_col_rbv() == "time"
+    assert eng.ydata() == y_time
+
+
+def test_poll_file_reloads_on_mtime_change(tmp_path):
+    src = FIXTURES / "spice_hb3_exp0382_scan0001_head.dat"
+    dest = tmp_path / "HB3_exp0382_scan0001.dat"
+    dest.write_bytes(src.read_bytes())
+    eng = GraffitiPlotEngine()
+    eng.set_selected_file(str(dest))
+    rows = eng.nrows_rbv()
+    eng.set_auto_reload(1)
+    assert eng.poll_file() == 0
+    dest.write_bytes(src.read_bytes() + b"\n")
+    assert eng.poll_file() == 1
+    assert eng.nrows_rbv() == rows
+
+
+def test_overlay_loads_second_scan():
+    if not HB3_USER.is_dir():
+        return
+    data = HB3_USER / "exp382" / "Datafiles"
+    if not (data / "HB3_exp0382_scan0001.dat").is_file():
+        return
+    if not (data / "HB3_exp0382_scan0002.dat").is_file():
+        return
+    eng = GraffitiPlotEngine()
+    eng.set_selected_file(str(data / "HB3_exp0382_scan0001.dat"))
+    eng.set_overlay_file_number(2)
+    eng.set_overlay_enable(1)
+    ox = eng.overlay_xdata()
+    oy = eng.overlay_ydata()
+    assert len(ox) == len(oy) > 0
+    assert ox != eng.xdata() or oy != eng.ydata()
+    eng.set_overlay_enable(0)
+    assert eng.overlay_xdata() == []
+
+
 def test_data_file_text_spice_full_file():
     eng = GraffitiPlotEngine()
     path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")

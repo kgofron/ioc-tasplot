@@ -21,9 +21,9 @@ Used as UX reference for **ioc-tasplot** Phoebus OPIs — not a pixel-perfect ta
 | [GraphData-column-picker-y.png](GraphData-column-picker-y.png) | Y column dropdown | **Phase 1 (done)** — `YCol` |
 | [GraphData-column-picker-x.png](GraphData-column-picker-x.png) | X column dropdown | **Phase 1 (done)** — `XCol` |
 | [GraphData-norm-and-plot.png](GraphData-norm-and-plot.png) | Graph tab, norm dropdown | **Phase 2 (done)** |
-| [GraphData-new-plot-menu.png](GraphData-new-plot-menu.png) | New Plot / Overplot | **Phase 5** — overlay traces |
-| [GraphData-log-scales.png](GraphData-log-scales.png) | Linear / log axis scales | **Phase 4** |
-| [GraphData-peak-fit.png](GraphData-peak-fit.png) | Gaussian fit + background | **Phase 6** — or PyMca button |
+| [GraphData-new-plot-menu.png](GraphData-new-plot-menu.png) | New Plot / Overplot | **Phase 5 (done)** — `OverlayEnable` + `OverlayFileNumber` |
+| [GraphData-log-scales.png](GraphData-log-scales.png) | Linear / log axis scales | **Phase 4 (done)** — Log X / Log Y checkboxes |
+| [GraphData-peak-fit.png](GraphData-peak-fit.png) | Gaussian fit + background | **Phase 6** — **PyMca** button (not in-OPI fit) |
 | [CombineData-scan-lists.png](CombineData-scan-lists.png) | +/- scan lists, norm row | **Phase 5** |
 | [DataBuffers-table.png](DataBuffers-table.png) | Buffer table + save | **Phase 5** |
 
@@ -39,9 +39,9 @@ Used as UX reference for **ioc-tasplot** Phoebus OPIs — not a pixel-perfect ta
 | File text panel | `DataFileText` | **Done** |
 | Plot | `Xdata`, `Ydata`, `YdataErr` | **Done** |
 | Axis label | `PlotAxisLabel_RBV` | **Done** (norm-aware) |
-| Reload / growing scan | `Acquire` (Reload button) | **Done** |
-| Peak fit | — | **Phase 6** or **PyMca** (optional button) |
-| Overplot / combine | — | **Phase 5** |
-| Log scales | — | **Phase 4** |
+| Reload / growing scan | `Acquire` (Reload); `AutoReload` + `FilePoll` (Live) | **Done** |
+| Peak fit | PyMca button (`open_in_pymca.sh`) | **Done** (delegate; not in-OPI) |
+| Overplot / combine | `OverlayEnable`, `OverlayFileNumber`, `Overlay*data` | **Done** (basic); full Combine later |
+| Log scales | Log X / Log Y (`loc://` checkboxes) | **Done** |
 
 Modern UI: [`plotApp/op/bob/TASPlot.bob`](../../../plotApp/op/bob/TASPlot.bob) (Phoebus) instead of nested LabVIEW tabs.

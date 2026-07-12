@@ -36,8 +36,13 @@ class GraffitiPlotEngine:
         self.spec_scan_number: Optional[int] = None
         self._explicit_file: Optional[str] = None
         self._scan: Optional[ScanDataset] = None
+        self._overlay_scan: Optional[ScanDataset] = None
         self._last_error = ""
         self._data_file_text = ""
+        self._file_stat: Optional[tuple[int, int]] = None
+        self.auto_reload = 0
+        self.overlay_enable = 0
+        self.overlay_file_number = 0
         self.x_col = ""
         self.y_col = ""
         self.norm_mode = NORM_NONE
@@ -45,17 +50,30 @@ class GraffitiPlotEngine:
         self.norm_value = 1.0
 
     def _full_path(self) -> str:
-        if self._explicit_file:
+        return self._path_for_scan_number(self.file_number, prefer_explicit=True)
+
+    def _path_for_scan_number(
+        self, number: int, *, prefer_explicit: bool = False
+    ) -> str:
+        if prefer_explicit and self._explicit_file and int(number) == int(self.file_number):
             return self._explicit_file
         if "%04d" in self.file_template:
             name = self.file_template % (
                 self.file_name,
-                int(self.file_number),
+                int(number),
                 self.file_extension,
             )
         else:
             name = self.file_template % (self.file_name, self.file_extension)
         return os.path.join(self.file_path, name)
+
+    def _update_file_stat(self) -> None:
+        path = self._full_path()
+        try:
+            st = os.stat(path)
+            self._file_stat = (st.st_mtime_ns, st.st_size)
+        except OSError:
+            self._file_stat = None
 
     def set_file_path(self, path: str) -> None:
         self._explicit_file = None
@@ -68,7 +86,7 @@ class GraffitiPlotEngine:
     def set_file_number(self, number: int) -> None:
         self._explicit_file = None
         self.file_number = int(number)
-        self.acquire()
+        self._load_scan(preserve_axes=False)
 
     def set_selected_file(self, path: str) -> None:
         """Set full file path from Phoebus FileSelector or text entry."""
@@ -91,12 +109,29 @@ class GraffitiPlotEngine:
             self.file_number = int(match.group(2))
         else:
             self.file_name = base
-        self.acquire()
+        self._load_scan(preserve_axes=False)
 
     def set_spec_scan_number(self, number: int) -> None:
         self.spec_scan_number = int(number)
         if self.format_rbv() == "spec":
-            self.acquire()
+            self._load_scan(preserve_axes=False)
+
+    def set_auto_reload(self, enabled: int) -> None:
+        self.auto_reload = 1 if int(enabled) else 0
+        if self.auto_reload:
+            self._update_file_stat()
+
+    def set_overlay_enable(self, enabled: int) -> None:
+        self.overlay_enable = 1 if int(enabled) else 0
+        if self.overlay_enable:
+            self._load_overlay()
+        else:
+            self._overlay_scan = None
+
+    def set_overlay_file_number(self, number: int) -> None:
+        self.overlay_file_number = int(number)
+        if self.overlay_enable:
+            self._load_overlay()
 
     def set_x_col(self, name: str) -> None:
         self.x_col = name.strip()
@@ -166,6 +201,27 @@ class GraffitiPlotEngine:
             return "unknown"
 
     def acquire(self) -> int:
+        """Reload current file (Reload button); preserve X/Y if still valid."""
+        return self._load_scan(preserve_axes=True)
+
+    def poll_file(self) -> int:
+        """If AutoReload on and file mtime/size changed, re-acquire. Returns 1 if reloaded."""
+        if not self.auto_reload:
+            return 0
+        path = self._full_path()
+        try:
+            st = os.stat(path)
+            key = (st.st_mtime_ns, st.st_size)
+        except OSError:
+            return 0
+        if self._file_stat is None:
+            self._file_stat = key
+            return 0
+        if key == self._file_stat:
+            return 0
+        return self._load_scan(preserve_axes=True)
+
+    def _load_scan(self, *, preserve_axes: bool) -> int:
         """Load scan from configured path (SPiCE or SPEC). Returns 1 on success."""
         path = self._full_path()
         try:
@@ -176,18 +232,25 @@ class GraffitiPlotEngine:
                 self._scan = load_spec_file(path, scan_number=self.spec_scan_number)
             else:
                 self._scan = load_scan(path)
-            self._sync_axes_from_scan()
+            if preserve_axes:
+                self._preserve_or_sync_axes()
+            else:
+                self._sync_axes_from_scan()
             self._last_error = ""
             self._data_file_text = _read_data_file_text(
                 path, spec_scan_number=self.spec_scan_number
             )
+            self._update_file_stat()
             self._publish_data_file_text()
+            if self.overlay_enable:
+                self._load_overlay()
             return 1
         except Exception as exc:
             self._scan = None
             self.x_col = ""
             self.y_col = ""
             self._data_file_text = ""
+            self._file_stat = None
             self._last_error = str(exc)
             self._publish_data_file_text()
             return 0
@@ -195,24 +258,29 @@ class GraffitiPlotEngine:
     def load_hb3(self, experiment: int, scan: int) -> int:
         """Convenience: HB3 User tree layout."""
         path = hb3_scan_path(self.file_path, experiment, scan)
-        self.file_extension = ".dat"
-        self.spec_scan_number = None
+        self.set_selected_file(path)
+        return 1 if self._scan is not None else 0
+
+    def _load_overlay(self) -> int:
+        """Load overlay scan from OverlayFileNumber in the same directory."""
+        if not self.overlay_enable or self.overlay_file_number <= 0:
+            self._overlay_scan = None
+            return 0
+        path = self._path_for_scan_number(self.overlay_file_number)
         try:
-            self._scan = load_scan(path)
-            self._sync_axes_from_scan()
-            self._last_error = ""
-            self._data_file_text = _read_data_file_text(
-                path, spec_scan_number=self.spec_scan_number
-            )
-            self._publish_data_file_text()
+            from tasplot.load import detect_format
+
+            fmt = detect_format(path)
+            if fmt == "spec" and self.spec_scan_number is not None:
+                self._overlay_scan = load_spec_file(
+                    path, scan_number=self.spec_scan_number
+                )
+            else:
+                self._overlay_scan = load_scan(path)
             return 1
         except Exception as exc:
-            self._scan = None
-            self.x_col = ""
-            self.y_col = ""
-            self._data_file_text = ""
-            self._last_error = str(exc)
-            self._publish_data_file_text()
+            self._overlay_scan = None
+            self._last_error = f"overlay: {exc}"
             return 0
 
     def _publish_data_file_text(self) -> None:
@@ -247,17 +315,26 @@ class GraffitiPlotEngine:
         self.x_col = scan.default_x or (scan.columns[0] if scan.columns else "")
         self.y_col = scan.default_y or (scan.columns[-1] if scan.columns else "")
 
+    def _preserve_or_sync_axes(self) -> None:
+        """Keep user X/Y on reload when columns still exist; else take file defaults."""
+        if self._scan is None:
+            return
+        cols = {c.lower(): c for c in self._scan.columns}
+        if self.x_col and self.x_col.lower() in cols:
+            self.x_col = cols[self.x_col.lower()]
+        else:
+            self.x_col = self._scan.default_x or (
+                self._scan.columns[0] if self._scan.columns else ""
+            )
+        if self.y_col and self.y_col.lower() in cols:
+            self.y_col = cols[self.y_col.lower()]
+        else:
+            self.y_col = self._scan.default_y or (
+                self._scan.columns[-1] if self._scan.columns else ""
+            )
+
     def _resolve_column(self, name: str) -> str:
-        scan = self._require_scan()
-        if not name:
-            raise KeyError("column name is empty")
-        if name in scan.columns:
-            return name
-        lower_map = {col.lower(): col for col in scan.columns}
-        resolved = lower_map.get(name.lower())
-        if resolved is None:
-            raise KeyError(name)
-        return resolved
+        return _resolve_column_name(self._require_scan(), name)
 
     def nrows_rbv(self) -> int:
         if self._scan is None:
@@ -310,15 +387,62 @@ class GraffitiPlotEngine:
         _, err = self._ydata_and_errors()
         return err
 
+    def overlay_xdata(self) -> list[float]:
+        if not self.overlay_enable or self._overlay_scan is None:
+            return []
+        try:
+            col = _resolve_column_name(
+                self._overlay_scan, self.x_col or self._overlay_scan.default_x or ""
+            )
+            return _clip_waveform(self._overlay_scan.column(col))
+        except (KeyError, ValueError):
+            return []
+
+    def overlay_ydata(self) -> list[float]:
+        y, _ = self._overlay_ydata_and_errors()
+        return y
+
+    def overlay_ydata_err(self) -> list[float]:
+        _, err = self._overlay_ydata_and_errors()
+        return err
+
     def _ydata_and_errors(self) -> tuple[list[float], list[float]]:
         if self._scan is None:
             return [], []
         try:
-            col = self._resolve_column(self.y_col or self._scan.default_y or "")
-            y = self._scan.column(col)
-            err = self._scan.poisson_errors(y_column=col)
+            scan = self._scan
+            col = _resolve_column_name(scan, self.y_col or scan.default_y or "")
+            y = scan.column(col)
+            err = scan.poisson_errors(y_column=col)
             y, err = _apply_normalization(
-                y, err, int(self.norm_mode), self._scan, self.norm_col, self.norm_value, self._resolve_column
+                y,
+                err,
+                int(self.norm_mode),
+                scan,
+                self.norm_col,
+                self.norm_value,
+                lambda n: _resolve_column_name(scan, n),
+            )
+            return _clip_waveform(y), _clip_waveform(err)
+        except (KeyError, ValueError):
+            return [], []
+
+    def _overlay_ydata_and_errors(self) -> tuple[list[float], list[float]]:
+        if not self.overlay_enable or self._overlay_scan is None:
+            return [], []
+        try:
+            scan = self._overlay_scan
+            col = _resolve_column_name(scan, self.y_col or scan.default_y or "")
+            y = scan.column(col)
+            err = scan.poisson_errors(y_column=col)
+            y, err = _apply_normalization(
+                y,
+                err,
+                int(self.norm_mode),
+                scan,
+                self.norm_col,
+                self.norm_value,
+                lambda n: _resolve_column_name(scan, n),
             )
             return _clip_waveform(y), _clip_waveform(err)
         except (KeyError, ValueError):
@@ -329,6 +453,18 @@ class GraffitiPlotEngine:
 
 
 _SCAN_START = re.compile(r"^#S\s+(\d+)\b")
+
+
+def _resolve_column_name(scan: ScanDataset, name: str) -> str:
+    if not name:
+        raise KeyError("column name is empty")
+    if name in scan.columns:
+        return name
+    lower_map = {col.lower(): col for col in scan.columns}
+    resolved = lower_map.get(name.lower())
+    if resolved is None:
+        raise KeyError(name)
+    return resolved
 
 
 def _apply_normalization(

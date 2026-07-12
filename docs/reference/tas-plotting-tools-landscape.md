@@ -171,18 +171,19 @@ Expected layout matches beamline User tree, e.g. `exp974/Datafiles/HB3_exp0974_s
 | Meeting requirement | ioc-tasplot status |
 |---------------------|-------------------|
 | Current experiment only | **Yes** — browse/paste paths under User tree; no cross-experiment archive |
-| Overlay runs | **Planned** (Phase 5 — SpICE Combine/Overplot) |
-| Dynamic X/Y | **Done** — `XCol`, `YCol`, Scan # |
-| Basic fitting | **Planned** (Phase 6) or delegate to PyMca |
+| Overlay runs | **Done** — `OverlayEnable` + `OverlayFileNumber` (basic Overplot) |
+| Dynamic X/Y axes | **Done** — `XCol` / `YCol` |
+| Basic peak fitting | **PyMca button** (delegate; not in-OPI Gaussian) |
 | Normalization | **Done** — `NormMode` / monitor / mcu |
-| Live reload while scan grows | **Partial** — Reload button; file watch on roadmap |
+| Live reload while scan grows | **Done** — `AutoReload` / `FilePoll` |
+| Log scales | **Done** — Log X / Log Y checkboxes |
 | EPICS / control room | **Yes** — integrated with Phoebus, PVXS path |
 | Histogram / 2D | **Not in scope** — 1D strip charts |
 
 ### When to prefer ioc-tasplot over TAVI
 
 - Scientists already on **Phoebus** at the instrument
-- Need **live** or **semi-live** plot during acquisition (Reload / future file watch)
+- Need **live** or **semi-live** plot during acquisition (`AutoReload` / Reload)
 - **SPEC** or mixed-format beamlines
 - Facility direction: **PyDevice IOC**, autosave, Secure EPICS / PVXS
 
@@ -291,10 +292,10 @@ HB3 SPICE files often include **`h`, `k`, `l`, `q`, `ei`, `ef`, `e`** columns �
 |-------------|-------------|------|-------|-----------|---------|
 | Local current experiment | Done | Done | Done | Partial | N/A |
 | Phoebus / EPICS plot | **Done** | No | No | Prototype | PVs only (geometry) |
-| Overlay scans | Planned | Planned | **Done** | — | N/A |
+| Overlay runs | **Done** (basic Overplot) | Planned | **Done** | — | N/A |
 | Dynamic X/Y | **Done** | Planned | **Done** | — | N/A |
 | Normalization (monitor/mcu) | **Done** | Planned | Partial | — | N/A |
-| Peak / Gaussian fit | Planned / delegate | Planned | **Strong** | Via GUI | N/A |
+| Peak / Gaussian fit | **PyMca button** | Planned | **Strong** | Via GUI | N/A |
 | SPICE `.dat` | **Done** | **Done** | GUI OK | pcaspy read | Read columns only |
 | SPEC files | **Done** | No | Yes | — | N/A |
 | TAS resolution (CN) | No | **Strong** | No | No | No |

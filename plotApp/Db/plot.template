@@ -198,6 +198,64 @@ record(lsi, "$(P)NormCol_RBV") {
     field(SCAN, ".5 second")
 }
 
+record(bo, "$(P)AutoReload") {
+    field(DESC, "Reload when file grows")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_auto_reload(VAL)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(longin, "$(P)FilePoll") {
+    field(DESC, "Poll file mtime; auto-reload")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.poll_file()")
+    field(SCAN, "1 second")
+}
+
+record(bo, "$(P)OverlayEnable") {
+    field(DESC, "Show overlay scan trace")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_overlay_enable(VAL)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(longout, "$(P)OverlayFileNumber") {
+    field(DESC, "Overlay scan # (same folder)")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_overlay_file_number(VAL)")
+    field(DRVL, "0")
+    field(DRVH, "9999")
+}
+
+record(waveform, "$(P)OverlayXdata") {
+    field(DESC, "Overlay X (same XCol)")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.overlay_xdata()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
+record(waveform, "$(P)OverlayYdata") {
+    field(DESC, "Overlay Y (same YCol/norm)")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.overlay_ydata()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
+record(waveform, "$(P)OverlayYdataErr") {
+    field(DESC, "Overlay Y errors")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.overlay_ydata_err()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
 record(waveform, "$(P)DataFileText") {
     field(DESC, "File text (Browse Data, SpecFile style)")
     field(DTYP, "pydev")
