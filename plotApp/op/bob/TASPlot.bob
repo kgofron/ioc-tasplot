@@ -4,14 +4,14 @@
   <macros>
     <P>$(P=TAS:Plot:)</P>
   </macros>
-  <width>1100</width>
+  <width>1120</width>
   <height>1160</height>
   <widget type="label" version="2.0.0">
     <name>Title</name>
     <text>ioc-tasplot — Browse + Graph (SPiCE Data tab successor)</text>
     <x>10</x>
     <y>8</y>
-    <width>1080</width>
+    <width>1100</width>
     <height>28</height>
     <font>
       <font family="Sans" style="BOLD" size="16.0">
@@ -22,7 +22,7 @@
     <name>BrowseData</name>
     <x>10</x>
     <y>40</y>
-    <width>1080</width>
+    <width>1100</width>
     <height>140</height>
     <widget type="label" version="2.0.0">
       <name>BrowseHdr</name>
@@ -214,7 +214,7 @@
     <name>GraphData</name>
     <x>10</x>
     <y>180</y>
-    <width>1080</width>
+    <width>1100</width>
     <height>560</height>
     <scripts>
       <script file="EmbeddedPy">
@@ -359,10 +359,20 @@ if yact in items:
       <label>Log Y</label>
       <tooltip>Logarithmic Y axis (SPiCE Graph Data scale)</tooltip>
     </widget>
+    <widget type="checkbox" version="2.0.0">
+      <name>ShowErrors</name>
+      <pv_name>$(P)ShowErrors</pv_name>
+      <x>795</x>
+      <y>1</y>
+      <width>75</width>
+      <height>28</height>
+      <label>Errors</label>
+      <tooltip>Poisson √N error bars on Y (after norm). Low counts look tiny on a full-scale linear axis — zoom or use Log Y.</tooltip>
+    </widget>
     <widget type="label" version="2.0.0">
       <name>FormatLbl</name>
       <text>Fmt</text>
-      <x>800</x>
+      <x>875</x>
       <y>5</y>
       <width>28</width>
       <height>22</height>
@@ -371,15 +381,15 @@ if yact in items:
     <widget type="textupdate" version="2.0.0">
       <name>Format</name>
       <pv_name>$(P)Format_RBV</pv_name>
-      <x>832</x>
+      <x>905</x>
       <y>3</y>
-      <width>48</width>
+      <width>45</width>
       <height>24</height>
     </widget>
     <widget type="label" version="2.0.0">
       <name>RowsLbl</name>
       <text>R</text>
-      <x>885</x>
+      <x>955</x>
       <y>5</y>
       <width>14</width>
       <height>22</height>
@@ -388,16 +398,16 @@ if yact in items:
     <widget type="textupdate" version="2.0.0">
       <name>NRows</name>
       <pv_name>$(P)NRows_RBV</pv_name>
-      <x>902</x>
+      <x>972</x>
       <y>3</y>
-      <width>40</width>
+      <width>35</width>
       <height>24</height>
       <format>1</format>
     </widget>
     <widget type="label" version="2.0.0">
       <name>ColsLbl</name>
       <text>C</text>
-      <x>948</x>
+      <x>1010</x>
       <y>5</y>
       <width>14</width>
       <height>22</height>
@@ -406,9 +416,9 @@ if yact in items:
     <widget type="textupdate" version="2.0.0">
       <name>NColumns</name>
       <pv_name>$(P)NColumns_RBV</pv_name>
-      <x>965</x>
+      <x>1027</x>
       <y>3</y>
-      <width>40</width>
+      <width>35</width>
       <height>24</height>
       <format>1</format>
     </widget>
@@ -593,7 +603,7 @@ if yact in items:
     <name>DataFileContents</name>
     <x>10</x>
     <y>740</y>
-    <width>1080</width>
+    <width>1100</width>
     <height>410</height>
     <widget type="label" version="2.0.0">
       <name>DataFileHdr</name>

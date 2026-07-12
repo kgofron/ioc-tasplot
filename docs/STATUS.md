@@ -68,6 +68,7 @@ caput -S TAS:Plot:NormCol monitor
 | `Acquire` | Manual Reload (preserves axes) |
 | `AutoReload` + `FilePoll` | Live reload on file growth |
 | `XCol` / `YCol` / `Norm*` | Axes + normalization |
+| `ShowErrors` | Poisson √N error bars on/off (`YdataErr`) |
 | `OverlayEnable` / `OverlayFileNumber` | Second scan overlay |
 | `OverlayXdata` / `OverlayYdata` / `OverlayYdataErr` | Overlay waveforms |
 | `Xdata` / `Ydata` / `YdataErr` | Primary plot |
@@ -81,6 +82,7 @@ caput -S TAS:Plot:NormCol monitor
 - [x] Live reload (`AutoReload`)
 - [x] Phase 5 — overlay second scan (basic Overplot)
 - [x] Phase 6 — deepen PyMca launcher (CLI + API fallback)
+- [x] Poisson √N error bars + `ShowErrors` toggle (Option A)
 
 ## Next (when resuming)
 

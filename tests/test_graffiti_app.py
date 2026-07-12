@@ -146,6 +146,21 @@ def test_waveforms_pad_nan_not_zero():
     assert min(y[:n]) > 0
 
 
+def test_show_errors_toggle():
+    eng = GraffitiPlotEngine()
+    eng.set_selected_file(str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat"))
+    err_on = _valid(eng.ydata_err())
+    y = _valid(eng.ydata())
+    assert len(err_on) == len(y)
+    assert abs(err_on[0] - y[0] ** 0.5) < 1e-6
+    eng.set_show_errors(0)
+    err_off = eng.ydata_err()
+    assert len(err_off) == 4000
+    assert all(v != v for v in err_off)
+    eng.set_show_errors(1)
+    assert _valid(eng.ydata_err()) == err_on
+
+
 def test_acquire_preserves_y_col():
     eng = GraffitiPlotEngine()
     path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")

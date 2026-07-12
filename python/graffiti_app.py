@@ -43,6 +43,7 @@ class GraffitiPlotEngine:
         self.auto_reload = 0
         self.overlay_enable = 0
         self.overlay_file_number = 0
+        self.show_errors = 1
         self.x_col = ""
         self.y_col = ""
         self.norm_mode = NORM_NONE
@@ -132,6 +133,10 @@ class GraffitiPlotEngine:
         self.overlay_file_number = int(number)
         if self.overlay_enable:
             self._load_overlay()
+
+    def set_show_errors(self, enabled: int) -> None:
+        """Enable Poisson √N error bars on Y (Phoebus err_pv)."""
+        self.show_errors = 1 if int(enabled) else 0
 
     def set_x_col(self, name: str) -> None:
         self.x_col = name.strip()
@@ -386,6 +391,8 @@ class GraffitiPlotEngine:
         return y if y else _empty_waveform()
 
     def overlay_ydata_err(self) -> list[float]:
+        if not self.show_errors:
+            return _empty_waveform()
         _, err = self._overlay_ydata_and_errors()
         return err if err else _empty_waveform()
 
@@ -445,6 +452,8 @@ class GraffitiPlotEngine:
         return y
 
     def ydata_err(self) -> list[float]:
+        if not self.show_errors:
+            return _empty_waveform()
         _, err = self._ydata_and_errors()
         return err
 

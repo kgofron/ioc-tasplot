@@ -198,6 +198,16 @@ record(lsi, "$(P)NormCol_RBV") {
     field(SCAN, ".5 second")
 }
 
+record(bo, "$(P)ShowErrors") {
+    field(DESC, "Show Poisson sqrt(Y) bars")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_show_errors(VAL)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+    field(VAL, "1")
+    field(PINI, "YES")
+}
+
 record(bo, "$(P)AutoReload") {
     field(DESC, "Reload when file grows")
     field(DTYP, "pydev")
