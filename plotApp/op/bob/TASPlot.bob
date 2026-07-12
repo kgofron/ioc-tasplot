@@ -124,7 +124,7 @@
       <name>PyMcaBtn</name>
       <actions>
         <action type="command">
-          <command>bash $(D)/../scripts/open_in_pymca.sh $(P)</command>
+          <command>bash ../scripts/open_in_pymca.sh $(P)</command>
           <description>Open in PyMca</description>
         </action>
       </actions>
