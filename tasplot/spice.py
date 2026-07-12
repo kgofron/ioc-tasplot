@@ -14,6 +14,8 @@ def parse_spice_dat(path: str | Path) -> ScanDataset:
     """Parse a SPiCE-style .dat scan file (HFIR TAS)."""
     path = str(path)
     text = Path(path).read_text(encoding="utf-8", errors="replace")
+    # Normalize DOS CRLF / bare CR so tokens never carry trailing \\r.
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
     lines = text.splitlines()
 
     meta: dict[str, str] = {}
@@ -49,7 +51,7 @@ def parse_spice_dat(path: str | Path) -> ScanDataset:
         if data_start is not None and data_end is None:
             stripped = line.strip()
             if not stripped:
-                data_end = i
+                # Blank lines are common while a live scan file grows; skip them.
                 continue
             if stripped.startswith("#"):
                 data_end = i
@@ -58,8 +60,11 @@ def parse_spice_dat(path: str | Path) -> ScanDataset:
                     footer[fm.group(1).strip().lower()] = fm.group(2).strip()
                 continue
             parts = stripped.split()
-            if parts and _looks_numeric_row(parts):
-                data_rows.append([float(x) for x in parts])
+            # Drop editor artifacts like a trailing literal "^M" (caret+M).
+            parts = [p[:-2] if p.endswith("^M") else p for p in parts]
+            row = _parse_numeric_row(parts, expected=len(columns) if columns else None)
+            if row is not None:
+                data_rows.append(row)
 
     if not columns:
         raise ValueError(f"no column header (Pt.) found in {path}")
@@ -84,6 +89,21 @@ def parse_spice_dat(path: str | Path) -> ScanDataset:
         scan_number=scan_number,
         command=meta.get("command"),
     )
+
+
+def _parse_numeric_row(
+    parts: list[str], expected: int | None = None
+) -> list[float] | None:
+    """Return floats for a data row, or None if incomplete/corrupt (live scan safe)."""
+    if not parts or not _looks_numeric_row(parts):
+        return None
+    if expected is not None and len(parts) != expected:
+        # Growing file may have a partial last line — skip until complete.
+        return None
+    try:
+        return [float(x) for x in parts]
+    except ValueError:
+        return None
 
 
 def _looks_numeric_row(parts: list[str]) -> bool:
