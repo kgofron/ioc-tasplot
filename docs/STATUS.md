@@ -6,8 +6,8 @@ Handoff for resuming work after a break.
 
 - **Remote:** https://github.com/kgofron/ioc-tasplot
 - **Branch:** `main` (sync with `origin/main` before long breaks)
-- **Tests:** `26 passed` (`python3 -m pytest -q`)
-- **Latest feature work:** Phase 4 log scales, live reload, Phase 5 overlay, Phase 6 PyMca deepen
+- **Tests:** `30 passed` (`python3 -m pytest -q`)
+- **Latest feature work:** Phase 4–6 + live/overlay/PyMca + `ShowErrors` (Poisson √N)
 
 ## What works (validated)
 
@@ -20,6 +20,7 @@ Handoff for resuming work after a break.
 - **Live** checkbox (`AutoReload`) → poll mtime/size every 1 s, re-acquire when file grows
 - **Normalization** — `NormMode` (None / Column / Fixed), `NormCol`, `NormValue`
 - **Log X / Log Y** — Phoebus local checkboxes → xyplot log scales
+- **Errors** (`ShowErrors`) — Poisson √N on selected Y (`YdataErr`); works for **detector** and **monitor** (both count-like). Band looks thin at high *N* on a full-scale axis; zoom Y (or Log Y) to see it. Toggle Off → empty err waveform.
 - **Overlay** — `OverlayEnable` + `OverlayFileNumber` second trace (orange)
 - **PyMca** button — opens current file for peak fit / rich overlay
 - **DataFileContents** — full-file text via I/O Intr (`DataFileText`, 64 KB)
@@ -54,6 +55,7 @@ caget TAS:Plot:NRows_RBV
 caput TAS:Plot:AutoReload 1          # Live reload while file grows
 caput TAS:Plot:OverlayFileNumber 2
 caput TAS:Plot:OverlayEnable 1       # orange overlay trace
+caput TAS:Plot:ShowErrors 1          # Poisson √N (0 = hide bars)
 caput TAS:Plot:NormMode 1
 caput -S TAS:Plot:NormCol monitor
 ```
@@ -92,10 +94,13 @@ caput -S TAS:Plot:NormCol monitor
 4. **Facility** — PVXS/QSRV 2
 5. Optional: in-OPI Gaussian fit if scientists reject PyMca-only peak fit
 
+**Monday prep (short):** demo paths (`demo/` + exp382); SPEC `#S` on YongCai `demo/yongcai_20240530.spec`; Phoebus CA address list if duplicate-server magenta borders persist.
+
 ## Operational notes
 
 - Use **`caget -S ….$`** for long strings
 - Rebuild Db after template changes, then restart IOC
 - Log scales are **local** (`loc://`) — per OPI instance, not EPICS PVs
 - Overlay uses same X/Y/norm as primary; scan # from same folder naming
+- `YdataErr` = √|Y| for the **current Y column** after norm (not detector-only)
 - Old Graffiti C IOC: `Detector/HB3/applications/hb3-Graffiti`
