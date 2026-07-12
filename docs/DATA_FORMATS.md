@@ -102,9 +102,9 @@ Both parsers populate:
 | Default X/Y | `def_x`, `def_y` | First/last column or name heuristics (`Detector`, scanned motor from `#S`) |
 | HKL in table | Often `h`, `k`, `l` columns | `#Q` + `H`,`K`,`L` columns |
 | Merge scans | By scan number across files | By `#S` number inside file or across files |
-| PyMca | SpecFile-compatible subset | Native SPEC |
+| PyMca | **Shim:** SPiCE → temp SPEC (`tasplot.export_spec`); **native SPiCE** = upstream candidate | Native SPEC |
 
-**Recommendation:** Keep **one plotting UI** and **two parsers** behind `load_scan()` / `load_spec_file()`. The **PyDevice IOC** (`graffiti_app` + `tasplot`) should call this library — not a separate pcaspy parser. See [PYDEVICE_IOC.md](PYDEVICE_IOC.md).
+**Recommendation:** Keep **one plotting UI** and **two parsers** behind `load_scan()` / `load_spec_file()`. The **PyDevice IOC** (`graffiti_app` + `tasplot`) should call this library — not a separate pcaspy parser. See [PYDEVICE_IOC.md](PYDEVICE_IOC.md). For PyMca peak fit on SPiCE, prefer the **temp-SPEC shim** shipped with the OPI launcher; optional later work is **native SPiCE in upstream PyMca** ([landscape § PyMca](reference/tas-plotting-tools-landscape.md#spice-in-pymca--two-viable-paths)).
 
 ## Future work
 

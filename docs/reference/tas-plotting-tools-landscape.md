@@ -7,7 +7,7 @@ Context for the HFIR instrument-scientist meeting on **SpICE plot/graphing use c
 1. **On disk:** keep **SPICE `.dat`** under `User/expNNN/Datafiles/` as the shared format for local tools.
 2. **Control room:** **ioc-tasplot + Phoebus** — browse, plot, normalization, reload; replaces Graffiti/SpICE Browse+Graph at the desk.
 3. **Offline TAS analysis:** **TAVI** on analysis PCs — resolution, combine, richer TAS physics (no EPICS required).
-4. **Peak fit / overlay depth:** **PyMca desktop** optional on the same files; do not promote **ioc-pymca/pcaspy** as the primary plot IOC.
+4. **Peak fit / overlay depth:** **PyMca desktop** via Phoebus button — **SPiCE shim shipped** (temp SPEC); optional later **native SPiCE** upstream. Do not promote **ioc-pymca/pcaspy** as the primary plot IOC.
 5. **Crystal HKL ↔ motor:** **ioc-hkl** is a **parallel** stack for four-circle instruments — not the inelastic TAS strip-chart solution.
 
 **Related docs in this repo:**
@@ -199,7 +199,7 @@ Expected layout matches beamline User tree, e.g. `exp974/Datafiles/HB3_exp0974_s
 
 ## PyMca — standalone analysis + ioc-pymca prototype
 
-**Upstream:** [PyMca on SourceForge](https://sourceforge.net/projects/pymca/) · **License:** MIT · **Ubuntu 22.04:** `python3-pymca5`, `pymca`, `pymca-doc`  
+**Upstream:** [vasole/pymca](https://github.com/vasole/pymca) (ESRF-centered development) · older mirrors on [SourceForge](https://sourceforge.net/projects/pymca/) · **License:** MIT · **Ubuntu 22.04:** `python3-pymca5`, `pymca`, `pymca-doc`  
 **Local IOC:** `/epics/iocs/ioc-pymca` · **Docs in ioc-tasplot:** [PYDEVICE_IOC.md](../PYDEVICE_IOC.md) (Relation to ioc-pymca)
 
 ### What PyMca is
@@ -208,6 +208,23 @@ Expected layout matches beamline User tree, e.g. `exp974/Datafiles/HB3_exp0974_s
 - Loads **SPEC-style scan files** via built-in **SpecFile** / scan window plugins (`SourceType: 'SpecFile'`, filter `*dat`)
 - **Not** an EPICS product — no PV server, no Phoebus OPI in the upstream package
 - Install: system packages (`apt install python3-pymca5`) or conda; GUI via `pymca` command
+
+### SPiCE in PyMca — two viable paths
+
+Stock SpecFile understands **CERTIF SPEC** (`#S`, `#L`, …). ORNL **SPiCE `.dat`** uses a different header (`# scan =`, `# col_headers =`, `#   Pt. s1 …`). Opening a SPiCE file directly still plots numbers, but counters appear as **`Column 0…N`** — enough for a crude look, poor for fit workflows that need `s1` / `detector` by name.
+
+| Path | Status | What it is | When to use |
+|------|--------|------------|-------------|
+| **A. Shim (shipped)** | **In ioc-tasplot now** | Phoebus **PyMca** button → `tasplot` writes a **temp SPEC** with real `#L` labels → stock `pymca` | Control-room fit today; no apt/conda PyMca fork |
+| **B. Native upstream** | **Not done** (candidate) | Teach SpecFile (or a small plugin) ORNL SPiCE headers in [vasole/pymca](https://github.com/vasole/pymca) / ESRF PyMca | Long-term; benefits all sites; needs packaging (`python3-pymca5` lag) |
+
+**Why these two (and not others):**
+
+- **Shim** reuses the parser we already trust (`tasplot`), keeps Ubuntu/apt PyMca untouched, and matches the product split (ioc-tasplot = browse/graph; PyMca = fit). Cost: temp file under `/tmp/ioc-tasplot-pymca-*.spec`; deploy scripts must find the ioc-tasplot checkout (`IOC_TASPLOT_ROOT`).
+- **Native** is the clean end state (open `.dat` in PyMca with named columns, no conversion). Cost: upstream design + review with ESRF maintainers, then wait for releases / site packages. Worth pursuing if several beamlines need PyMca on SPiCE without depending on ioc-tasplot.
+- **Rejected / deferred:** forking system PyMca locally; resurrecting **ioc-pymca** embedding; treating Graffiti *histogram* binaries as in-scope (separate from text SPiCE `.dat`).
+
+**Operational note (shim):** CERTIF SPEC files pass through unchanged. SPiCE conversion is automatic in `plotApp/op/scripts/open_in_pymca.py`. Validated on HB3 exp382 scans and YongCai SPEC.
 
 ### ORNL / TAS modifications (local ioc-pymca)
 
@@ -232,7 +249,7 @@ The pcaspy path mirrors old Graffiti file-selection PVs and pushes file text int
 | Browse + quick strip chart at instrument | **Heavy** — full desktop app, slow to launch from EPICS |
 | EPICS / Phoebus integrated plot | **Weak** — ioc-pymca prototype only; Qt event loop vs IOC thread is awkward |
 | Histogram / 2D | **Not primary** — 1D scan focus |
-| SPICE `.dat` | **Works in GUI** via SpecFile plugin (HB3 `HB3_exp0798_scan0090.dat` in `TASpymca.py`) |
+| SPICE `.dat` | **Shim shipped** — temp SPEC with named `#L` via ioc-tasplot launcher; **native SpecFile SPiCE** still upstream-open |
 | Graffiti internal format | **No** — reads text `.dat` / SPEC-like files from disk |
 
 ### Is adopting PyMca for SPICE + EPICS reasonable?
@@ -241,14 +258,15 @@ The pcaspy path mirrors old Graffiti file-selection PVs and pushes file text int
 
 | Approach | Reasonable? | Notes |
 |----------|-------------|-------|
-| **PyMca desktop** for fit/overlay on saved `.dat` | **Yes** | Mature fitting; scientists may already know it; no EPICS needed |
-| **Extend PyMca** to read SPICE/Graffiti formats | **Low priority** | SPICE `.dat` already loads; Graffiti *histogram* format is a separate spec |
+| **PyMca desktop** for fit/overlay on saved scans | **Yes** | Mature fitting; scientists may already know it; no EPICS needed |
+| **Shim: SPiCE → temp SPEC** (ioc-tasplot button) | **Yes — shipped** | Named columns without forking apt PyMca; see [SPiCE in PyMca](#spice-in-pymca--two-viable-paths) |
+| **Native SPiCE in upstream PyMca** (ESRF / vasole) | **Yes — later** | Best long-term; coordinate contribution; packaging lag |
 | **ioc-pymca PyDevice IOC** as main plot server | **No** | Immature DB; Qt embedding; duplicates ioc-tasplot with more complexity |
 | **pcaspy bridge** (current `pcaspy_server.py`) | **No** for production | Facility direction is PyDevice + PVXS; pcaspy lacks db/autosave |
-| **“Open in PyMca” button** from Phoebus | **Yes** as optional | EPICS passes `FullFileName_RBV` → shell/`TASpymca.load_datafile()`; keep ioc-tasplot for live plot |
+| **“Open in PyMca” button** from Phoebus | **Yes** | `FullFileName_RBV` → `open_in_pymca.sh`; keep ioc-tasplot for live plot |
 | **Replace ioc-tasplot with PyMca** | **No** | Different roles: lightweight waveform PVs vs full analysis suite |
 
-**Recommended split:** **ioc-tasplot** = control-room browse/graph (Phoebus); **PyMca** = optional deep fit/overlay on same file path; retire **pcaspy** Graffiti PV mimic over time.
+**Recommended split:** **ioc-tasplot** = control-room browse/graph (Phoebus); **PyMca** = optional deep fit/overlay. Prefer **shim now**, **native SpecFile SPiCE** if/when upstream accepts it; retire **pcaspy** Graffiti PV mimic over time.
 
 ---
 
@@ -295,8 +313,8 @@ HB3 SPICE files often include **`h`, `k`, `l`, `q`, `ei`, `ef`, `e`** columns �
 | Overlay runs | **Done** (basic Overplot) | Planned | **Done** | — | N/A |
 | Dynamic X/Y | **Done** | Planned | **Done** | — | N/A |
 | Normalization (monitor/mcu) | **Done** | Planned | Partial | — | N/A |
-| Peak / Gaussian fit | **PyMca button** | Planned | **Strong** | Via GUI | N/A |
-| SPICE `.dat` | **Done** | **Done** | GUI OK | pcaspy read | Read columns only |
+| Peak / Gaussian fit | **PyMca button** (SPiCE shim) | Planned | **Strong** (+ native SPiCE TBD) | Via GUI | N/A |
+| SPICE `.dat` | **Done** | **Done** | **Shim shipped** / native TBD | pcaspy read | Read columns only |
 | SPEC files | **Done** | No | Yes | — | N/A |
 | TAS resolution (CN) | No | **Strong** | No | No | No |
 | HKL ↔ motor live | No | No | No | No | **Core** |
@@ -339,7 +357,7 @@ Not a decision — a strawman for the meeting:
 |-------|----------------|
 | **On-disk format for local tool** | Standardize on **SPICE `.dat`** (and SPEC where used) under `User/expNNN/Datafiles/`; define histogram/2D requirements separately |
 | **Control room / live plot** | **ioc-tasplot** + Phoebus (TAX-shared OPI, per-instrument prefix) |
-| **Peak fit / rich overlay (optional)** | **PyMca desktop** on same files; optional “Open in PyMca” from OPI — not ioc-pymca as primary server |
+| **Peak fit / rich overlay (optional)** | **PyMca** via OPI button — **shim now**; **native SpecFile SPiCE** if upstream accepts; not ioc-pymca as primary server |
 | **TAS resolution / combine (offline)** | **TAVI** on analysis workstations |
 | **Crystal HKL / UB (four-circle instruments)** | **ioc-hkl** — parallel stack, not plot replacement |
 | **Scan execution / DAQ** | Per-beamline IOC (not plot IOC) |

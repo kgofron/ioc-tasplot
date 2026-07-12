@@ -29,7 +29,7 @@ SPiCE conversion needs the **ioc-tasplot** checkout (package `tasplot`). When sc
 7. **Scan #** → rebuilds `*_scanNNNN.dat`; grey header = `FullFileName_RBV.$`
 8. **Reload** — re-read file (keeps X/Y); **Live** — auto-reload when file grows
 9. **Over #** + **Overlay** — second trace (orange) from another scan # in the same folder
-10. **PyMca** — opens current file for peak fit (needs `python3-pymca5` / `pymca`). Launcher uses `caget -S`, forces apt NumPy 1.x if needed, and logs to `/tmp/open_in_pymca.log`. **SPiCE `.dat`** is converted to a temp SPEC (named `#L` columns) before open; CERTIF SPEC is passed through.
+10. **PyMca** — peak fit (`python3-pymca5` / `pymca`). **Shipped path:** SPiCE → temp SPEC (`tasplot.export_spec`) so SpecFile shows `s1`/`detector` names; CERTIF SPEC unchanged. **Longer-term alternative:** native SPiCE support in upstream PyMca (ESRF / [vasole/pymca](https://github.com/vasole/pymca)) — see [landscape](../../docs/reference/tas-plotting-tools-landscape.md#spice-in-pymca--two-viable-paths). Logs: `/tmp/open_in_pymca.log`.
 11. **Graph Data** — X/Y cols, Norm, **Log X / Log Y**, **Errors** (`ShowErrors` — Poisson √N on Y); title from `Command_RBV.$`; Y label from `PlotAxisLabel_RBV`
 12. **DataFileContents** — `DataFileText` CHAR waveform
 
