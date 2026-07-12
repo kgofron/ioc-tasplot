@@ -370,45 +370,28 @@ class GraffitiPlotEngine:
     def last_error_rbv(self) -> str:
         return self._last_error
 
-    def xdata(self) -> list[float]:
-        if self._scan is None:
-            return []
-        try:
-            col = self._resolve_column(self.x_col or self._scan.default_x or "")
-            return _clip_waveform(self._scan.column(col))
-        except (KeyError, ValueError):
-            return []
-
-    def ydata(self) -> list[float]:
-        y, _ = self._ydata_and_errors()
-        return y
-
-    def ydata_err(self) -> list[float]:
-        _, err = self._ydata_and_errors()
-        return err
-
     def overlay_xdata(self) -> list[float]:
         if not self.overlay_enable or self._overlay_scan is None:
-            return []
+            return _empty_waveform()
         try:
             col = _resolve_column_name(
                 self._overlay_scan, self.x_col or self._overlay_scan.default_x or ""
             )
             return _clip_waveform(self._overlay_scan.column(col))
         except (KeyError, ValueError):
-            return []
+            return _empty_waveform()
 
     def overlay_ydata(self) -> list[float]:
         y, _ = self._overlay_ydata_and_errors()
-        return y
+        return y if y else _empty_waveform()
 
     def overlay_ydata_err(self) -> list[float]:
         _, err = self._overlay_ydata_and_errors()
-        return err
+        return err if err else _empty_waveform()
 
     def _ydata_and_errors(self) -> tuple[list[float], list[float]]:
         if self._scan is None:
-            return [], []
+            return _empty_waveform(), _empty_waveform()
         try:
             scan = self._scan
             col = _resolve_column_name(scan, self.y_col or scan.default_y or "")
@@ -425,7 +408,7 @@ class GraffitiPlotEngine:
             )
             return _clip_waveform(y), _clip_waveform(err)
         except (KeyError, ValueError):
-            return [], []
+            return _empty_waveform(), _empty_waveform()
 
     def _overlay_ydata_and_errors(self) -> tuple[list[float], list[float]]:
         if not self.overlay_enable or self._overlay_scan is None:
@@ -447,6 +430,23 @@ class GraffitiPlotEngine:
             return _clip_waveform(y), _clip_waveform(err)
         except (KeyError, ValueError):
             return [], []
+
+    def xdata(self) -> list[float]:
+        if self._scan is None:
+            return _empty_waveform()
+        try:
+            col = self._resolve_column(self.x_col or self._scan.default_x or "")
+            return _clip_waveform(self._scan.column(col))
+        except (KeyError, ValueError):
+            return _empty_waveform()
+
+    def ydata(self) -> list[float]:
+        y, _ = self._ydata_and_errors()
+        return y
+
+    def ydata_err(self) -> list[float]:
+        _, err = self._ydata_and_errors()
+        return err
 
     def column(self, name: str) -> list[float]:
         return _clip_waveform(self._require_scan().column(name))
@@ -584,10 +584,26 @@ def _find_spec_scan_start(lines: list[str], scan_number: Optional[int]) -> Optio
     return last_match
 
 
+def _empty_waveform() -> list[float]:
+    """Full-NELM NaN trace so disabled/empty overlays do not inject log(0) zeros."""
+    return [float("nan")] * MAX_WAVEFORM_POINTS
+
+
 def _clip_waveform(arr) -> list[float]:
+    """Return up to MAX_WAVEFORM_POINTS; pad with NaN.
+
+    PyDevice copies only ``len(result)`` into the waveform buffer and sets NORD,
+    but some CA/Phoebus paths still observe the full NELM buffer. Trailing zeros
+    from record init break Log X/Y (log(0) → ~1E-323). NaN padding keeps NORD
+    aligned with NELM for those clients and is skipped by Phoebus xyplot.
+    """
     data = [float(v) for v in arr]
     if len(data) > MAX_WAVEFORM_POINTS:
         return data[:MAX_WAVEFORM_POINTS]
+    if len(data) == 0:
+        return _empty_waveform()
+    if len(data) < MAX_WAVEFORM_POINTS:
+        data = data + [float("nan")] * (MAX_WAVEFORM_POINTS - len(data))
     return data
 
 

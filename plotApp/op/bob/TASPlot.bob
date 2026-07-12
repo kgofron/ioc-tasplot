@@ -574,6 +574,17 @@ if yact in items:
           <point_type>2</point_type>
           <point_size>5</point_size>
           <visible>true</visible>
+          <rules>
+            <rule name="OverlayVisible" prop_id="visible">
+              <exp bool_exp="pv0&gt;0">
+                <value>true</value>
+              </exp>
+              <exp bool_exp="pv0&lt;=0">
+                <value>false</value>
+              </exp>
+              <pv_name>$(P)OverlayEnable</pv_name>
+            </rule>
+          </rules>
         </trace>
       </traces>
     </widget>

@@ -6,6 +6,16 @@ FIXTURES = Path(__file__).parent / "fixtures"
 HB3_USER = Path("/home/kg1/Documents/Detector/HB3/HB3_data/User")
 
 
+def _valid(wave: list[float]) -> list[float]:
+    """Strip NaN padding used for Log-scale-safe waveforms."""
+    out: list[float] = []
+    for v in wave:
+        if v != v:  # NaN
+            break
+        out.append(v)
+    return out
+
+
 def test_acquire_spice_fixture():
     eng = GraffitiPlotEngine()
     eng.set_file_path(str(FIXTURES))
@@ -16,8 +26,8 @@ def test_acquire_spice_fixture():
     assert eng.acquire() == 1
     assert eng.format_rbv() == "spice"
     assert eng.nrows_rbv() >= 10
-    x = eng.xdata()
-    y = eng.ydata()
+    x = _valid(eng.xdata())
+    y = _valid(eng.ydata())
     assert len(x) == len(y) == eng.nrows_rbv()
 
 
@@ -68,10 +78,10 @@ def test_normalize_to_monitor_column():
     eng = GraffitiPlotEngine()
     path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
     eng.set_selected_file(path)
-    raw = eng.ydata()
+    raw = _valid(eng.ydata())
     eng.set_norm_mode(NORM_COLUMN)
     eng.set_norm_col("monitor")
-    norm = eng.ydata()
+    norm = _valid(eng.ydata())
     assert raw != norm
     assert len(norm) == len(raw)
     scan = eng._scan
@@ -87,7 +97,7 @@ def test_normalize_to_fixed_value():
     eng.set_selected_file(str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat"))
     eng.set_norm_mode(NORM_FIXED)
     eng.set_norm_value(1000.0)
-    norm = eng.ydata()
+    norm = _valid(eng.ydata())
     raw = eng._scan.column("detector")
     for r, n in zip(raw[:5], norm[:5]):
         assert abs(float(r) / 1000.0 - n) < 1e-6
@@ -98,11 +108,11 @@ def test_normalize_none_matches_raw():
     eng = GraffitiPlotEngine()
     eng.set_selected_file(str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat"))
     eng.set_norm_mode(NORM_NONE)
-    y1 = eng.ydata()
+    y1 = _valid(eng.ydata())
     eng.set_norm_mode(NORM_COLUMN)
     eng.set_norm_col("monitor")
     eng.set_norm_mode(NORM_NONE)
-    y2 = eng.ydata()
+    y2 = _valid(eng.ydata())
     assert y1 == y2
     assert eng.plot_axis_label_rbv() == "detector"
 
@@ -111,9 +121,9 @@ def test_set_y_col_changes_plot_data():
     eng = GraffitiPlotEngine()
     path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
     eng.set_selected_file(path)
-    y_det = eng.ydata()
+    y_det = _valid(eng.ydata())
     eng.set_y_col("time")
-    y_time = eng.ydata()
+    y_time = _valid(eng.ydata())
     assert y_det != y_time
     assert len(y_time) == eng.nrows_rbv()
     assert eng.col_headers_rbv()
@@ -122,15 +132,29 @@ def test_set_y_col_changes_plot_data():
     assert eng.y_col_rbv() == "time"
 
 
+def test_waveforms_pad_nan_not_zero():
+    eng = GraffitiPlotEngine()
+    eng.set_selected_file(str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat"))
+    x = eng.xdata()
+    y = eng.ydata()
+    assert len(x) == len(y) == 4000
+    n = eng.nrows_rbv()
+    assert n >= 10
+    assert all(v == v for v in x[:n])  # not NaN
+    assert all(x[i] != x[i] for i in range(n, len(x)))  # NaN pad
+    assert all(y[i] != y[i] for i in range(n, len(y)))
+    assert min(y[:n]) > 0
+
+
 def test_acquire_preserves_y_col():
     eng = GraffitiPlotEngine()
     path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
     eng.set_selected_file(path)
     eng.set_y_col("time")
-    y_time = eng.ydata()
+    y_time = _valid(eng.ydata())
     assert eng.acquire() == 1
     assert eng.y_col_rbv() == "time"
-    assert eng.ydata() == y_time
+    assert _valid(eng.ydata()) == y_time
 
 
 def test_poll_file_reloads_on_mtime_change(tmp_path):
@@ -164,7 +188,9 @@ def test_overlay_loads_second_scan():
     assert len(ox) == len(oy) > 0
     assert ox != eng.xdata() or oy != eng.ydata()
     eng.set_overlay_enable(0)
-    assert eng.overlay_xdata() == []
+    ox = eng.overlay_xdata()
+    assert len(ox) == 4000
+    assert all(v != v for v in ox)  # all NaN when overlay off
 
 
 def test_data_file_text_spice_full_file():
