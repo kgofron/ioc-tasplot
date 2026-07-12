@@ -29,3 +29,6 @@ docs/drafts/
 demo/**
 !demo/README.md
 !demo/.gitkeep
+
+# PyMca fit / analysis outputs
+*.h5
