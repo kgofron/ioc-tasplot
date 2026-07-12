@@ -11,7 +11,9 @@ PREFIX="${1:-TAS:Plot:}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG="${TMPDIR:-/tmp}/open_in_pymca.log"
 
-log() { printf '%s %s\n' "$(date -Is)" "$*" | tee -a "$LOG" >&2; }
+# File-only by default: Phoebus treats any stderr as WARNING.
+log() { printf '%s %s\n' "$(date -Is)" "$*" >>"$LOG"; }
+log_err() { printf '%s %s\n' "$(date -Is)" "$*" | tee -a "$LOG" >&2; }
 
 # Ubuntu apt PyMca is built against NumPy 1.x. A newer NumPy under
 # /usr/local (e.g. napari) shadows it and breaks spslut (_ARRAY_API).
@@ -34,7 +36,7 @@ if [[ -z "${CAGET}" ]]; then
     done
 fi
 if [[ -z "${CAGET}" ]]; then
-    log "open_in_pymca: caget not found (PATH=${PATH})"
+    log_err "open_in_pymca: caget not found (PATH=${PATH})"
     exit 1
 fi
 
@@ -54,7 +56,7 @@ if [[ -z "${PATH_FILE}" || ! -f "${PATH_FILE}" ]]; then
 fi
 
 if [[ -z "${PATH_FILE}" || ! -f "${PATH_FILE}" ]]; then
-    log "open_in_pymca: no readable file (prefix=${PREFIX}). FullFileName/SelectedFile empty or missing."
+    log_err "open_in_pymca: no readable file (prefix=${PREFIX}). FullFileName/SelectedFile empty or missing."
     exit 1
 fi
 
