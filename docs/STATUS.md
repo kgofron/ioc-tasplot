@@ -105,7 +105,7 @@ caput -S TAS:Plot:NormCol monitor
 2. **Facility** — PVXS/QSRV 2
 3. Optional: editable buffer table / Del-row Combine UI; in-OPI Gaussian fit if PyMca isn’t enough
 
-**Monday prep (short):** demo paths (`demo/` + exp382); SPEC `#S` on YongCai `demo/yongcai_20240530.spec`; Phoebus CA address list if duplicate-server magenta borders persist.
+**Monday prep (short):** demo paths (`demo/` + exp382); SPEC `#S` on YongCai `demo/yongcai_20240530.spec`; Phoebus CA address list if duplicate-server magenta borders persist. Briefing: [`demo/ADR-scan-formats.md`](../demo/ADR-scan-formats.md) (SPEC vs SPiCE + CRLF/`^M`).
 
 ## Operational notes
 
