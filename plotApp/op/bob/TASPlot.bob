@@ -4,8 +4,8 @@
   <macros>
     <P>$(P=TAS:Plot:)</P>
   </macros>
-  <width>1120</width>
-  <height>1180</height>
+  <width>2110</width>
+  <height>1200</height>
   <widget type="label" version="2.0.0">
     <name>Title</name>
     <text>ioc-tasplot — Browse + Graph (SPiCE Data tab successor)</text>
@@ -20,7 +20,7 @@
   </widget>
   <widget type="group" version="3.0.0">
     <name>BrowseData</name>
-    <x>10</x>
+    <x>5</x>
     <y>40</y>
     <width>1100</width>
     <height>140</height>
@@ -113,19 +113,18 @@
     <widget type="checkbox" version="2.0.0">
       <name>AutoReload</name>
       <pv_name>$(P)AutoReload</pv_name>
+      <label>Live</label>
       <x>400</x>
       <y>58</y>
-      <width>100</width>
       <height>28</height>
-      <label>Live</label>
       <tooltip>Auto-reload when scan file grows (mtime/size)</tooltip>
     </widget>
     <widget type="action_button" version="3.0.0">
       <name>PyMcaBtn</name>
       <actions>
         <action type="command">
-          <command>bash ../scripts/open_in_pymca.sh $(P)</command>
           <description>Open in PyMca</description>
+          <command>bash ../scripts/open_in_pymca.sh $(P)</command>
         </action>
       </actions>
       <text>PyMca</text>
@@ -153,17 +152,16 @@
       <height>28</height>
       <precision>0</precision>
       <tooltip>Overlay scan # from same directory (SpICE Overplot)</tooltip>
-      <minimum>0.0</minimum>
       <maximum>9999.0</maximum>
     </widget>
     <widget type="checkbox" version="2.0.0">
       <name>OverlayEnable</name>
       <pv_name>$(P)OverlayEnable</pv_name>
+      <label>Overlay</label>
       <x>710</x>
       <y>58</y>
       <width>95</width>
       <height>28</height>
-      <label>Overlay</label>
       <tooltip>Plot overlay scan with same X/Y/norm as primary</tooltip>
     </widget>
     <widget type="label" version="2.0.0">
@@ -212,9 +210,9 @@
   </widget>
   <widget type="group" version="3.0.0">
     <name>GraphData</name>
-    <x>10</x>
+    <x>5</x>
     <y>180</y>
-    <width>730</width>
+    <width>1100</width>
     <height>560</height>
     <scripts>
       <script file="EmbeddedPy">
@@ -294,16 +292,16 @@ if yact in items:
       <text>Norm</text>
       <x>285</x>
       <y>5</y>
-      <width>32</width>
+      <width>45</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
     <widget type="combo" version="2.0.0">
       <name>NormMode</name>
       <pv_name>$(P)NormMode</pv_name>
-      <x>320</x>
+      <x>335</x>
       <y>3</y>
-      <width>72</width>
+      <width>75</width>
       <height>24</height>
       <tooltip>SPiCE Normalize to: None, column, or fixed value</tooltip>
       <items>
@@ -316,9 +314,9 @@ if yact in items:
     <widget type="combo" version="2.0.0">
       <name>NormCol</name>
       <pv_name>$(P)NormCol</pv_name>
-      <x>395</x>
+      <x>420</x>
       <y>3</y>
-      <width>72</width>
+      <width>75</width>
       <height>24</height>
       <tooltip>Normalization column (monitor, mcu, time, …)</tooltip>
       <items>
@@ -331,9 +329,8 @@ if yact in items:
     <widget type="spinner" version="2.0.0">
       <name>NormValue</name>
       <pv_name>$(P)NormValue</pv_name>
-      <x>470</x>
+      <x>505</x>
       <y>3</y>
-      <width>55</width>
       <height>24</height>
       <tooltip>Fixed divisor when Norm mode is Fixed</tooltip>
       <minimum>1.0</minimum>
@@ -342,31 +339,31 @@ if yact in items:
     <widget type="checkbox" version="2.0.0">
       <name>LogX</name>
       <pv_name>loc://$(DID)_logX(0)</pv_name>
-      <x>530</x>
+      <label>Log X</label>
+      <x>700</x>
       <y>1</y>
       <width>55</width>
       <height>28</height>
-      <label>Log X</label>
       <tooltip>Logarithmic X axis (SPiCE Graph Data scale)</tooltip>
     </widget>
     <widget type="checkbox" version="2.0.0">
       <name>LogY</name>
       <pv_name>loc://$(DID)_logY(0)</pv_name>
-      <x>585</x>
+      <label>Log Y</label>
+      <x>770</x>
       <y>1</y>
       <width>55</width>
       <height>28</height>
-      <label>Log Y</label>
       <tooltip>Logarithmic Y axis (SPiCE Graph Data scale)</tooltip>
     </widget>
     <widget type="checkbox" version="2.0.0">
       <name>ShowErrors</name>
       <pv_name>$(P)ShowErrors</pv_name>
-      <x>640</x>
+      <label>Errors</label>
+      <x>835</x>
       <y>1</y>
       <width>65</width>
       <height>28</height>
-      <label>Errors</label>
       <tooltip>Poisson √N error bars on Y (after norm). Low counts look tiny on a full-scale linear axis — zoom or use Log Y.</tooltip>
     </widget>
     <widget type="label" version="2.0.0">
@@ -460,18 +457,18 @@ if yact in items:
       <y>58</y>
       <width>640</width>
       <height>24</height>
-      <format>6</format>
       <foreground_color>
         <color red="180" green="0" blue="0">
         </color>
       </foreground_color>
+      <format>6</format>
       <tooltip>Full error text (use .$ long-string)</tooltip>
     </widget>
     <widget type="xyplot" version="3.0.0">
       <name>ScanPlot</name>
       <x>5</x>
       <y>90</y>
-      <width>720</width>
+      <width>1050</width>
       <height>430</height>
       <rules>
         <rule name="XlabelAx" prop_id="x_axis.title" out_exp="true">
@@ -492,7 +489,7 @@ if yact in items:
           </exp>
           <pv_name>$(P)Command_RBV.$</pv_name>
         </rule>
-        <rule name="XLogOn" prop_id="x_axis.log_scale">
+        <rule name="XLogOn" prop_id="x_axis.log_scale" out_exp="false">
           <exp bool_exp="pv0&gt;0">
             <value>true</value>
           </exp>
@@ -501,7 +498,7 @@ if yact in items:
           </exp>
           <pv_name>loc://$(DID)_logX(0)</pv_name>
         </rule>
-        <rule name="YLogOn" prop_id="y_axes[0].log_scale">
+        <rule name="YLogOn" prop_id="y_axes[0].log_scale" out_exp="false">
           <exp bool_exp="pv0&gt;0">
             <value>true</value>
           </exp>
@@ -586,17 +583,6 @@ if yact in items:
           <point_type>2</point_type>
           <point_size>5</point_size>
           <visible>true</visible>
-          <rules>
-            <rule name="OverlayVisible" prop_id="visible">
-              <exp bool_exp="pv0&gt;0">
-                <value>true</value>
-              </exp>
-              <exp bool_exp="pv0&lt;=0">
-                <value>false</value>
-              </exp>
-              <pv_name>$(P)OverlayEnable</pv_name>
-            </rule>
-          </rules>
         </trace>
         <trace>
           <name>combine</name>
@@ -614,17 +600,6 @@ if yact in items:
           <point_type>2</point_type>
           <point_size>5</point_size>
           <visible>true</visible>
-          <rules>
-            <rule name="CombineVisible" prop_id="visible">
-              <exp bool_exp="pv0&gt;0">
-                <value>true</value>
-              </exp>
-              <exp bool_exp="pv0&lt;=0">
-                <value>false</value>
-              </exp>
-              <pv_name>$(P)CombineEnable</pv_name>
-            </rule>
-          </rules>
         </trace>
         <trace>
           <name>buffer</name>
@@ -642,17 +617,6 @@ if yact in items:
           <point_type>2</point_type>
           <point_size>5</point_size>
           <visible>true</visible>
-          <rules>
-            <rule name="BufferVisible" prop_id="visible">
-              <exp bool_exp="pv0&gt;0">
-                <value>true</value>
-              </exp>
-              <exp bool_exp="pv0&lt;=0">
-                <value>false</value>
-              </exp>
-              <pv_name>$(P)BufferEnable</pv_name>
-            </rule>
-          </rules>
         </trace>
         <trace>
           <name>bufferB</name>
@@ -670,22 +634,12 @@ if yact in items:
           <point_type>2</point_type>
           <point_size>5</point_size>
           <visible>true</visible>
-          <rules>
-            <rule name="BufferBVisible" prop_id="visible">
-              <exp bool_exp="pv0&gt;0">
-                <value>true</value>
-              </exp>
-              <exp bool_exp="pv0&lt;=0">
-                <value>false</value>
-              </exp>
-              <pv_name>$(P)BufferEnableB</pv_name>
-            </rule>
-          </rules>
         </trace>
         <trace>
           <name>fit</name>
           <x_pv>$(P)FitXdata</x_pv>
           <y_pv>$(P)FitYdata</y_pv>
+          <err_pv></err_pv>
           <axis>0</axis>
           <trace_type>1</trace_type>
           <color>
@@ -697,32 +651,20 @@ if yact in items:
           <point_type>0</point_type>
           <point_size>1</point_size>
           <visible>true</visible>
-          <rules>
-            <rule name="FitVisible" prop_id="visible">
-              <exp bool_exp="pv0&gt;0">
-                <value>true</value>
-              </exp>
-              <exp bool_exp="pv0&lt;=0">
-                <value>false</value>
-              </exp>
-              <pv_name>$(P)FitEnable</pv_name>
-            </rule>
-          </rules>
         </trace>
       </traces>
     </widget>
   </widget>
   <widget type="group" version="3.0.0">
     <name>DataFileContents</name>
-    <x>750</x>
-    <y>180</y>
-    <width>360</width>
-    <height>560</height>
+    <x>1105</x>
+    <y>10</y>
+    <width>1000</width>
+    <height>1195</height>
     <widget type="label" version="2.0.0">
       <name>DataFileHdr</name>
       <text>DataFileContents</text>
       <x>5</x>
-      <y>0</y>
       <width>340</width>
       <height>22</height>
       <font>
@@ -735,8 +677,8 @@ if yact in items:
       <pv_name>$(P)DataFileText</pv_name>
       <x>5</x>
       <y>28</y>
-      <width>350</width>
-      <height>525</height>
+      <width>955</width>
+      <height>1130</height>
       <font>
         <font family="Monospace" style="REGULAR" size="11.0">
         </font>
@@ -758,10 +700,10 @@ if yact in items:
   </widget>
   <widget type="group" version="3.0.0">
     <name>CombineData</name>
-    <x>10</x>
-    <y>745</y>
+    <x>5</x>
+    <y>740</y>
     <width>1100</width>
-    <height>105</height>
+    <height>120</height>
     <scripts>
       <script file="EmbeddedPy">
         <text><![CDATA[from org.csstudio.display.builder.runtime.script import PVUtil, ScriptUtil
@@ -784,7 +726,6 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
       <x>5</x>
       <y>2</y>
       <width>320</width>
-      <height>20</height>
       <font>
         <font family="Sans" style="BOLD" size="12.0">
         </font>
@@ -886,26 +827,25 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
       <name>CombineRunBtn</name>
       <actions>
         <action type="write_pv">
+          <description>Run combine</description>
           <pv_name>$(P)CombineRun</pv_name>
           <value>1</value>
-          <description>Run combine</description>
         </action>
       </actions>
       <text>Combine</text>
       <x>735</x>
       <y>24</y>
       <width>85</width>
-      <height>30</height>
       <tooltip>Σ(+) − Σ(−) with bin tolerance + renorm</tooltip>
     </widget>
     <widget type="checkbox" version="2.0.0">
       <name>CombineEnable</name>
       <pv_name>$(P)CombineEnable</pv_name>
+      <label>Show</label>
       <x>830</x>
       <y>24</y>
       <width>90</width>
       <height>30</height>
-      <label>Show</label>
       <tooltip>Show green combine result on Graph</tooltip>
     </widget>
     <widget type="textupdate" version="2.0.0">
@@ -969,7 +909,7 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
       <pv_name>$(P)CombineStatus_RBV.$</pv_name>
       <x>300</x>
       <y>60</y>
-      <width>780</width>
+      <width>770</width>
       <height>26</height>
       <format>6</format>
       <tooltip>Combine status or error (long-string .$)</tooltip>
@@ -977,10 +917,10 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
   </widget>
   <widget type="group" version="3.0.0">
     <name>FitData</name>
-    <x>10</x>
-    <y>855</y>
+    <x>5</x>
+    <y>860</y>
     <width>1100</width>
-    <height>100</height>
+    <height>120</height>
     <widget type="label" version="2.0.0">
       <name>FitHdr</name>
       <text>Peak Fit (1 Gaussian + linear bg → PVs; use X range for multi-peak)</text>
@@ -1009,22 +949,21 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
       <y>26</y>
       <width>90</width>
       <height>26</height>
+      <tooltip>Buffer = Slot A</tooltip>
       <items>
         <item>Graph</item>
         <item>Buffer</item>
         <item>Combine</item>
       </items>
-      <items_from_pv>true</items_from_pv>
-      <tooltip>Buffer = Slot A</tooltip>
     </widget>
     <widget type="checkbox" version="2.0.0">
       <name>FitRangeEnable</name>
       <pv_name>$(P)FitRangeEnable</pv_name>
+      <label>Range</label>
       <x>160</x>
       <y>24</y>
       <width>75</width>
       <height>30</height>
-      <label>Range</label>
       <tooltip>Fit only Xmin..Xmax (isolate one peak)</tooltip>
     </widget>
     <widget type="label" version="2.0.0">
@@ -1068,45 +1007,44 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
     <widget type="checkbox" version="2.0.0">
       <name>FitBgNonNeg</name>
       <pv_name>$(P)FitBgNonNeg</pv_name>
+      <label>bg≥0</label>
       <x>495</x>
       <y>24</y>
       <width>95</width>
       <height>30</height>
-      <label>bg≥0</label>
       <tooltip>Constant background ≥ 0 (fixes slope=0)</tooltip>
     </widget>
     <widget type="action_button" version="3.0.0">
       <name>FitRunBtn</name>
       <actions>
         <action type="write_pv">
+          <description>Run fit</description>
           <pv_name>$(P)FitRun</pv_name>
           <value>1</value>
-          <description>Run fit</description>
         </action>
       </actions>
       <text>Fit</text>
-      <x>600</x>
+      <x>580</x>
       <y>24</y>
       <width>60</width>
-      <height>30</height>
       <tooltip>Gaussian + linear background</tooltip>
     </widget>
     <widget type="checkbox" version="2.0.0">
       <name>FitEnable</name>
       <pv_name>$(P)FitEnable</pv_name>
-      <x>670</x>
-      <y>24</y>
-      <width>80</width>
-      <height>30</height>
       <label>Show</label>
+      <x>645</x>
+      <y>24</y>
+      <width>70</width>
+      <height>30</height>
       <tooltip>Show red fit model on Graph</tooltip>
     </widget>
     <widget type="textupdate" version="2.0.0">
       <name>FitStatus</name>
       <pv_name>$(P)FitStatus_RBV.$</pv_name>
-      <x>760</x>
+      <x>720</x>
       <y>26</y>
-      <width>320</width>
+      <width>350</width>
       <height>26</height>
       <format>6</format>
       <tooltip>Fit status (wait ~0.5 s after Fit)</tooltip>
@@ -1209,10 +1147,10 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
   </widget>
   <widget type="group" version="3.0.0">
     <name>DataBuffers</name>
-    <x>10</x>
-    <y>960</y>
+    <x>5</x>
+    <y>980</y>
     <width>1100</width>
-    <height>200</height>
+    <height>225</height>
     <widget type="label" version="2.0.0">
       <name>BufferHdr</name>
       <text>Data Buffers (A purple / B magenta overplot + table preview)</text>
@@ -1251,7 +1189,6 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
         <item>6</item>
         <item>7</item>
       </items>
-      <items_from_pv>true</items_from_pv>
     </widget>
     <widget type="label" version="2.0.0">
       <name>BufSrcLbl</name>
@@ -1273,47 +1210,45 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
         <item>Graph</item>
         <item>Combine</item>
       </items>
-      <items_from_pv>true</items_from_pv>
     </widget>
     <widget type="action_button" version="3.0.0">
       <name>BufferSaveBtn</name>
       <actions>
         <action type="write_pv">
+          <description>Save into slot A</description>
           <pv_name>$(P)BufferSave</pv_name>
           <value>1</value>
-          <description>Save into slot A</description>
         </action>
       </actions>
       <text>Save</text>
       <x>265</x>
       <y>24</y>
       <width>65</width>
-      <height>30</height>
       <tooltip>Copy Graph or Combine into Slot A</tooltip>
     </widget>
     <widget type="action_button" version="3.0.0">
       <name>BufferClearBtn</name>
       <actions>
         <action type="write_pv">
+          <description>Clear slot A</description>
           <pv_name>$(P)BufferClear</pv_name>
           <value>1</value>
-          <description>Clear slot A</description>
         </action>
       </actions>
       <text>Clear</text>
       <x>335</x>
       <y>24</y>
       <width>65</width>
-      <height>30</height>
+      <tooltip>$(actions)</tooltip>
     </widget>
     <widget type="checkbox" version="2.0.0">
       <name>BufferEnable</name>
       <pv_name>$(P)BufferEnable</pv_name>
+      <label>Show A</label>
       <x>410</x>
       <y>24</y>
       <width>85</width>
       <height>30</height>
-      <label>Show A</label>
       <tooltip>Purple trace = Slot A</tooltip>
     </widget>
     <widget type="textupdate" version="2.0.0">
@@ -1351,16 +1286,15 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
         <item>6</item>
         <item>7</item>
       </items>
-      <items_from_pv>true</items_from_pv>
     </widget>
     <widget type="checkbox" version="2.0.0">
       <name>BufferEnableB</name>
       <pv_name>$(P)BufferEnableB</pv_name>
+      <label>Show B</label>
       <x>660</x>
       <y>24</y>
       <width>90</width>
       <height>30</height>
-      <label>Show B</label>
       <tooltip>Magenta trace = Slot B (overplot)</tooltip>
     </widget>
     <widget type="label" version="2.0.0">
@@ -1377,7 +1311,7 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
       <pv_name>$(P)BufferDesc.$</pv_name>
       <x>805</x>
       <y>26</y>
-      <width>275</width>
+      <width>265</width>
       <height>26</height>
       <format>6</format>
       <tooltip>Edit description of Slot A</tooltip>
@@ -1405,23 +1339,23 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
       <name>BufferWriteBtn</name>
       <actions>
         <action type="write_pv">
+          <description>Write ASCII</description>
           <pv_name>$(P)BufferWriteFile</pv_name>
           <value>1</value>
-          <description>Write ASCII</description>
         </action>
       </actions>
       <text>Write File</text>
       <x>425</x>
       <y>58</y>
       <width>90</width>
-      <height>30</height>
+      <tooltip>$(actions)</tooltip>
     </widget>
     <widget type="textupdate" version="2.0.0">
       <name>BufferStatus</name>
       <pv_name>$(P)BufferStatus_RBV.$</pv_name>
       <x>525</x>
       <y>60</y>
-      <width>555</width>
+      <width>545</width>
       <height>26</height>
       <format>6</format>
     </widget>
@@ -1439,7 +1373,7 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
       <pv_name>$(P)BufferList_RBV.$</pv_name>
       <x>55</x>
       <y>92</y>
-      <width>1025</width>
+      <width>1015</width>
       <height>26</height>
       <format>6</format>
       <tooltip>Occupancy of all 8 slots</tooltip>
@@ -1449,16 +1383,13 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
       <pv_name>$(P)BufferTableText_RBV.$</pv_name>
       <x>55</x>
       <y>122</y>
-      <width>1025</width>
-      <height>70</height>
+      <width>1015</width>
+      <height>65</height>
       <font>
         <font family="Monospace" style="REGULAR" size="11.0">
         </font>
       </font>
       <format>6</format>
-      <vertical_alignment>0</vertical_alignment>
-      <wrap_words>true</wrap_words>
-      <multi_line>true</multi_line>
       <tooltip>Read-only X Y Error preview of Slot A (not full SpICE editable table)</tooltip>
     </widget>
   </widget>
