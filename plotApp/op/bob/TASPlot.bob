@@ -842,6 +842,23 @@ if yact in items:
       <y>5</y>
       <width>1040</width>
       <height>310</height>
+      <font>
+        <font family="Monospace" style="REGULAR" size="11.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="40" green="40" blue="40">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="240" green="240" blue="240">
+        </color>
+      </background_color>
+      <format>6</format>
+      <vertical_alignment>0</vertical_alignment>
+      <wrap_words>true</wrap_words>
+      <multi_line>true</multi_line>
+      <tooltip>SPiCE DataFileContents — CHAR waveform (pcaspy SpecFile pattern)</tooltip>
     </widget>
   </widget>
 </display>
