@@ -387,6 +387,174 @@ record(waveform, "$(P)CombineYdataErr") {
     field(SCAN, "1 second")
 }
 
+# --- Data Buffers (SpICE-style scratch slots) ---
+record(mbbo, "$(P)BufferSlot") {
+    field(DESC, "Active buffer slot 0..7")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_buffer_slot(VAL)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(FRVL, "4")
+    field(FVVL, "5")
+    field(SXVL, "6")
+    field(SVVL, "7")
+    field(ZRST, "0")
+    field(ONST, "1")
+    field(TWST, "2")
+    field(THST, "3")
+    field(FRST, "4")
+    field(FVST, "5")
+    field(SXST, "6")
+    field(SVST, "7")
+    field(VAL, "0")
+    field(PINI, "YES")
+}
+
+record(mbbo, "$(P)BufferSaveSource") {
+    field(DESC, "Save from Graph or Combine")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_buffer_save_source(VAL)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(ZRST, "Graph")
+    field(ONST, "Combine")
+    field(VAL, "0")
+    field(PINI, "YES")
+}
+
+record(bo, "$(P)BufferSave") {
+    field(DESC, "Save source curve into BufferSlot")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.buffer_save()")
+    field(ZNAM, "Idle")
+    field(ONAM, "Save")
+}
+
+record(bo, "$(P)BufferClear") {
+    field(DESC, "Clear BufferSlot")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.buffer_clear()")
+    field(ZNAM, "Idle")
+    field(ONAM, "Clear")
+}
+
+record(bo, "$(P)BufferEnable") {
+    field(DESC, "Show buffer slot on Graph")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_buffer_enable(VAL)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(bo, "$(P)BufferWriteFile") {
+    field(DESC, "Write BufferSlot to BufferSavePath")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.buffer_write_file()")
+    field(ZNAM, "Idle")
+    field(ONAM, "Write")
+}
+
+record(lso, "$(P)BufferDesc") {
+    field(DESC, "Edit description of BufferSlot")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_buffer_desc('VAL')")
+    field(SIZV, "255")
+}
+
+record(lso, "$(P)BufferXLabel") {
+    field(DESC, "Edit X label of BufferSlot")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_buffer_x_label('VAL')")
+    field(SIZV, "64")
+}
+
+record(lso, "$(P)BufferYLabel") {
+    field(DESC, "Edit Y label of BufferSlot")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_buffer_y_label('VAL')")
+    field(SIZV, "64")
+}
+
+record(lso, "$(P)BufferSavePath") {
+    field(DESC, "ASCII path for BufferWriteFile")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_buffer_save_path('VAL')")
+    field(SIZV, "255")
+}
+
+record(longin, "$(P)BufferNRows_RBV") {
+    field(DESC, "Points in BufferSlot")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.buffer_nrows_rbv()")
+    field(SCAN, ".5 second")
+}
+
+record(lsi, "$(P)BufferDesc_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.buffer_desc_rbv()")
+    field(SIZV, "255")
+    field(SCAN, ".5 second")
+}
+
+record(lsi, "$(P)BufferXLabel_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.buffer_x_label_rbv()")
+    field(SIZV, "64")
+    field(SCAN, ".5 second")
+}
+
+record(lsi, "$(P)BufferYLabel_RBV") {
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.buffer_y_label_rbv()")
+    field(SIZV, "64")
+    field(SCAN, ".5 second")
+}
+
+record(lsi, "$(P)BufferList_RBV") {
+    field(DESC, "Slot summary list")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.buffer_list_rbv()")
+    field(SIZV, "512")
+    field(SCAN, ".5 second")
+}
+
+record(lsi, "$(P)BufferStatus_RBV") {
+    field(DESC, "Buffer status / error")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.buffer_status_rbv()")
+    field(SIZV, "512")
+    field(SCAN, ".5 second")
+}
+
+record(waveform, "$(P)BufferXdata") {
+    field(DESC, "Buffer slot X")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.buffer_xdata()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
+record(waveform, "$(P)BufferYdata") {
+    field(DESC, "Buffer slot Y")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.buffer_ydata()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
+record(waveform, "$(P)BufferYdataErr") {
+    field(DESC, "Buffer slot Y errors")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.buffer_ydata_err()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
 record(waveform, "$(P)DataFileText") {
     field(DESC, "File text (Browse Data, SpecFile style)")
     field(DTYP, "pydev")

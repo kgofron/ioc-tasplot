@@ -15,6 +15,7 @@ from typing import Optional, Union
 import numpy as np
 
 from tasplot import FormatError, ScanDataset, load_scan, load_spec_file
+from tasplot.buffers import BufferStore, buffer_from_arrays
 from tasplot.combine import (
     CombineResult,
     combine_curves,
@@ -30,6 +31,9 @@ DATA_FILE_TEXT_MAX = 65536
 NORM_NONE = 0
 NORM_COLUMN = 1
 NORM_FIXED = 2
+BUFFER_FROM_GRAPH = 0
+BUFFER_FROM_COMBINE = 1
+BUFFER_N_SLOTS = 8
 
 
 class GraffitiPlotEngine:
@@ -68,6 +72,13 @@ class GraffitiPlotEngine:
         self.combine_enable = 0
         self.combine_desc = ""
         self._combine_result: Optional[CombineResult] = None
+        # Data Buffers (SpICE-style scratch slots)
+        self._buffers = BufferStore(n_slots=BUFFER_N_SLOTS)
+        self.buffer_slot = 0
+        self.buffer_save_source = BUFFER_FROM_GRAPH
+        self.buffer_enable = 0
+        self.buffer_save_path = ""
+        self._buffer_status = ""
 
     def _full_path(self) -> str:
         return self._path_for_scan_number(self.file_number, prefer_explicit=True)
@@ -270,6 +281,165 @@ class GraffitiPlotEngine:
             bin_tol=self.combine_bin_tol,
             norm_value=self.combine_norm_value,
             description=desc,
+        )
+
+    # --- Data Buffers ---
+
+    def set_buffer_slot(self, index: int) -> None:
+        self.buffer_slot = int(index) % BUFFER_N_SLOTS
+
+    def set_buffer_save_source(self, source: int) -> None:
+        self.buffer_save_source = int(source)
+
+    def set_buffer_enable(self, enabled: int) -> None:
+        self.buffer_enable = 1 if int(enabled) else 0
+
+    def set_buffer_save_path(self, path: str) -> None:
+        self.buffer_save_path = str(path).strip()
+
+    def set_buffer_desc(self, text: str) -> None:
+        try:
+            self._buffers.set_meta(self.buffer_slot, description=str(text))
+            self._buffer_status = f"OK slot {self.buffer_slot} desc updated"
+        except Exception as exc:
+            self._buffer_status = f"buffer: {exc}"
+            self._last_error = self._buffer_status
+
+    def set_buffer_x_label(self, text: str) -> None:
+        try:
+            self._buffers.set_meta(self.buffer_slot, x_label=str(text))
+            self._buffer_status = f"OK slot {self.buffer_slot} x label updated"
+        except Exception as exc:
+            self._buffer_status = f"buffer: {exc}"
+            self._last_error = self._buffer_status
+
+    def set_buffer_y_label(self, text: str) -> None:
+        try:
+            self._buffers.set_meta(self.buffer_slot, y_label=str(text))
+            self._buffer_status = f"OK slot {self.buffer_slot} y label updated"
+        except Exception as exc:
+            self._buffer_status = f"buffer: {exc}"
+            self._last_error = self._buffer_status
+
+    def buffer_save(self) -> int:
+        """Copy Graph or Combine curve into the selected buffer slot."""
+        try:
+            buf = self._capture_buffer_source()
+            self._buffers.save(self.buffer_slot, buf)
+            self._buffer_status = (
+                f"OK saved {buf.nrows} pts → slot {self.buffer_slot}"
+            )
+            self._last_error = ""
+            return 1
+        except Exception as exc:
+            self._buffer_status = f"buffer: {exc}"
+            self._last_error = self._buffer_status
+            return 0
+
+    def buffer_clear(self) -> int:
+        try:
+            self._buffers.clear(self.buffer_slot)
+            self._buffer_status = f"OK cleared slot {self.buffer_slot}"
+            self._last_error = ""
+            return 1
+        except Exception as exc:
+            self._buffer_status = f"buffer: {exc}"
+            self._last_error = self._buffer_status
+            return 0
+
+    def buffer_write_file(self) -> int:
+        """Write selected buffer to ASCII path in BufferSavePath."""
+        try:
+            path = self.buffer_save_path
+            if not path:
+                raise ValueError("set BufferSavePath first")
+            out = self._buffers.write_ascii(self.buffer_slot, path)
+            self._buffer_status = f"OK wrote {out}"
+            self._last_error = ""
+            return 1
+        except Exception as exc:
+            self._buffer_status = f"buffer: {exc}"
+            self._last_error = self._buffer_status
+            return 0
+
+    def buffer_nrows_rbv(self) -> int:
+        buf = self._buffers.get(self.buffer_slot)
+        return 0 if buf is None else int(buf.nrows)
+
+    def buffer_desc_rbv(self) -> str:
+        buf = self._buffers.get(self.buffer_slot)
+        return "" if buf is None else buf.description
+
+    def buffer_x_label_rbv(self) -> str:
+        buf = self._buffers.get(self.buffer_slot)
+        return "" if buf is None else buf.x_label
+
+    def buffer_y_label_rbv(self) -> str:
+        buf = self._buffers.get(self.buffer_slot)
+        return "" if buf is None else buf.y_label
+
+    def buffer_list_rbv(self) -> str:
+        return self._buffers.list_summary()
+
+    def buffer_status_rbv(self) -> str:
+        return self._buffer_status
+
+    def buffer_xdata(self) -> list[float]:
+        if not self.buffer_enable:
+            return _empty_waveform()
+        buf = self._buffers.get(self.buffer_slot)
+        if buf is None or buf.empty:
+            return _empty_waveform()
+        return _clip_waveform(buf.x)
+
+    def buffer_ydata(self) -> list[float]:
+        if not self.buffer_enable:
+            return _empty_waveform()
+        buf = self._buffers.get(self.buffer_slot)
+        if buf is None or buf.empty:
+            return _empty_waveform()
+        return _clip_waveform(buf.y)
+
+    def buffer_ydata_err(self) -> list[float]:
+        if not self.buffer_enable or not self.show_errors:
+            return _empty_waveform()
+        buf = self._buffers.get(self.buffer_slot)
+        if buf is None or buf.empty:
+            return _empty_waveform()
+        return _clip_waveform(buf.err)
+
+    def _capture_buffer_source(self):
+        src = int(self.buffer_save_source)
+        if src == BUFFER_FROM_COMBINE:
+            if self._combine_result is None:
+                raise RuntimeError("no combine result; run Combine first")
+            r = self._combine_result
+            return buffer_from_arrays(
+                r.x,
+                r.y,
+                r.err,
+                description=r.description or self.combine_desc or "combine",
+                x_label=self.combine_x_col or self.x_col or "X",
+                y_label=self.combine_y_col or self.y_col or "Y",
+            )
+        if self._scan is None:
+            raise RuntimeError("no scan loaded; browse or reload")
+        x = _valid_prefix(self.xdata())
+        y = _valid_prefix(self.ydata())
+        err = _valid_prefix(self.ydata_err())
+        if not x or not y:
+            raise RuntimeError("graph X/Y empty")
+        if len(err) != len(y):
+            err = None
+        cmd = self._scan.command or ""
+        desc = cmd or f"scan {self.file_number}"
+        return buffer_from_arrays(
+            x,
+            y,
+            err,
+            description=desc,
+            x_label=self.x_col or self._scan.default_x or "X",
+            y_label=self.y_col or self._scan.default_y or "Y",
         )
 
     def set_x_col(self, name: str) -> None:
@@ -730,6 +900,16 @@ def _find_spec_scan_start(lines: list[str], scan_number: Optional[int]) -> Optio
 def _empty_waveform() -> list[float]:
     """Full-NELM NaN trace so disabled/empty overlays do not inject log(0) zeros."""
     return [float("nan")] * MAX_WAVEFORM_POINTS
+
+
+def _valid_prefix(wave: list[float]) -> list[float]:
+    """Return leading finite samples (strip NaN padding)."""
+    out: list[float] = []
+    for v in wave:
+        if v != v:  # NaN
+            break
+        out.append(float(v))
+    return out
 
 
 def _clip_waveform(arr) -> list[float]:

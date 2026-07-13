@@ -5,7 +5,7 @@
     <P>$(P=TAS:Plot:)</P>
   </macros>
   <width>1120</width>
-  <height>1220</height>
+  <height>1260</height>
   <widget type="label" version="2.0.0">
     <name>Title</name>
     <text>ioc-tasplot — Browse + Graph (SPiCE Data tab successor)</text>
@@ -626,6 +626,34 @@ if yact in items:
             </rule>
           </rules>
         </trace>
+        <trace>
+          <name>buffer</name>
+          <x_pv>$(P)BufferXdata</x_pv>
+          <y_pv>$(P)BufferYdata</y_pv>
+          <err_pv>$(P)BufferYdataErr</err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="140" green="40" blue="160">
+            </color>
+          </color>
+          <line_width>2</line_width>
+          <line_style>0</line_style>
+          <point_type>2</point_type>
+          <point_size>5</point_size>
+          <visible>true</visible>
+          <rules>
+            <rule name="BufferVisible" prop_id="visible">
+              <exp bool_exp="pv0&gt;0">
+                <value>true</value>
+              </exp>
+              <exp bool_exp="pv0&lt;=0">
+                <value>false</value>
+              </exp>
+              <pv_name>$(P)BufferEnable</pv_name>
+            </rule>
+          </rules>
+        </trace>
       </traces>
     </widget>
   </widget>
@@ -849,11 +877,204 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
     </widget>
   </widget>
   <widget type="group" version="3.0.0">
+    <name>DataBuffers</name>
+    <x>10</x>
+    <y>855</y>
+    <width>1100</width>
+    <height>100</height>
+    <widget type="label" version="2.0.0">
+      <name>BufferHdr</name>
+      <text>Data Buffers (scratch slots → purple trace)</text>
+      <x>5</x>
+      <y>2</y>
+      <width>420</width>
+      <height>22</height>
+      <font>
+        <font family="Sans" style="BOLD" size="12.0">
+        </font>
+      </font>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>BufSlotLbl</name>
+      <text>Slot</text>
+      <x>5</x>
+      <y>28</y>
+      <width>35</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="combo" version="2.0.0">
+      <name>BufferSlot</name>
+      <pv_name>$(P)BufferSlot</pv_name>
+      <x>45</x>
+      <y>26</y>
+      <width>55</width>
+      <height>26</height>
+      <items>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+      </items>
+      <items_from_pv>true</items_from_pv>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>BufSrcLbl</name>
+      <text>From</text>
+      <x>110</x>
+      <y>28</y>
+      <width>40</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="combo" version="2.0.0">
+      <name>BufferSaveSource</name>
+      <pv_name>$(P)BufferSaveSource</pv_name>
+      <x>155</x>
+      <y>26</y>
+      <width>95</width>
+      <height>26</height>
+      <items>
+        <item>Graph</item>
+        <item>Combine</item>
+      </items>
+      <items_from_pv>true</items_from_pv>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>BufferSaveBtn</name>
+      <actions>
+        <action type="write_pv">
+          <pv_name>$(P)BufferSave</pv_name>
+          <value>1</value>
+          <description>Save into slot</description>
+        </action>
+      </actions>
+      <text>Save</text>
+      <x>260</x>
+      <y>24</y>
+      <width>70</width>
+      <height>30</height>
+      <tooltip>Copy Graph or Combine into selected slot</tooltip>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>BufferClearBtn</name>
+      <actions>
+        <action type="write_pv">
+          <pv_name>$(P)BufferClear</pv_name>
+          <value>1</value>
+          <description>Clear slot</description>
+        </action>
+      </actions>
+      <text>Clear</text>
+      <x>335</x>
+      <y>24</y>
+      <width>70</width>
+      <height>30</height>
+    </widget>
+    <widget type="checkbox" version="2.0.0">
+      <name>BufferEnable</name>
+      <pv_name>$(P)BufferEnable</pv_name>
+      <x>415</x>
+      <y>24</y>
+      <width>90</width>
+      <height>30</height>
+      <label>Show</label>
+      <tooltip>Show purple buffer trace on Graph</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>BufferNRows</name>
+      <pv_name>$(P)BufferNRows_RBV</pv_name>
+      <x>510</x>
+      <y>26</y>
+      <width>45</width>
+      <height>26</height>
+      <format>1</format>
+      <tooltip>Points in selected slot</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>BufDescLbl</name>
+      <text>Desc</text>
+      <x>565</x>
+      <y>28</y>
+      <width>40</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>BufferDesc</name>
+      <pv_name>$(P)BufferDesc.$</pv_name>
+      <x>610</x>
+      <y>26</y>
+      <width>200</width>
+      <height>26</height>
+      <format>6</format>
+      <tooltip>Edit description (slot must be non-empty)</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>BufferDescRBV</name>
+      <pv_name>$(P)BufferDesc_RBV.$</pv_name>
+      <x>815</x>
+      <y>26</y>
+      <width>265</width>
+      <height>26</height>
+      <format>6</format>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>BufPathLbl</name>
+      <text>File</text>
+      <x>5</x>
+      <y>62</y>
+      <width>35</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>BufferSavePath</name>
+      <pv_name>$(P)BufferSavePath.$</pv_name>
+      <x>45</x>
+      <y>60</y>
+      <width>420</width>
+      <height>26</height>
+      <format>6</format>
+      <tooltip>ASCII path for Write File</tooltip>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>BufferWriteBtn</name>
+      <actions>
+        <action type="write_pv">
+          <pv_name>$(P)BufferWriteFile</pv_name>
+          <value>1</value>
+          <description>Write ASCII</description>
+        </action>
+      </actions>
+      <text>Write File</text>
+      <x>475</x>
+      <y>58</y>
+      <width>95</width>
+      <height>30</height>
+      <tooltip>Save this buffer to ASCII file</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>BufferStatus</name>
+      <pv_name>$(P)BufferStatus_RBV.$</pv_name>
+      <x>580</x>
+      <y>60</y>
+      <width>500</width>
+      <height>26</height>
+      <format>6</format>
+      <tooltip>Buffer status (long-string .$)</tooltip>
+    </widget>
+  </widget>
+  <widget type="group" version="3.0.0">
     <name>DataFileContents</name>
     <x>10</x>
-    <y>860</y>
+    <y>960</y>
     <width>1100</width>
-    <height>350</height>
+    <height>280</height>
     <widget type="label" version="2.0.0">
       <name>DataFileHdr</name>
       <text>DataFileContents</text>
@@ -872,7 +1093,7 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
       <x>5</x>
       <y>5</y>
       <width>1040</width>
-      <height>310</height>
+      <height>240</height>
       <font>
         <font family="Monospace" style="REGULAR" size="11.0">
         </font>

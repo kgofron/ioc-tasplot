@@ -267,4 +267,44 @@ def test_combine_run_from_scan_folder(tmp_path):
     assert len(cx) == len(cy)
     assert len(cx) >= 5
     assert eng.combine_nrows_rbv() == len(cx)
+
+
+def test_buffer_save_graph_and_show(tmp_path):
+    eng = GraffitiPlotEngine()
+    path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
+    eng.set_selected_file(path)
+    eng.set_x_col("s1")
+    eng.set_y_col("detector")
+    eng.set_buffer_slot(2)
+    eng.set_buffer_save_source(0)  # Graph
+    assert eng.buffer_save() == 1
+    assert eng.buffer_nrows_rbv() >= 5
+    assert "2:" in eng.buffer_list_rbv()
+    eng.set_buffer_enable(1)
+    bx = _valid(eng.buffer_xdata())
+    by = _valid(eng.buffer_ydata())
+    assert len(bx) == len(by) == eng.buffer_nrows_rbv()
+    out = tmp_path / "slot2.txt"
+    eng.set_buffer_save_path(str(out))
+    assert eng.buffer_write_file() == 1
+    assert out.is_file()
+    eng.buffer_clear()
+    assert eng.buffer_nrows_rbv() == 0
+
+
+def test_buffer_save_from_combine(tmp_path):
+    src = (FIXTURES / "spice_hb3_exp0382_scan0001_head.dat").read_bytes()
+    (tmp_path / "HB3_exp0382_scan0001.dat").write_bytes(src)
+    eng = GraffitiPlotEngine()
+    eng.set_selected_file(str(tmp_path / "HB3_exp0382_scan0001.dat"))
+    eng.set_x_col("s1")
+    eng.set_y_col("detector")
+    eng.set_combine_add_list("1")
+    eng.set_combine_norm_value(1.0)
+    eng.set_combine_bin_tol(0.05)
+    assert eng.combine_run() == 1
+    eng.set_buffer_slot(0)
+    eng.set_buffer_save_source(1)  # Combine
+    assert eng.buffer_save() == 1
+    assert eng.buffer_nrows_rbv() == eng.combine_nrows_rbv()
     assert eng.combine_status_rbv().startswith("OK")
