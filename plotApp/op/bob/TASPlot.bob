@@ -5,7 +5,7 @@
     <P>$(P=TAS:Plot:)</P>
   </macros>
   <width>1120</width>
-  <height>1410</height>
+  <height>1180</height>
   <widget type="label" version="2.0.0">
     <name>Title</name>
     <text>ioc-tasplot — Browse + Graph (SPiCE Data tab successor)</text>
@@ -214,7 +214,7 @@
     <name>GraphData</name>
     <x>10</x>
     <y>180</y>
-    <width>1100</width>
+    <width>730</width>
     <height>560</height>
     <scripts>
       <script file="EmbeddedPy">
@@ -248,14 +248,14 @@ if yact in items:
       <text>X col</text>
       <x>5</x>
       <y>5</y>
-      <width>40</width>
+      <width>32</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
     <widget type="combo" version="2.0.0">
       <name>XCol</name>
       <pv_name>$(P)XCol</pv_name>
-      <x>55</x>
+      <x>40</x>
       <y>3</y>
       <height>24</height>
       <tooltip>X column (list from ColHeaders_RBV)</tooltip>
@@ -269,16 +269,16 @@ if yact in items:
     <widget type="label" version="2.0.0">
       <name>YColLbl</name>
       <text>Y col</text>
-      <x>170</x>
+      <x>145</x>
       <y>5</y>
-      <width>40</width>
+      <width>32</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
     <widget type="combo" version="2.0.0">
       <name>YCol</name>
       <pv_name>$(P)YCol</pv_name>
-      <x>215</x>
+      <x>180</x>
       <y>3</y>
       <height>24</height>
       <tooltip>Y column; Poisson errors on Y</tooltip>
@@ -292,18 +292,18 @@ if yact in items:
     <widget type="label" version="2.0.0">
       <name>NormLbl</name>
       <text>Norm</text>
-      <x>330</x>
+      <x>285</x>
       <y>5</y>
-      <width>38</width>
+      <width>32</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
     <widget type="combo" version="2.0.0">
       <name>NormMode</name>
       <pv_name>$(P)NormMode</pv_name>
-      <x>380</x>
+      <x>320</x>
       <y>3</y>
-      <width>95</width>
+      <width>72</width>
       <height>24</height>
       <tooltip>SPiCE Normalize to: None, column, or fixed value</tooltip>
       <items>
@@ -316,9 +316,9 @@ if yact in items:
     <widget type="combo" version="2.0.0">
       <name>NormCol</name>
       <pv_name>$(P)NormCol</pv_name>
-      <x>480</x>
+      <x>395</x>
       <y>3</y>
-      <width>95</width>
+      <width>72</width>
       <height>24</height>
       <tooltip>Normalization column (monitor, mcu, time, …)</tooltip>
       <items>
@@ -331,9 +331,9 @@ if yact in items:
     <widget type="spinner" version="2.0.0">
       <name>NormValue</name>
       <pv_name>$(P)NormValue</pv_name>
-      <x>580</x>
+      <x>470</x>
       <y>3</y>
-      <width>70</width>
+      <width>55</width>
       <height>24</height>
       <tooltip>Fixed divisor when Norm mode is Fixed</tooltip>
       <minimum>1.0</minimum>
@@ -342,9 +342,9 @@ if yact in items:
     <widget type="checkbox" version="2.0.0">
       <name>LogX</name>
       <pv_name>loc://$(DID)_logX(0)</pv_name>
-      <x>655</x>
+      <x>530</x>
       <y>1</y>
-      <width>70</width>
+      <width>55</width>
       <height>28</height>
       <label>Log X</label>
       <tooltip>Logarithmic X axis (SPiCE Graph Data scale)</tooltip>
@@ -352,9 +352,9 @@ if yact in items:
     <widget type="checkbox" version="2.0.0">
       <name>LogY</name>
       <pv_name>loc://$(DID)_logY(0)</pv_name>
-      <x>725</x>
+      <x>585</x>
       <y>1</y>
-      <width>70</width>
+      <width>55</width>
       <height>28</height>
       <label>Log Y</label>
       <tooltip>Logarithmic Y axis (SPiCE Graph Data scale)</tooltip>
@@ -362,9 +362,9 @@ if yact in items:
     <widget type="checkbox" version="2.0.0">
       <name>ShowErrors</name>
       <pv_name>$(P)ShowErrors</pv_name>
-      <x>795</x>
+      <x>640</x>
       <y>1</y>
-      <width>75</width>
+      <width>65</width>
       <height>28</height>
       <label>Errors</label>
       <tooltip>Poisson √N error bars on Y (after norm). Low counts look tiny on a full-scale linear axis — zoom or use Log Y.</tooltip>
@@ -372,8 +372,8 @@ if yact in items:
     <widget type="label" version="2.0.0">
       <name>FormatLbl</name>
       <text>Fmt</text>
-      <x>875</x>
-      <y>5</y>
+      <x>505</x>
+      <y>35</y>
       <width>28</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
@@ -381,16 +381,16 @@ if yact in items:
     <widget type="textupdate" version="2.0.0">
       <name>Format</name>
       <pv_name>$(P)Format_RBV</pv_name>
-      <x>905</x>
-      <y>3</y>
-      <width>45</width>
+      <x>535</x>
+      <y>33</y>
+      <width>40</width>
       <height>24</height>
     </widget>
     <widget type="label" version="2.0.0">
       <name>RowsLbl</name>
       <text>R</text>
-      <x>955</x>
-      <y>5</y>
+      <x>580</x>
+      <y>35</y>
       <width>14</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
@@ -398,17 +398,17 @@ if yact in items:
     <widget type="textupdate" version="2.0.0">
       <name>NRows</name>
       <pv_name>$(P)NRows_RBV</pv_name>
-      <x>972</x>
-      <y>3</y>
-      <width>35</width>
+      <x>595</x>
+      <y>33</y>
+      <width>30</width>
       <height>24</height>
       <format>1</format>
     </widget>
     <widget type="label" version="2.0.0">
       <name>ColsLbl</name>
       <text>C</text>
-      <x>1010</x>
-      <y>5</y>
+      <x>630</x>
+      <y>35</y>
       <width>14</width>
       <height>22</height>
       <horizontal_alignment>2</horizontal_alignment>
@@ -416,9 +416,9 @@ if yact in items:
     <widget type="textupdate" version="2.0.0">
       <name>NColumns</name>
       <pv_name>$(P)NColumns_RBV</pv_name>
-      <x>1027</x>
-      <y>3</y>
-      <width>35</width>
+      <x>645</x>
+      <y>33</y>
+      <width>30</width>
       <height>24</height>
       <format>1</format>
     </widget>
@@ -436,7 +436,7 @@ if yact in items:
       <pv_name>$(P)ColHeaders_RBV.$</pv_name>
       <x>65</x>
       <y>33</y>
-      <width>980</width>
+      <width>430</width>
       <height>22</height>
       <foreground_color>
         <color red="80" green="80" blue="80">
@@ -458,7 +458,7 @@ if yact in items:
       <pv_name>$(P)LastError_RBV.$</pv_name>
       <x>80</x>
       <y>58</y>
-      <width>965</width>
+      <width>640</width>
       <height>24</height>
       <format>6</format>
       <foreground_color>
@@ -471,7 +471,7 @@ if yact in items:
       <name>ScanPlot</name>
       <x>5</x>
       <y>90</y>
-      <width>1040</width>
+      <width>720</width>
       <height>430</height>
       <rules>
         <rule name="XlabelAx" prop_id="x_axis.title" out_exp="true">
@@ -710,6 +710,50 @@ if yact in items:
           </rules>
         </trace>
       </traces>
+    </widget>
+  </widget>
+  <widget type="group" version="3.0.0">
+    <name>DataFileContents</name>
+    <x>750</x>
+    <y>180</y>
+    <width>360</width>
+    <height>560</height>
+    <widget type="label" version="2.0.0">
+      <name>DataFileHdr</name>
+      <text>DataFileContents</text>
+      <x>5</x>
+      <y>0</y>
+      <width>340</width>
+      <height>22</height>
+      <font>
+        <font family="Sans" style="BOLD" size="11.0">
+        </font>
+      </font>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>DataFileText</name>
+      <pv_name>$(P)DataFileText</pv_name>
+      <x>5</x>
+      <y>28</y>
+      <width>350</width>
+      <height>525</height>
+      <font>
+        <font family="Monospace" style="REGULAR" size="11.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="40" green="40" blue="40">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="240" green="240" blue="240">
+        </color>
+      </background_color>
+      <format>6</format>
+      <vertical_alignment>0</vertical_alignment>
+      <wrap_words>true</wrap_words>
+      <multi_line>true</multi_line>
+      <tooltip>Scan file text (CHAR waveform, Phoebus String) — SPiCE .dat or SPEC</tooltip>
     </widget>
   </widget>
   <widget type="group" version="3.0.0">
@@ -1416,50 +1460,6 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
       <wrap_words>true</wrap_words>
       <multi_line>true</multi_line>
       <tooltip>Read-only X Y Error preview of Slot A (not full SpICE editable table)</tooltip>
-    </widget>
-  </widget>
-  <widget type="group" version="3.0.0">
-    <name>DataFileContents</name>
-    <x>10</x>
-    <y>1170</y>
-    <width>1100</width>
-    <height>220</height>
-    <widget type="label" version="2.0.0">
-      <name>DataFileHdr</name>
-      <text>DataFileContents</text>
-      <x>5</x>
-      <y>5</y>
-      <width>160</width>
-      <height>22</height>
-      <font>
-        <font family="Sans" style="BOLD" size="11.0">
-        </font>
-      </font>
-    </widget>
-    <widget type="textentry" version="3.0.0">
-      <name>DataFileText</name>
-      <pv_name>$(P)DataFileText</pv_name>
-      <x>5</x>
-      <y>5</y>
-      <width>1040</width>
-      <height>200</height>
-      <font>
-        <font family="Monospace" style="REGULAR" size="11.0">
-        </font>
-      </font>
-      <foreground_color>
-        <color red="40" green="40" blue="40">
-        </color>
-      </foreground_color>
-      <background_color>
-        <color red="240" green="240" blue="240">
-        </color>
-      </background_color>
-      <format>6</format>
-      <vertical_alignment>0</vertical_alignment>
-      <wrap_words>true</wrap_words>
-      <multi_line>true</multi_line>
-      <tooltip>Scan file text (CHAR waveform, Phoebus String) — SPiCE .dat or SPEC</tooltip>
     </widget>
   </widget>
 </display>
