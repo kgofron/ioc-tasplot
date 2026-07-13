@@ -6,8 +6,8 @@ Handoff for resuming work after a break.
 
 - **Remote:** https://github.com/kgofron/ioc-tasplot
 - **Branch:** `main` (sync with `origin/main` before long breaks)
-- **Tests:** `30 passed` (`python3 -m pytest -q`)
-- **Latest feature work:** Phase 4–6 + live/overlay/PyMca + `ShowErrors` (Poisson √N)
+- **Tests:** `37 passed` (`python3 -m pytest -q`)
+- **Latest feature work:** Combine Data MVP + Phase 4–6 + PyMca SPiCE shim + `ShowErrors`
 
 ## What works (validated)
 
@@ -22,6 +22,7 @@ Handoff for resuming work after a break.
 - **Log X / Log Y** — Phoebus local checkboxes → xyplot log scales
 - **Errors** (`ShowErrors`) — Poisson √N on selected Y (`YdataErr`); works for **detector** and **monitor** (both count-like). Band looks thin at high *N* on a full-scale axis; zoom Y (or Log Y) to see it. Toggle Off → empty err waveform.
 - **Overlay** — `OverlayEnable` + `OverlayFileNumber` second trace (orange)
+- **Combine Data** — `+ list` / `− list` scan #s, Norm to + weight col, Bin tol → green **combine** trace (`CombineRun` / `CombineEnable`). Not full SpICE buffer UI yet.
 - **PyMca** button — peak fit / overlay (**shipped:** CERTIF SPEC pass-through; **SPiCE → temp SPEC** with named `#L` via `tasplot.export_spec`). Alternative later: **native SPiCE** in upstream PyMca — see [landscape § SPiCE in PyMca](reference/tas-plotting-tools-landscape.md#spice-in-pymca--two-viable-paths).
 - **DataFileContents** — full-file text via I/O Intr (`DataFileText`, 64 KB)
 - Plot title from `Command_RBV`; Y label from `PlotAxisLabel_RBV` (norm-aware)
@@ -72,6 +73,9 @@ caput -S TAS:Plot:NormCol monitor
 | `XCol` / `YCol` / `Norm*` | Axes + normalization |
 | `ShowErrors` | Poisson √N error bars on/off (`YdataErr`) |
 | `OverlayEnable` / `OverlayFileNumber` | Second scan overlay |
+| `CombineAddList` / `CombineSubList` / `CombineRun` | Combine +/− scan lists |
+| `CombineNorm*` / `CombineBinTol` / `CombineEnable` | Combine renorm, binning, show result |
+| `CombineXdata` / `CombineYdata` / `CombineYdataErr` | Combine result waveforms |
 | `OverlayXdata` / `OverlayYdata` / `OverlayYdataErr` | Overlay waveforms |
 | `Xdata` / `Ydata` / `YdataErr` | Primary plot |
 | `DataFileText` | File contents panel |
@@ -85,11 +89,12 @@ caput -S TAS:Plot:NormCol monitor
 - [x] Phase 5 — overlay second scan (basic Overplot)
 - [x] Phase 6 — deepen PyMca launcher (CLI + API fallback)
 - [x] Poisson √N error bars + `ShowErrors` toggle (Option A)
+- [x] Combine Data MVP (+/− lists, bin tol, renorm, green trace)
 
 ## Next (when resuming)
 
-1. **Combine Data** — multi-scan add/subtract (full SpICE Combine tab)
-2. **Data Buffers** — scratch buffers tab
+1. **Data Buffers** — scratch buffers tab (SpICE save / multi-slot)
+2. **Combine polish** — per-list X/Y overrides; Del-row UI; save combine to buffer/file
 3. **Beamline deploy** — `/epics/iocs/ioc-tasplot`, production paths, autosave
 4. **Facility** — PVXS/QSRV 2
 5. Optional: in-OPI Gaussian fit if scientists reject PyMca-only peak fit

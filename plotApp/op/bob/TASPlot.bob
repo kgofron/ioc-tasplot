@@ -5,7 +5,7 @@
     <P>$(P=TAS:Plot:)</P>
   </macros>
   <width>1120</width>
-  <height>1160</height>
+  <height>1220</height>
   <widget type="label" version="2.0.0">
     <name>Title</name>
     <text>ioc-tasplot — Browse + Graph (SPiCE Data tab successor)</text>
@@ -596,15 +596,233 @@ if yact in items:
             </rule>
           </rules>
         </trace>
+        <trace>
+          <name>combine</name>
+          <x_pv>$(P)CombineXdata</x_pv>
+          <y_pv>$(P)CombineYdata</y_pv>
+          <err_pv>$(P)CombineYdataErr</err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="0" green="140" blue="60">
+            </color>
+          </color>
+          <line_width>2</line_width>
+          <line_style>0</line_style>
+          <point_type>2</point_type>
+          <point_size>5</point_size>
+          <visible>true</visible>
+          <rules>
+            <rule name="CombineVisible" prop_id="visible">
+              <exp bool_exp="pv0&gt;0">
+                <value>true</value>
+              </exp>
+              <exp bool_exp="pv0&lt;=0">
+                <value>false</value>
+              </exp>
+              <pv_name>$(P)CombineEnable</pv_name>
+            </rule>
+          </rules>
+        </trace>
       </traces>
+    </widget>
+  </widget>
+  <widget type="group" version="3.0.0">
+    <name>CombineData</name>
+    <x>10</x>
+    <y>745</y>
+    <width>1100</width>
+    <height>105</height>
+    <widget type="label" version="2.0.0">
+      <name>CombineHdr</name>
+      <text>Combine Data (+/− scans → green trace)</text>
+      <x>5</x>
+      <y>2</y>
+      <width>320</width>
+      <height>20</height>
+      <font>
+        <font family="Sans" style="BOLD" size="12.0">
+        </font>
+      </font>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>AddLbl</name>
+      <text>+ list</text>
+      <x>5</x>
+      <y>28</y>
+      <width>40</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>CombineAddList</name>
+      <pv_name>$(P)CombineAddList.$</pv_name>
+      <x>50</x>
+      <y>26</y>
+      <width>120</width>
+      <height>26</height>
+      <format>6</format>
+      <tooltip>Comma-separated scan numbers to ADD (same folder)</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>SubLbl</name>
+      <text>− list</text>
+      <x>180</x>
+      <y>28</y>
+      <width>40</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>CombineSubList</name>
+      <pv_name>$(P)CombineSubList.$</pv_name>
+      <x>225</x>
+      <y>26</y>
+      <width>120</width>
+      <height>26</height>
+      <format>6</format>
+      <tooltip>Comma-separated scan numbers to SUBTRACT</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>CNormLbl</name>
+      <text>Norm to</text>
+      <x>355</x>
+      <y>28</y>
+      <width>55</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>CombineNormValue</name>
+      <pv_name>$(P)CombineNormValue</pv_name>
+      <x>415</x>
+      <y>26</y>
+      <width>70</width>
+      <height>26</height>
+      <format>1</format>
+      <precision>4</precision>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>CombineNormCol</name>
+      <pv_name>$(P)CombineNormCol.$</pv_name>
+      <x>490</x>
+      <y>26</y>
+      <width>80</width>
+      <height>26</height>
+      <format>6</format>
+      <tooltip>Weight column (monitor / time / mcu)</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>BinTolLbl</name>
+      <text>Bin tol</text>
+      <x>580</x>
+      <y>28</y>
+      <width>50</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>CombineBinTol</name>
+      <pv_name>$(P)CombineBinTol</pv_name>
+      <x>635</x>
+      <y>26</y>
+      <width>70</width>
+      <height>26</height>
+      <format>1</format>
+      <precision>6</precision>
+      <tooltip>X bin width; 0 = require identical X</tooltip>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>CombineRunBtn</name>
+      <actions>
+        <action type="write_pv">
+          <pv_name>$(P)CombineRun</pv_name>
+          <value>1</value>
+          <description>Run combine</description>
+        </action>
+      </actions>
+      <text>Combine</text>
+      <x>720</x>
+      <y>24</y>
+      <width>85</width>
+      <height>30</height>
+      <tooltip>Σ(+) − Σ(−) with bin tolerance + renorm</tooltip>
+    </widget>
+    <widget type="checkbox" version="2.0.0">
+      <name>CombineEnable</name>
+      <pv_name>$(P)CombineEnable</pv_name>
+      <x>815</x>
+      <y>24</y>
+      <width>90</width>
+      <height>30</height>
+      <label>Show</label>
+      <tooltip>Show green combine result on Graph</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>CombineNRows</name>
+      <pv_name>$(P)CombineNRows_RBV</pv_name>
+      <x>910</x>
+      <y>26</y>
+      <width>50</width>
+      <height>26</height>
+      <format>1</format>
+      <tooltip>Result point count</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>CXLbl</name>
+      <text>X</text>
+      <x>5</x>
+      <y>62</y>
+      <width>20</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>CombineXCol</name>
+      <pv_name>$(P)CombineXCol.$</pv_name>
+      <x>30</x>
+      <y>60</y>
+      <width>90</width>
+      <height>26</height>
+      <format>6</format>
+      <tooltip>Blank = use Graph X col</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>CYLbl</name>
+      <text>Y</text>
+      <x>130</x>
+      <y>62</y>
+      <width>20</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>CombineYCol</name>
+      <pv_name>$(P)CombineYCol.$</pv_name>
+      <x>155</x>
+      <y>60</y>
+      <width>90</width>
+      <height>26</height>
+      <format>6</format>
+      <tooltip>Blank = use Graph Y col</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>CombineStatus</name>
+      <pv_name>$(P)CombineStatus_RBV.$</pv_name>
+      <x>260</x>
+      <y>60</y>
+      <width>820</width>
+      <height>26</height>
+      <format>6</format>
+      <tooltip>Combine status or error</tooltip>
     </widget>
   </widget>
   <widget type="group" version="3.0.0">
     <name>DataFileContents</name>
     <x>10</x>
-    <y>740</y>
+    <y>860</y>
     <width>1100</width>
-    <height>410</height>
+    <height>350</height>
     <widget type="label" version="2.0.0">
       <name>DataFileHdr</name>
       <text>DataFileContents</text>
@@ -623,24 +841,7 @@ if yact in items:
       <x>5</x>
       <y>5</y>
       <width>1040</width>
-      <height>360</height>
-      <font>
-        <font family="Monospace" style="REGULAR" size="11.0">
-        </font>
-      </font>
-      <foreground_color>
-        <color red="40" green="40" blue="40">
-        </color>
-      </foreground_color>
-      <background_color>
-        <color red="240" green="240" blue="240">
-        </color>
-      </background_color>
-      <format>6</format>
-      <vertical_alignment>0</vertical_alignment>
-      <wrap_words>true</wrap_words>
-      <multi_line>true</multi_line>
-      <tooltip>SPiCE DataFileContents — CHAR waveform (pcaspy SpecFile pattern)</tooltip>
+      <height>310</height>
     </widget>
   </widget>
 </display>

@@ -266,6 +266,125 @@ record(waveform, "$(P)OverlayYdataErr") {
     field(SCAN, "1 second")
 }
 
+# --- Combine Data (SpICE-style +/− scan lists) ---
+record(lso, "$(P)CombineAddList") {
+    field(DESC, "Add scan #s (comma list)")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_combine_add_list(VAL)")
+    field(SIZV, "255")
+}
+
+record(lso, "$(P)CombineSubList") {
+    field(DESC, "Subtract scan #s (comma list)")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_combine_sub_list(VAL)")
+    field(SIZV, "255")
+}
+
+record(lso, "$(P)CombineXCol") {
+    field(DESC, "Combine X column (blank=Graph X)")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_combine_x_col(VAL)")
+    field(SIZV, "64")
+}
+
+record(lso, "$(P)CombineYCol") {
+    field(DESC, "Combine Y column (blank=Graph Y)")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_combine_y_col(VAL)")
+    field(SIZV, "64")
+}
+
+record(lso, "$(P)CombineNormCol") {
+    field(DESC, "Combine weight / norm column")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_combine_norm_col(VAL)")
+    field(SIZV, "64")
+}
+
+record(ao, "$(P)CombineNormValue") {
+    field(DESC, "Normalize to this value")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_combine_norm_value(VAL)")
+    field(PREC, "4")
+    field(VAL, "1")
+    field(PINI, "YES")
+}
+
+record(ao, "$(P)CombineBinTol") {
+    field(DESC, "X bin tolerance (0=exact X)")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_combine_bin_tol(VAL)")
+    field(PREC, "6")
+    field(VAL, "0.005")
+    field(PINI, "YES")
+}
+
+record(lso, "$(P)CombineDesc") {
+    field(DESC, "Combine result description")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_combine_desc(VAL)")
+    field(SIZV, "255")
+}
+
+record(bo, "$(P)CombineRun") {
+    field(DESC, "Run combine (+/− lists)")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.combine_run()")
+    field(ZNAM, "Idle")
+    field(ONAM, "Run")
+}
+
+record(bo, "$(P)CombineEnable") {
+    field(DESC, "Show combine result trace")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_combine_enable(VAL)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(longin, "$(P)CombineNRows_RBV") {
+    field(DESC, "Combine result points")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.combine_nrows_rbv()")
+    field(SCAN, ".5 second")
+}
+
+record(lsi, "$(P)CombineStatus_RBV") {
+    field(DESC, "Combine status / error")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.combine_status_rbv()")
+    field(SIZV, "255")
+    field(SCAN, ".5 second")
+}
+
+record(waveform, "$(P)CombineXdata") {
+    field(DESC, "Combine result X")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.combine_xdata()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
+record(waveform, "$(P)CombineYdata") {
+    field(DESC, "Combine result Y")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.combine_ydata()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
+record(waveform, "$(P)CombineYdataErr") {
+    field(DESC, "Combine result Y errors")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.combine_ydata_err()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
 record(waveform, "$(P)DataFileText") {
     field(DESC, "File text (Browse Data, SpecFile style)")
     field(DTYP, "pydev")

@@ -29,8 +29,9 @@ SPiCE conversion needs the **ioc-tasplot** checkout (package `tasplot`). When sc
 7. **Scan #** → rebuilds `*_scanNNNN.dat`; grey header = `FullFileName_RBV.$`
 8. **Reload** — re-read file (keeps X/Y); **Live** — auto-reload when file grows
 9. **Over #** + **Overlay** — second trace (orange) from another scan # in the same folder
-10. **PyMca** — peak fit (`python3-pymca5` / `pymca`). **Shipped path:** SPiCE → temp SPEC (`tasplot.export_spec`) so SpecFile shows `s1`/`detector` names; CERTIF SPEC unchanged. **Longer-term alternative:** native SPiCE support in upstream PyMca (ESRF / [vasole/pymca](https://github.com/vasole/pymca)) — see [landscape](../../docs/reference/tas-plotting-tools-landscape.md#spice-in-pymca--two-viable-paths). Logs: `/tmp/open_in_pymca.log`.
-11. **Graph Data** — X/Y cols, Norm, **Log X / Log Y**, **Errors** (`ShowErrors` — Poisson √N on Y); title from `Command_RBV.$`; Y label from `PlotAxisLabel_RBV`
-12. **DataFileContents** — `DataFileText` CHAR waveform
+10. **Combine Data** — `+ list` / `− list`, Norm to + weight col, Bin tol → **Combine** + **Show** (green trace). Shared folder scan #s; blank Combine X/Y = Graph X/Y.
+11. **PyMca** — peak fit (`python3-pymca5` / `pymca`). **Shipped path:** SPiCE → temp SPEC (`tasplot.export_spec`) so SpecFile shows `s1`/`detector` names; CERTIF SPEC unchanged. **Longer-term alternative:** native SPiCE support in upstream PyMca (ESRF / [vasole/pymca](https://github.com/vasole/pymca)) — see [landscape](../../docs/reference/tas-plotting-tools-landscape.md#spice-in-pymca--two-viable-paths). Logs: `/tmp/open_in_pymca.log`.
+12. **Graph Data** — X/Y cols, Norm, **Log X / Log Y**, **Errors** (`ShowErrors` — Poisson √N on Y); title from `Command_RBV.$`; Y label from `PlotAxisLabel_RBV`
+13. **DataFileContents** — `DataFileText` CHAR waveform
 
 SPiCE reference: [docs/reference/spice-gui/](../../docs/reference/spice-gui/README.md).

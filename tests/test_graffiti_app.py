@@ -245,3 +245,26 @@ def test_acquire_spec_fixture():
     assert "#S 2" in blob
     assert "#L" in blob
     assert "Detector" in blob
+
+
+def test_combine_run_from_scan_folder(tmp_path):
+    src = (FIXTURES / "spice_hb3_exp0382_scan0001_head.dat").read_bytes()
+    for n in (1, 2):
+        (tmp_path / f"HB3_exp0382_scan{n:04d}.dat").write_bytes(src)
+    eng = GraffitiPlotEngine()
+    eng.set_selected_file(str(tmp_path / "HB3_exp0382_scan0001.dat"))
+    eng.set_x_col("s1")
+    eng.set_y_col("detector")
+    eng.set_combine_add_list("1,2")
+    eng.set_combine_sub_list("")
+    eng.set_combine_norm_col("monitor")
+    eng.set_combine_norm_value(1.0)
+    eng.set_combine_bin_tol(0.05)
+    assert eng.combine_run() == 1
+    eng.set_combine_enable(1)
+    cx = _valid(eng.combine_xdata())
+    cy = _valid(eng.combine_ydata())
+    assert len(cx) == len(cy)
+    assert len(cx) >= 5
+    assert eng.combine_nrows_rbv() == len(cx)
+    assert eng.combine_status_rbv().startswith("OK")

@@ -15,6 +15,14 @@ from typing import Optional, Union
 import numpy as np
 
 from tasplot import FormatError, ScanDataset, load_scan, load_spec_file
+from tasplot.combine import (
+    CombineResult,
+    combine_curves,
+    curve_from_scan,
+    iter_signed_scan_numbers,
+    parse_scan_list,
+    resolve_column,
+)
 from tasplot.paths import hb3_scan_path
 
 MAX_WAVEFORM_POINTS = 4000
@@ -49,6 +57,17 @@ class GraffitiPlotEngine:
         self.norm_mode = NORM_NONE
         self.norm_col = "monitor"
         self.norm_value = 1.0
+        # Combine Data (SpICE-style +/− lists → one result curve)
+        self.combine_add_list = ""
+        self.combine_sub_list = ""
+        self.combine_x_col = ""
+        self.combine_y_col = ""
+        self.combine_norm_col = "monitor"
+        self.combine_norm_value = 1.0
+        self.combine_bin_tol = 0.005
+        self.combine_enable = 0
+        self.combine_desc = ""
+        self._combine_result: Optional[CombineResult] = None
 
     def _full_path(self) -> str:
         return self._path_for_scan_number(self.file_number, prefer_explicit=True)
@@ -137,6 +156,121 @@ class GraffitiPlotEngine:
     def set_show_errors(self, enabled: int) -> None:
         """Enable Poisson √N error bars on Y (Phoebus err_pv)."""
         self.show_errors = 1 if int(enabled) else 0
+
+    def set_combine_add_list(self, text: str) -> None:
+        self.combine_add_list = str(text).strip()
+
+    def set_combine_sub_list(self, text: str) -> None:
+        self.combine_sub_list = str(text).strip()
+
+    def set_combine_x_col(self, name: str) -> None:
+        self.combine_x_col = name.strip()
+
+    def set_combine_y_col(self, name: str) -> None:
+        self.combine_y_col = name.strip()
+
+    def set_combine_norm_col(self, name: str) -> None:
+        self.combine_norm_col = name.strip()
+
+    def set_combine_norm_value(self, value: float) -> None:
+        self.combine_norm_value = float(value)
+
+    def set_combine_bin_tol(self, value: float) -> None:
+        self.combine_bin_tol = float(value)
+
+    def set_combine_enable(self, enabled: int) -> None:
+        self.combine_enable = 1 if int(enabled) else 0
+
+    def set_combine_desc(self, text: str) -> None:
+        self.combine_desc = str(text).strip()
+
+    def combine_run(self) -> int:
+        """Execute combine from Add/Sub scan lists; store result for waveforms."""
+        try:
+            self._combine_result = self._run_combine()
+            self._last_error = ""
+            return 1
+        except Exception as exc:
+            self._combine_result = None
+            self._last_error = f"combine: {exc}"
+            return 0
+
+    def combine_add_list_rbv(self) -> str:
+        return self.combine_add_list
+
+    def combine_sub_list_rbv(self) -> str:
+        return self.combine_sub_list
+
+    def combine_nrows_rbv(self) -> int:
+        if self._combine_result is None:
+            return 0
+        return int(len(self._combine_result.x))
+
+    def combine_status_rbv(self) -> str:
+        if self._combine_result is None:
+            return self._last_error if self._last_error.startswith("combine:") else ""
+        n = len(self._combine_result.x)
+        desc = self._combine_result.description or self.combine_desc
+        return f"OK {n} pts" + (f" — {desc}" if desc else "")
+
+    def combine_xdata(self) -> list[float]:
+        if not self.combine_enable or self._combine_result is None:
+            return _empty_waveform()
+        return _clip_waveform(self._combine_result.x)
+
+    def combine_ydata(self) -> list[float]:
+        if not self.combine_enable or self._combine_result is None:
+            return _empty_waveform()
+        return _clip_waveform(self._combine_result.y)
+
+    def combine_ydata_err(self) -> list[float]:
+        if not self.combine_enable or self._combine_result is None:
+            return _empty_waveform()
+        if not self.show_errors:
+            return _empty_waveform()
+        return _clip_waveform(self._combine_result.err)
+
+    def _run_combine(self) -> CombineResult:
+        add = parse_scan_list(self.combine_add_list)
+        sub = parse_scan_list(self.combine_sub_list)
+        pairs = iter_signed_scan_numbers(add, sub)
+        if not pairs:
+            raise ValueError("Add/Sub lists are empty")
+        x_name = self.combine_x_col or self.x_col
+        y_name = self.combine_y_col or self.y_col
+        w_name = self.combine_norm_col or "monitor"
+        if not x_name or not y_name:
+            raise ValueError("set Combine X/Y columns (or Graph X/Y first)")
+        curves = []
+        titles = []
+        for scan_no, sign in pairs:
+            from tasplot.load import detect_format
+
+            path = self._path_for_scan_number(scan_no)
+            if not os.path.isfile(path):
+                raise FileNotFoundError(path)
+            if detect_format(path) == "spec":
+                scan = load_spec_file(
+                    path, scan_number=self.spec_scan_number or None
+                )
+            else:
+                scan = load_scan(path)
+            xc = resolve_column(scan, x_name)
+            yc = resolve_column(scan, y_name)
+            wc = resolve_column(scan, w_name)
+            curves.append(
+                curve_from_scan(
+                    scan, x_col=xc, y_col=yc, weight_col=wc, sign=sign
+                )
+            )
+            titles.append(f"{'+' if sign > 0 else '-'}{scan_no}")
+        desc = self.combine_desc or (" ".join(titles))
+        return combine_curves(
+            curves,
+            bin_tol=self.combine_bin_tol,
+            norm_value=self.combine_norm_value,
+            description=desc,
+        )
 
     def set_x_col(self, name: str) -> None:
         self.x_col = name.strip()
