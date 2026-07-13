@@ -5,8 +5,11 @@ Put writable scan files here for instrument demos (Live reload, Overlay).
 | File | Purpose |
 |------|---------|
 | [`ADR-scan-formats.md`](ADR-scan-formats.md) | **Tracked** — SPEC vs SPiCE cheat sheet + ADRs (EOL / migration) for demos |
+| `Beamlines/*.pptx` | Local meeting decks (HB-2A, DEMAND) — **gitignored** |
 | `live_test.dat` | Growing-scan Live demo (HB3 exp382 scan0001 + extra points) |
 | `yongcai_20240530.spec` | CERTIF SPEC multi-scan demo (from PyMCA/YongCai/20240530) |
+
+Post-meeting plan (tracked): [`docs/reference/meeting-2026-07-13-plan.md`](../docs/reference/meeting-2026-07-13-plan.md).
 
 ```bash
 # After clone / before Monday talk

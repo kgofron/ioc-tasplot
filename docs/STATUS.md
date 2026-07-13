@@ -101,11 +101,15 @@ caput -S TAS:Plot:NormCol monitor
 
 ## Next (when resuming)
 
-1. **Beamline deploy** — `/epics/iocs/ioc-tasplot`, production paths, autosave
-2. **Facility** — PVXS/QSRV 2
-3. Optional: editable buffer table / Del-row Combine UI; in-OPI Gaussian fit if PyMca isn’t enough
+1. **Fit → PVs MVP** — Gaussian + background on Graph/Buffer; status + optional model waveform (see [meeting plan](reference/meeting-2026-07-13-plan.md)); PyMca GUI stays for deep interactive fit
+2. **Beamline deploy** — `/epics/iocs/ioc-tasplot`, production paths, autosave; CA address list
+3. **Multi-overlay / alignment history** — more than one overlay or buffer slots for order-parameter / previous cals
+4. **Facility** — PVXS/QSRV 2
+5. Optional: headless PyMca batch fit spike; editable buffer table; 2D→1D cut contract (separate ADR)
 
-**Monday prep (short):** demo paths (`demo/` + exp382); SPEC `#S` on YongCai `demo/yongcai_20240530.spec`; Phoebus CA address list if duplicate-server magenta borders persist. Briefing: [`demo/ADR-scan-formats.md`](../demo/ADR-scan-formats.md) (SPEC vs SPiCE + CRLF/`^M`).
+**Meeting follow-up:** [meeting-2026-07-13-plan.md](reference/meeting-2026-07-13-plan.md) — TAVI = offline Graffiti replacement; desk = ioc-tasplot; integrity = don’t rewrite raw SpICE files.
+
+**Monday prep (short):** demo paths (`demo/` + exp382); SPEC `#S` on YongCai `demo/yongcai_20240530.spec`; Phoebus CA address list if duplicate-server magenta borders persist. Briefing: [`demo/ADR-scan-formats.md`](../demo/ADR-scan-formats.md) (SPEC vs SPiCE + CRLF/`^M`). Decks: `demo/Beamlines/` (local).
 
 ## Operational notes
 
