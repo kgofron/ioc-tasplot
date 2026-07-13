@@ -432,7 +432,7 @@ class GraffitiPlotEngine:
             pass
 
     def data_file_text(self) -> list[int]:
-        """CHAR waveform text (pcaspy SpecFile pattern) for Phoebus multi-line display."""
+        """CHAR waveform of scan-file text for Phoebus multi-line String display."""
         text = self._data_file_text
         if not text:
             path = self._full_path()

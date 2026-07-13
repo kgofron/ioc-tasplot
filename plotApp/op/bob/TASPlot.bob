@@ -858,7 +858,7 @@ if yact in items:
       <vertical_alignment>0</vertical_alignment>
       <wrap_words>true</wrap_words>
       <multi_line>true</multi_line>
-      <tooltip>SPiCE DataFileContents — CHAR waveform (pcaspy SpecFile pattern)</tooltip>
+      <tooltip>Scan file text (CHAR waveform, Phoebus String) — SPiCE .dat or SPEC</tooltip>
     </widget>
   </widget>
 </display>
