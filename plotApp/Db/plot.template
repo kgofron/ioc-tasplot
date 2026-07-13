@@ -300,8 +300,6 @@ record(lso, "$(P)CombineNormCol") {
     field(DTYP, "pydev")
     field(OUT, "@graffiti_plot.set_combine_norm_col('VAL')")
     field(SIZV, "64")
-    field(VAL, "monitor")
-    field(PINI, "YES")
 }
 
 record(lso, "$(P)CombineDesc") {
@@ -412,6 +410,30 @@ record(mbbo, "$(P)BufferSlot") {
     field(PINI, "YES")
 }
 
+record(mbbo, "$(P)BufferSlotB") {
+    field(DESC, "2nd buffer slot for overplot")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_buffer_slot_b(VAL)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(FRVL, "4")
+    field(FVVL, "5")
+    field(SXVL, "6")
+    field(SVVL, "7")
+    field(ZRST, "0")
+    field(ONST, "1")
+    field(TWST, "2")
+    field(THST, "3")
+    field(FRST, "4")
+    field(FVST, "5")
+    field(SXST, "6")
+    field(SVST, "7")
+    field(VAL, "1")
+    field(PINI, "YES")
+}
+
 record(mbbo, "$(P)BufferSaveSource") {
     field(DESC, "Save from Graph or Combine")
     field(DTYP, "pydev")
@@ -441,9 +463,17 @@ record(bo, "$(P)BufferClear") {
 }
 
 record(bo, "$(P)BufferEnable") {
-    field(DESC, "Show buffer slot on Graph")
+    field(DESC, "Show BufferSlot on Graph")
     field(DTYP, "pydev")
     field(OUT, "@graffiti_plot.set_buffer_enable(VAL)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(bo, "$(P)BufferEnableB") {
+    field(DESC, "Show BufferSlotB on Graph")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_buffer_enable_b(VAL)")
     field(ZNAM, "Off")
     field(ONAM, "On")
 }
@@ -528,8 +558,16 @@ record(lsi, "$(P)BufferStatus_RBV") {
     field(SCAN, ".5 second")
 }
 
+record(lsi, "$(P)BufferTableText_RBV") {
+    field(DESC, "ASCII preview of BufferSlot")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.buffer_table_text_rbv()")
+    field(SIZV, "2048")
+    field(SCAN, ".5 second")
+}
+
 record(waveform, "$(P)BufferXdata") {
-    field(DESC, "Buffer slot X")
+    field(DESC, "BufferSlot X")
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.buffer_xdata()")
     field(NELM, "$(MAXPTS)")
@@ -538,7 +576,7 @@ record(waveform, "$(P)BufferXdata") {
 }
 
 record(waveform, "$(P)BufferYdata") {
-    field(DESC, "Buffer slot Y")
+    field(DESC, "BufferSlot Y")
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.buffer_ydata()")
     field(NELM, "$(MAXPTS)")
@@ -547,9 +585,36 @@ record(waveform, "$(P)BufferYdata") {
 }
 
 record(waveform, "$(P)BufferYdataErr") {
-    field(DESC, "Buffer slot Y errors")
+    field(DESC, "BufferSlot Y errors")
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.buffer_ydata_err()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
+record(waveform, "$(P)BufferBXdata") {
+    field(DESC, "BufferSlotB X")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.buffer_b_xdata()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
+record(waveform, "$(P)BufferBYdata") {
+    field(DESC, "BufferSlotB Y")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.buffer_b_ydata()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
+record(waveform, "$(P)BufferBYdataErr") {
+    field(DESC, "BufferSlotB Y errors")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.buffer_b_ydata_err()")
     field(NELM, "$(MAXPTS)")
     field(FTVL, "DOUBLE")
     field(SCAN, "1 second")

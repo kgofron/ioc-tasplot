@@ -41,6 +41,9 @@ def test_buffer_store_meta_and_write(tmp_path: Path):
     text = path.read_text()
     assert "updated" in text
     assert "1 4 0.5" in text
+    preview = store.table_text(0, max_rows=10)
+    assert "# X Y Error" in preview
+    assert store.table_text(1).startswith("# slot 1 empty")
 
 
 def test_buffer_slot_bounds():

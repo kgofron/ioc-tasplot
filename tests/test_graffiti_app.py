@@ -292,6 +292,28 @@ def test_buffer_save_graph_and_show(tmp_path):
     assert eng.buffer_nrows_rbv() == 0
 
 
+def test_buffer_table_text_and_dual_show():
+    eng = GraffitiPlotEngine()
+    path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
+    eng.set_selected_file(path)
+    eng.set_x_col("s1")
+    eng.set_y_col("detector")
+    eng.set_buffer_slot(0)
+    assert eng.buffer_save() == 1
+    text = eng.buffer_table_text_rbv()
+    assert "# X Y Error" in text
+    assert "nrows" in text
+    eng.set_buffer_slot(1)
+    assert eng.buffer_save() == 1
+    eng.set_buffer_slot(0)
+    eng.set_buffer_enable(1)
+    eng.set_buffer_slot_b(1)
+    eng.set_buffer_enable_b(1)
+    assert len(_valid(eng.buffer_xdata())) >= 5
+    assert len(_valid(eng.buffer_b_xdata())) >= 5
+    assert "0:" in eng.buffer_list_rbv() and "1:" in eng.buffer_list_rbv()
+
+
 def test_buffer_save_from_combine(tmp_path):
     src = (FIXTURES / "spice_hb3_exp0382_scan0001_head.dat").read_bytes()
     (tmp_path / "HB3_exp0382_scan0001.dat").write_bytes(src)

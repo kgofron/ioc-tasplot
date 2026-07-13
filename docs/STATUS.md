@@ -6,8 +6,8 @@ Handoff for resuming work after a break.
 
 - **Remote:** https://github.com/kgofron/ioc-tasplot
 - **Branch:** `main` (sync with `origin/main` before long breaks)
-- **Tests:** `43 passed` (`python3 -m pytest -q`)
-- **Latest feature work:** Data Buffers MVP + Combine polish + Phase 4–6 + PyMca SPiCE shim
+- **Tests:** `44 passed` (`python3 -m pytest -q`)
+- **Latest feature work:** Buffer polish (A/B overplot + table preview) + Data Buffers MVP
 
 ## What works (validated)
 
@@ -77,9 +77,11 @@ caput -S TAS:Plot:NormCol monitor
 | `CombineAddList` / `CombineSubList` / `CombineRun` | Combine +/− scan lists |
 | `CombineNorm*` / `CombineBinTol` / `CombineEnable` | Combine renorm, binning, show result |
 | `CombineXdata` / `CombineYdata` / `CombineYdataErr` | Combine result waveforms |
-| `BufferSlot` / `BufferSave` / `BufferEnable` | Scratch buffers (8 slots) |
+| `BufferSlot` / `BufferSave` / `BufferEnable` | Scratch buffers Slot A (8 slots) |
+| `BufferSlotB` / `BufferEnableB` | Second buffer overplot (magenta) |
 | `BufferSaveSource` / `BufferWriteFile` | Save from Graph or Combine; ASCII export |
-| `BufferXdata` / `BufferYdata` / `BufferYdataErr` | Selected buffer waveforms |
+| `BufferList_RBV` / `BufferTableText_RBV` | Slot occupancy + read-only table preview |
+| `BufferXdata` / `BufferBXdata` … | Buffer A / B waveforms |
 | `OverlayXdata` / `OverlayYdata` / `OverlayYdataErr` | Overlay waveforms |
 | `Xdata` / `Ydata` / `YdataErr` | Primary plot |
 | `DataFileText` | File contents panel |
@@ -95,13 +97,13 @@ caput -S TAS:Plot:NormCol monitor
 - [x] Poisson √N error bars + `ShowErrors` toggle (Option A)
 - [x] Combine Data MVP (+/− lists, bin tol, renorm, green trace)
 - [x] Data Buffers MVP (8 slots, save Graph/Combine, purple trace, ASCII write)
+- [x] Buffer polish — Slot B overplot, slot list, read-only table preview
 
 ## Next (when resuming)
 
-1. **Combine / Buffer polish** — editable table view; multi-buffer overplot; Del-row UI
-2. **Beamline deploy** — `/epics/iocs/ioc-tasplot`, production paths, autosave
-3. **Facility** — PVXS/QSRV 2
-4. Optional: in-OPI Gaussian fit if scientists reject PyMca-only peak fit
+1. **Beamline deploy** — `/epics/iocs/ioc-tasplot`, production paths, autosave
+2. **Facility** — PVXS/QSRV 2
+3. Optional: editable buffer table / Del-row Combine UI; in-OPI Gaussian fit if PyMca isn’t enough
 
 **Monday prep (short):** demo paths (`demo/` + exp382); SPEC `#S` on YongCai `demo/yongcai_20240530.spec`; Phoebus CA address list if duplicate-server magenta borders persist.
 

@@ -44,6 +44,22 @@ class DataBuffer:
         desc = (self.description or "(no desc)").replace(";", ",")[:40]
         return f"{index}:{self.nrows}pts {desc}"
 
+    def as_text(self, *, max_rows: Optional[int] = None) -> str:
+        """ASCII table preview (SpICE-like X Y Error)."""
+        lines = [
+            f"# description = {self.description}",
+            f"# x_label = {self.x_label}",
+            f"# y_label = {self.y_label}",
+            f"# nrows = {self.nrows}",
+            "# X Y Error",
+        ]
+        n = self.nrows if max_rows is None else min(self.nrows, int(max_rows))
+        for i in range(n):
+            lines.append(f"{self.x[i]:.8g} {self.y[i]:.8g} {self.err[i]:.8g}")
+        if max_rows is not None and self.nrows > int(max_rows):
+            lines.append(f"# … ({self.nrows - int(max_rows)} more rows)")
+        return "\n".join(lines) + "\n"
+
 
 @dataclass
 class BufferStore:
@@ -99,17 +115,20 @@ class BufferStore:
             raise ValueError(f"buffer slot {index} is empty")
         out = Path(path)
         out.parent.mkdir(parents=True, exist_ok=True)
-        lines = [
-            f"# description = {buf.description}",
-            f"# x_label = {buf.x_label}",
-            f"# y_label = {buf.y_label}",
-            f"# nrows = {buf.nrows}",
-            "# X Y Error",
-        ]
-        for x, y, e in zip(buf.x, buf.y, buf.err):
-            lines.append(f"{x:.8g} {y:.8g} {e:.8g}")
-        out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        out.write_text(buf.as_text(), encoding="utf-8")
         return out
+
+    def table_text(self, index: int, *, max_rows: int = 40, max_bytes: int = 2048) -> str:
+        buf = self.get(index)
+        if buf is None or buf.empty:
+            return f"# slot {index} empty\n"
+        text = buf.as_text(max_rows=max_rows)
+        encoded = text.encode("utf-8", errors="replace")
+        if len(encoded) <= max_bytes:
+            return text
+        note = "\n… (truncated)\n"
+        keep = max(0, max_bytes - len(note.encode("utf-8")))
+        return encoded[:keep].decode("utf-8", errors="ignore") + note
 
     def _check(self, index: int) -> int:
         i = int(index)

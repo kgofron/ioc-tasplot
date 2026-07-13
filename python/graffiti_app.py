@@ -75,8 +75,10 @@ class GraffitiPlotEngine:
         # Data Buffers (SpICE-style scratch slots)
         self._buffers = BufferStore(n_slots=BUFFER_N_SLOTS)
         self.buffer_slot = 0
+        self.buffer_slot_b = 1
         self.buffer_save_source = BUFFER_FROM_GRAPH
         self.buffer_enable = 0
+        self.buffer_enable_b = 0
         self.buffer_save_path = ""
         self._buffer_status = ""
 
@@ -288,11 +290,17 @@ class GraffitiPlotEngine:
     def set_buffer_slot(self, index: int) -> None:
         self.buffer_slot = int(index) % BUFFER_N_SLOTS
 
+    def set_buffer_slot_b(self, index: int) -> None:
+        self.buffer_slot_b = int(index) % BUFFER_N_SLOTS
+
     def set_buffer_save_source(self, source: int) -> None:
         self.buffer_save_source = int(source)
 
     def set_buffer_enable(self, enabled: int) -> None:
         self.buffer_enable = 1 if int(enabled) else 0
+
+    def set_buffer_enable_b(self, enabled: int) -> None:
+        self.buffer_enable_b = 1 if int(enabled) else 0
 
     def set_buffer_save_path(self, path: str) -> None:
         self.buffer_save_path = str(path).strip()
@@ -384,28 +392,42 @@ class GraffitiPlotEngine:
     def buffer_status_rbv(self) -> str:
         return self._buffer_status
 
+    def buffer_table_text_rbv(self) -> str:
+        """Preview of selected BufferSlot as ASCII table (truncated)."""
+        return self._buffers.table_text(self.buffer_slot)
+
     def buffer_xdata(self) -> list[float]:
-        if not self.buffer_enable:
-            return _empty_waveform()
-        buf = self._buffers.get(self.buffer_slot)
-        if buf is None or buf.empty:
-            return _empty_waveform()
-        return _clip_waveform(buf.x)
+        return self._buffer_axis_waveform(self.buffer_slot, self.buffer_enable, "x")
 
     def buffer_ydata(self) -> list[float]:
-        if not self.buffer_enable:
-            return _empty_waveform()
-        buf = self._buffers.get(self.buffer_slot)
-        if buf is None or buf.empty:
-            return _empty_waveform()
-        return _clip_waveform(buf.y)
+        return self._buffer_axis_waveform(self.buffer_slot, self.buffer_enable, "y")
 
     def buffer_ydata_err(self) -> list[float]:
-        if not self.buffer_enable or not self.show_errors:
+        if not self.show_errors:
             return _empty_waveform()
-        buf = self._buffers.get(self.buffer_slot)
+        return self._buffer_axis_waveform(self.buffer_slot, self.buffer_enable, "err")
+
+    def buffer_b_xdata(self) -> list[float]:
+        return self._buffer_axis_waveform(self.buffer_slot_b, self.buffer_enable_b, "x")
+
+    def buffer_b_ydata(self) -> list[float]:
+        return self._buffer_axis_waveform(self.buffer_slot_b, self.buffer_enable_b, "y")
+
+    def buffer_b_ydata_err(self) -> list[float]:
+        if not self.show_errors:
+            return _empty_waveform()
+        return self._buffer_axis_waveform(self.buffer_slot_b, self.buffer_enable_b, "err")
+
+    def _buffer_axis_waveform(self, slot: int, enabled: int, axis: str) -> list[float]:
+        if not enabled:
+            return _empty_waveform()
+        buf = self._buffers.get(int(slot))
         if buf is None or buf.empty:
             return _empty_waveform()
+        if axis == "x":
+            return _clip_waveform(buf.x)
+        if axis == "y":
+            return _clip_waveform(buf.y)
         return _clip_waveform(buf.err)
 
     def _capture_buffer_source(self):
