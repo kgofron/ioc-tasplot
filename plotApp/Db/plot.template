@@ -90,7 +90,7 @@ record(lsi, "$(P)Command_RBV") {
 record(lsi, "$(P)LastError_RBV") {
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.last_error_rbv()")
-    field(SIZV, "255")
+    field(SIZV, "512")
     field(SCAN, ".5 second")
 }
 
@@ -270,36 +270,45 @@ record(waveform, "$(P)OverlayYdataErr") {
 record(lso, "$(P)CombineAddList") {
     field(DESC, "Add scan #s (comma list)")
     field(DTYP, "pydev")
-    field(OUT, "@graffiti_plot.set_combine_add_list(VAL)")
+    field(OUT, "@graffiti_plot.set_combine_add_list('VAL')")
     field(SIZV, "255")
 }
 
 record(lso, "$(P)CombineSubList") {
     field(DESC, "Subtract scan #s (comma list)")
     field(DTYP, "pydev")
-    field(OUT, "@graffiti_plot.set_combine_sub_list(VAL)")
+    field(OUT, "@graffiti_plot.set_combine_sub_list('VAL')")
     field(SIZV, "255")
 }
 
 record(lso, "$(P)CombineXCol") {
     field(DESC, "Combine X column (blank=Graph X)")
     field(DTYP, "pydev")
-    field(OUT, "@graffiti_plot.set_combine_x_col(VAL)")
+    field(OUT, "@graffiti_plot.set_combine_x_col('VAL')")
     field(SIZV, "64")
 }
 
 record(lso, "$(P)CombineYCol") {
     field(DESC, "Combine Y column (blank=Graph Y)")
     field(DTYP, "pydev")
-    field(OUT, "@graffiti_plot.set_combine_y_col(VAL)")
+    field(OUT, "@graffiti_plot.set_combine_y_col('VAL')")
     field(SIZV, "64")
 }
 
 record(lso, "$(P)CombineNormCol") {
     field(DESC, "Combine weight / norm column")
     field(DTYP, "pydev")
-    field(OUT, "@graffiti_plot.set_combine_norm_col(VAL)")
+    field(OUT, "@graffiti_plot.set_combine_norm_col('VAL')")
     field(SIZV, "64")
+    field(VAL, "monitor")
+    field(PINI, "YES")
+}
+
+record(lso, "$(P)CombineDesc") {
+    field(DESC, "Combine result description")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_combine_desc('VAL')")
+    field(SIZV, "255")
 }
 
 record(ao, "$(P)CombineNormValue") {
@@ -318,13 +327,6 @@ record(ao, "$(P)CombineBinTol") {
     field(PREC, "6")
     field(VAL, "0.005")
     field(PINI, "YES")
-}
-
-record(lso, "$(P)CombineDesc") {
-    field(DESC, "Combine result description")
-    field(DTYP, "pydev")
-    field(OUT, "@graffiti_plot.set_combine_desc(VAL)")
-    field(SIZV, "255")
 }
 
 record(bo, "$(P)CombineRun") {
@@ -354,7 +356,7 @@ record(lsi, "$(P)CombineStatus_RBV") {
     field(DESC, "Combine status / error")
     field(DTYP, "pydev")
     field(INP, "@graffiti_plot.combine_status_rbv()")
-    field(SIZV, "255")
+    field(SIZV, "512")
     field(SCAN, ".5 second")
 }
 

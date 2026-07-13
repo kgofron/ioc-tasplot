@@ -20,6 +20,7 @@ def test_parse_scan_list():
     assert parse_scan_list("1, 2,5") == [1, 2, 5]
     assert parse_scan_list("1 3;4") == [1, 3, 4]
     assert parse_scan_list("") == []
+    assert parse_scan_list("0,1") == [1]
 
 
 def test_combine_exact_add_subtract():

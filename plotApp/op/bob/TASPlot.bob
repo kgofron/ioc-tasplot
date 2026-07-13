@@ -455,15 +455,17 @@ if yact in items:
     </widget>
     <widget type="textupdate" version="2.0.0">
       <name>LastError</name>
-      <pv_name>$(P)LastError_RBV</pv_name>
+      <pv_name>$(P)LastError_RBV.$</pv_name>
       <x>80</x>
       <y>58</y>
       <width>965</width>
       <height>24</height>
+      <format>6</format>
       <foreground_color>
         <color red="180" green="0" blue="0">
         </color>
       </foreground_color>
+      <tooltip>Full error text (use .$ long-string)</tooltip>
     </widget>
     <widget type="xyplot" version="3.0.0">
       <name>ScanPlot</name>
@@ -633,6 +635,22 @@ if yact in items:
     <y>745</y>
     <width>1100</width>
     <height>105</height>
+    <scripts>
+      <script file="EmbeddedPy">
+        <text><![CDATA[from org.csstudio.display.builder.runtime.script import PVUtil, ScriptUtil
+
+headers = PVUtil.getString(pvs[0])
+items = [h.strip() for h in headers.split(';') if h.strip()]
+if not items:
+    items = ['monitor', 'mcu', 'time']
+
+for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
+    w = ScriptUtil.findWidgetByName(widget, wname)
+    if w is not None:
+        w.setItems(items)]]></text>
+        <pv_name>$(P)ColHeaders_RBV.$</pv_name>
+      </script>
+    </scripts>
     <widget type="label" version="2.0.0">
       <name>CombineHdr</name>
       <text>Combine Data (+/− scans → green trace)</text>
@@ -662,7 +680,7 @@ if yact in items:
       <width>120</width>
       <height>26</height>
       <format>6</format>
-      <tooltip>Comma-separated scan numbers to ADD (same folder)</tooltip>
+      <tooltip>Comma-separated scan #s to ADD. CLI: caput -S …CombineAddList.$ "1,2"</tooltip>
     </widget>
     <widget type="label" version="2.0.0">
       <name>SubLbl</name>
@@ -681,7 +699,7 @@ if yact in items:
       <width>120</width>
       <height>26</height>
       <format>6</format>
-      <tooltip>Comma-separated scan numbers to SUBTRACT</tooltip>
+      <tooltip>Scan #s to SUBTRACT; leave empty if none (do not enter 0)</tooltip>
     </widget>
     <widget type="label" version="2.0.0">
       <name>CNormLbl</name>
@@ -702,20 +720,25 @@ if yact in items:
       <format>1</format>
       <precision>4</precision>
     </widget>
-    <widget type="textentry" version="3.0.0">
+    <widget type="combo" version="2.0.0">
       <name>CombineNormCol</name>
-      <pv_name>$(P)CombineNormCol.$</pv_name>
+      <pv_name>$(P)CombineNormCol</pv_name>
       <x>490</x>
       <y>26</y>
-      <width>80</width>
+      <width>95</width>
       <height>26</height>
-      <format>6</format>
-      <tooltip>Weight column (monitor / time / mcu)</tooltip>
+      <tooltip>Weight column — same idea as Graph NormCol</tooltip>
+      <items>
+        <item>monitor</item>
+        <item>mcu</item>
+        <item>time</item>
+      </items>
+      <items_from_pv>false</items_from_pv>
     </widget>
     <widget type="label" version="2.0.0">
       <name>BinTolLbl</name>
       <text>Bin tol</text>
-      <x>580</x>
+      <x>595</x>
       <y>28</y>
       <width>50</width>
       <height>24</height>
@@ -724,7 +747,7 @@ if yact in items:
     <widget type="textentry" version="3.0.0">
       <name>CombineBinTol</name>
       <pv_name>$(P)CombineBinTol</pv_name>
-      <x>635</x>
+      <x>650</x>
       <y>26</y>
       <width>70</width>
       <height>26</height>
@@ -742,7 +765,7 @@ if yact in items:
         </action>
       </actions>
       <text>Combine</text>
-      <x>720</x>
+      <x>735</x>
       <y>24</y>
       <width>85</width>
       <height>30</height>
@@ -751,7 +774,7 @@ if yact in items:
     <widget type="checkbox" version="2.0.0">
       <name>CombineEnable</name>
       <pv_name>$(P)CombineEnable</pv_name>
-      <x>815</x>
+      <x>830</x>
       <y>24</y>
       <width>90</width>
       <height>30</height>
@@ -761,7 +784,7 @@ if yact in items:
     <widget type="textupdate" version="2.0.0">
       <name>CombineNRows</name>
       <pv_name>$(P)CombineNRows_RBV</pv_name>
-      <x>910</x>
+      <x>925</x>
       <y>26</y>
       <width>50</width>
       <height>26</height>
@@ -777,44 +800,52 @@ if yact in items:
       <height>24</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
-    <widget type="textentry" version="3.0.0">
+    <widget type="combo" version="2.0.0">
       <name>CombineXCol</name>
-      <pv_name>$(P)CombineXCol.$</pv_name>
+      <pv_name>$(P)CombineXCol</pv_name>
       <x>30</x>
       <y>60</y>
-      <width>90</width>
+      <width>110</width>
       <height>26</height>
-      <format>6</format>
-      <tooltip>Blank = use Graph X col</tooltip>
+      <tooltip>Optional; empty → Graph X col</tooltip>
+      <items>
+        <item>s1</item>
+        <item>Pt.</item>
+      </items>
+      <items_from_pv>false</items_from_pv>
     </widget>
     <widget type="label" version="2.0.0">
       <name>CYLbl</name>
       <text>Y</text>
-      <x>130</x>
+      <x>150</x>
       <y>62</y>
       <width>20</width>
       <height>24</height>
       <horizontal_alignment>2</horizontal_alignment>
     </widget>
-    <widget type="textentry" version="3.0.0">
+    <widget type="combo" version="2.0.0">
       <name>CombineYCol</name>
-      <pv_name>$(P)CombineYCol.$</pv_name>
-      <x>155</x>
+      <pv_name>$(P)CombineYCol</pv_name>
+      <x>175</x>
       <y>60</y>
-      <width>90</width>
+      <width>110</width>
       <height>26</height>
-      <format>6</format>
-      <tooltip>Blank = use Graph Y col</tooltip>
+      <tooltip>Optional; empty → Graph Y col</tooltip>
+      <items>
+        <item>detector</item>
+        <item>monitor</item>
+      </items>
+      <items_from_pv>false</items_from_pv>
     </widget>
     <widget type="textupdate" version="2.0.0">
       <name>CombineStatus</name>
       <pv_name>$(P)CombineStatus_RBV.$</pv_name>
-      <x>260</x>
+      <x>300</x>
       <y>60</y>
-      <width>820</width>
+      <width>780</width>
       <height>26</height>
       <format>6</format>
-      <tooltip>Combine status or error</tooltip>
+      <tooltip>Combine status or error (long-string .$)</tooltip>
     </widget>
   </widget>
   <widget type="group" version="3.0.0">

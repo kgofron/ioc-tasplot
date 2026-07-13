@@ -29,13 +29,15 @@ class CombineResult:
 
 
 def parse_scan_list(text: str) -> list[int]:
-    """Parse ``\"1, 2, 5\"`` or whitespace-separated scan numbers."""
+    """Parse ``\"1, 2, 5\"`` or whitespace-separated scan numbers (ignore ≤0)."""
     out: list[int] = []
     for part in (text or "").replace(";", ",").replace(" ", ",").split(","):
         part = part.strip()
         if not part:
             continue
-        out.append(int(part))
+        n = int(part)
+        if n > 0:
+            out.append(n)
     return out
 
 
