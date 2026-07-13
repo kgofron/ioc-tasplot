@@ -94,7 +94,7 @@ TAS:Plot:FitYdata        (waveform) optional model curve for plot
 | Priority | Work | Owner-ish |
 |----------|------|-----------|
 | **P0** | Capture meeting use cases in this doc / STATUS; demos stay on 1D SpICE+SPEC | DAQ + ioc-tasplot |
-| **P1** | **Fit MVP → PVs** (Gaussian+bg) + Show fit curve | ioc-tasplot |
+| **P1** | **Fit MVP → PVs** (Gaussian+bg) + Show fit curve | **Done** in ioc-tasplot |
 | **P1** | Beamline deploy (IOC path, CA address, no duplicate servers) | DAQ |
 | **P2** | Multi-overlay / previous-alignment recall (WAND², HB-2A order param) — extend buffers or N overlay slots | ioc-tasplot |
 | **P2** | Spike: headless PyMca fit vs lmfit (document choice) | ioc-tasplot |
@@ -112,7 +112,7 @@ TAS:Plot:FitYdata        (waveform) optional model curve for plot
 | Combine / rebin-ish | Done MVP |
 | Live growing file | Done |
 | Basic fit in GUI | PyMca button only |
-| Fit parameters → PVs | **Gap → P1** |
+| Fit parameters → PVs | **Done MVP** — Gaussian+bg (`Fit*`); PyMca GUI still for deep interactive |
 | 2D / histogram / ROI | **Gap** |
 | Multi-cal history / many overlays | Partial (buffers) |
 | Production deploy | Gap |

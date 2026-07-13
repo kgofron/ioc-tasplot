@@ -24,6 +24,7 @@ from tasplot.combine import (
     parse_scan_list,
     resolve_column,
 )
+from tasplot.fit import FitResult, fit_gaussian_bg
 from tasplot.paths import hb3_scan_path
 
 MAX_WAVEFORM_POINTS = 4000
@@ -34,6 +35,9 @@ NORM_FIXED = 2
 BUFFER_FROM_GRAPH = 0
 BUFFER_FROM_COMBINE = 1
 BUFFER_N_SLOTS = 8
+FIT_FROM_GRAPH = 0
+FIT_FROM_BUFFER = 1
+FIT_FROM_COMBINE = 2
 
 
 class GraffitiPlotEngine:
@@ -81,6 +85,15 @@ class GraffitiPlotEngine:
         self.buffer_enable_b = 0
         self.buffer_save_path = ""
         self._buffer_status = ""
+        # Peak fit MVP (Gaussian + linear background → PVs)
+        self.fit_source = FIT_FROM_GRAPH
+        self.fit_enable = 0
+        self.fit_range_enable = 0
+        self.fit_x_min = 0.0
+        self.fit_x_max = 0.0
+        self.fit_bg_nonneg = 0
+        self._fit_result: Optional[FitResult] = None
+        self._fit_status = ""
 
     def _full_path(self) -> str:
         return self._path_for_scan_number(self.file_number, prefer_explicit=True)
@@ -463,6 +476,124 @@ class GraffitiPlotEngine:
             x_label=self.x_col or self._scan.default_x or "X",
             y_label=self.y_col or self._scan.default_y or "Y",
         )
+
+    # --- Peak fit (Gaussian + linear bg) ---
+
+    def set_fit_source(self, source: int) -> None:
+        self.fit_source = int(source)
+
+    def set_fit_enable(self, enabled: int) -> None:
+        self.fit_enable = 1 if int(enabled) else 0
+
+    def set_fit_range_enable(self, enabled: int) -> None:
+        self.fit_range_enable = 1 if int(enabled) else 0
+
+    def set_fit_x_min(self, value: float) -> None:
+        self.fit_x_min = float(value)
+
+    def set_fit_x_max(self, value: float) -> None:
+        self.fit_x_max = float(value)
+
+    def set_fit_bg_nonneg(self, enabled: int) -> None:
+        self.fit_bg_nonneg = 1 if int(enabled) else 0
+
+    def fit_run(self) -> int:
+        """Fit selected source; store result for PVs / FitYdata waveform."""
+        try:
+            x, y, err = self._fit_xyerr()
+            x_min = x_max = None
+            if self.fit_range_enable:
+                x_min = float(self.fit_x_min)
+                x_max = float(self.fit_x_max)
+                if x_max < x_min:
+                    raise ValueError(f"FitXMax ({x_max}) < FitXMin ({x_min})")
+            self._fit_result = fit_gaussian_bg(
+                x,
+                y,
+                err,
+                x_min=x_min,
+                x_max=x_max,
+                amp_positive=True,
+                bg_nonneg_at_cen=bool(self.fit_bg_nonneg),
+            )
+            r = self._fit_result
+            win = (
+                f" [{self.fit_x_min:g},{self.fit_x_max:g}]"
+                if self.fit_range_enable
+                else ""
+            )
+            self._fit_status = (
+                f"OK n={r.npts}{win} cen={r.cen:.6g} amp={r.amp:.6g} "
+                f"sigma={r.sigma:.6g} chi2={r.chi2:.6g}"
+            )
+            self._last_error = ""
+            return 1
+        except Exception as exc:
+            self._fit_result = None
+            self._fit_status = f"fit: {exc}"
+            self._last_error = self._fit_status
+            return 0
+
+    def fit_amp_rbv(self) -> float:
+        return 0.0 if self._fit_result is None else float(self._fit_result.amp)
+
+    def fit_cen_rbv(self) -> float:
+        return 0.0 if self._fit_result is None else float(self._fit_result.cen)
+
+    def fit_sigma_rbv(self) -> float:
+        return 0.0 if self._fit_result is None else float(self._fit_result.sigma)
+
+    def fit_bg_rbv(self) -> float:
+        """Background value at the fitted center."""
+        if self._fit_result is None:
+            return 0.0
+        return float(self._fit_result.background_at_cen)
+
+    def fit_slope_rbv(self) -> float:
+        return 0.0 if self._fit_result is None else float(self._fit_result.slope)
+
+    def fit_chi2_rbv(self) -> float:
+        return 0.0 if self._fit_result is None else float(self._fit_result.chi2)
+
+    def fit_npts_rbv(self) -> int:
+        return 0 if self._fit_result is None else int(self._fit_result.npts)
+
+    def fit_status_rbv(self) -> str:
+        return self._fit_status
+
+    def fit_xdata(self) -> list[float]:
+        if not self.fit_enable or self._fit_result is None:
+            return _empty_waveform()
+        return _clip_waveform(self._fit_result.x)
+
+    def fit_ydata(self) -> list[float]:
+        if not self.fit_enable or self._fit_result is None:
+            return _empty_waveform()
+        return _clip_waveform(self._fit_result.y_model)
+
+    def _fit_xyerr(self) -> tuple[list[float], list[float], Optional[list[float]]]:
+        src = int(self.fit_source)
+        if src == FIT_FROM_COMBINE:
+            if self._combine_result is None:
+                raise RuntimeError("no combine result; run Combine first")
+            r = self._combine_result
+            return list(r.x), list(r.y), list(r.err)
+        if src == FIT_FROM_BUFFER:
+            buf = self._buffers.get(self.buffer_slot)
+            if buf is None or buf.empty:
+                raise RuntimeError(f"buffer slot {self.buffer_slot} is empty")
+            return list(buf.x), list(buf.y), list(buf.err)
+        # Graph
+        if self._scan is None:
+            raise RuntimeError("no scan loaded; browse or reload")
+        x = _valid_prefix(self.xdata())
+        y = _valid_prefix(self.ydata())
+        err = _valid_prefix(self.ydata_err())
+        if not x or not y:
+            raise RuntimeError("graph X/Y empty")
+        if len(err) != len(y):
+            err = None
+        return x, y, err
 
     def set_x_col(self, name: str) -> None:
         self.x_col = name.strip()

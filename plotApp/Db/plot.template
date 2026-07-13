@@ -620,6 +620,148 @@ record(waveform, "$(P)BufferBYdataErr") {
     field(SCAN, "1 second")
 }
 
+# --- Peak fit MVP (Gaussian + linear background) ---
+record(mbbo, "$(P)FitSource") {
+    field(DESC, "Fit Graph / BufferA / Combine")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_fit_source(VAL)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(ZRST, "Graph")
+    field(ONST, "Buffer")
+    field(TWST, "Combine")
+    field(VAL, "0")
+    field(PINI, "YES")
+}
+
+record(bo, "$(P)FitRun") {
+    field(DESC, "Run Gaussian+bg fit")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.fit_run()")
+    field(ZNAM, "Idle")
+    field(ONAM, "Run")
+}
+
+record(bo, "$(P)FitEnable") {
+    field(DESC, "Show fit model on Graph")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_fit_enable(VAL)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(bo, "$(P)FitRangeEnable") {
+    field(DESC, "Restrict fit to FitXMin..FitXMax")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_fit_range_enable(VAL)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(ao, "$(P)FitXMin") {
+    field(DESC, "Fit window X min (if Range On)")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_fit_x_min(VAL)")
+    field(PREC, "6")
+}
+
+record(ao, "$(P)FitXMax") {
+    field(DESC, "Fit window X max (if Range On)")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_fit_x_max(VAL)")
+    field(PREC, "6")
+}
+
+record(bo, "$(P)FitBgNonNeg") {
+    field(DESC, "Constrain intercept >= 0")
+    field(DTYP, "pydev")
+    field(OUT, "@graffiti_plot.set_fit_bg_nonneg(VAL)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(ai, "$(P)FitAmp_RBV") {
+    field(DESC, "Fitted Gaussian amplitude")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.fit_amp_rbv()")
+    field(PREC, "6")
+    field(SCAN, ".5 second")
+}
+
+record(ai, "$(P)FitCen_RBV") {
+    field(DESC, "Fitted peak center")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.fit_cen_rbv()")
+    field(PREC, "6")
+    field(SCAN, ".5 second")
+}
+
+record(ai, "$(P)FitSigma_RBV") {
+    field(DESC, "Fitted Gaussian sigma")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.fit_sigma_rbv()")
+    field(PREC, "6")
+    field(SCAN, ".5 second")
+}
+
+record(ai, "$(P)FitBg_RBV") {
+    field(DESC, "Background at FitCen")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.fit_bg_rbv()")
+    field(PREC, "6")
+    field(SCAN, ".5 second")
+}
+
+record(ai, "$(P)FitSlope_RBV") {
+    field(DESC, "Linear background slope")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.fit_slope_rbv()")
+    field(PREC, "6")
+    field(SCAN, ".5 second")
+}
+
+record(ai, "$(P)FitChi2_RBV") {
+    field(DESC, "Fit chi-squared")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.fit_chi2_rbv()")
+    field(PREC, "4")
+    field(SCAN, ".5 second")
+}
+
+record(longin, "$(P)FitNPts_RBV") {
+    field(DESC, "Points used in fit")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.fit_npts_rbv()")
+    field(SCAN, ".5 second")
+}
+
+record(lsi, "$(P)FitStatus_RBV") {
+    field(DESC, "Fit status / error")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.fit_status_rbv()")
+    field(SIZV, "512")
+    field(SCAN, ".5 second")
+}
+
+record(waveform, "$(P)FitXdata") {
+    field(DESC, "Fit model X")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.fit_xdata()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
+record(waveform, "$(P)FitYdata") {
+    field(DESC, "Fit model Y")
+    field(DTYP, "pydev")
+    field(INP, "@graffiti_plot.fit_ydata()")
+    field(NELM, "$(MAXPTS)")
+    field(FTVL, "DOUBLE")
+    field(SCAN, "1 second")
+}
+
 record(waveform, "$(P)DataFileText") {
     field(DESC, "File text (Browse Data, SpecFile style)")
     field(DTYP, "pydev")

@@ -5,7 +5,7 @@
     <P>$(P=TAS:Plot:)</P>
   </macros>
   <width>1120</width>
-  <height>1320</height>
+  <height>1410</height>
   <widget type="label" version="2.0.0">
     <name>Title</name>
     <text>ioc-tasplot — Browse + Graph (SPiCE Data tab successor)</text>
@@ -682,6 +682,33 @@ if yact in items:
             </rule>
           </rules>
         </trace>
+        <trace>
+          <name>fit</name>
+          <x_pv>$(P)FitXdata</x_pv>
+          <y_pv>$(P)FitYdata</y_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="200" green="40" blue="40">
+            </color>
+          </color>
+          <line_width>2</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>1</point_size>
+          <visible>true</visible>
+          <rules>
+            <rule name="FitVisible" prop_id="visible">
+              <exp bool_exp="pv0&gt;0">
+                <value>true</value>
+              </exp>
+              <exp bool_exp="pv0&lt;=0">
+                <value>false</value>
+              </exp>
+              <pv_name>$(P)FitEnable</pv_name>
+            </rule>
+          </rules>
+        </trace>
       </traces>
     </widget>
   </widget>
@@ -905,9 +932,241 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
     </widget>
   </widget>
   <widget type="group" version="3.0.0">
-    <name>DataBuffers</name>
+    <name>FitData</name>
     <x>10</x>
     <y>855</y>
+    <width>1100</width>
+    <height>100</height>
+    <widget type="label" version="2.0.0">
+      <name>FitHdr</name>
+      <text>Peak Fit (1 Gaussian + linear bg → PVs; use X range for multi-peak)</text>
+      <x>5</x>
+      <y>2</y>
+      <width>560</width>
+      <height>22</height>
+      <font>
+        <font family="Sans" style="BOLD" size="12.0">
+        </font>
+      </font>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FitSrcLbl</name>
+      <text>Source</text>
+      <x>5</x>
+      <y>28</y>
+      <width>50</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="combo" version="2.0.0">
+      <name>FitSource</name>
+      <pv_name>$(P)FitSource</pv_name>
+      <x>60</x>
+      <y>26</y>
+      <width>90</width>
+      <height>26</height>
+      <items>
+        <item>Graph</item>
+        <item>Buffer</item>
+        <item>Combine</item>
+      </items>
+      <items_from_pv>true</items_from_pv>
+      <tooltip>Buffer = Slot A</tooltip>
+    </widget>
+    <widget type="checkbox" version="2.0.0">
+      <name>FitRangeEnable</name>
+      <pv_name>$(P)FitRangeEnable</pv_name>
+      <x>160</x>
+      <y>24</y>
+      <width>75</width>
+      <height>30</height>
+      <label>Range</label>
+      <tooltip>Fit only Xmin..Xmax (isolate one peak)</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FitXMinLbl</name>
+      <text>Xmin</text>
+      <x>240</x>
+      <y>28</y>
+      <width>40</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>FitXMin</name>
+      <pv_name>$(P)FitXMin</pv_name>
+      <x>285</x>
+      <y>26</y>
+      <width>75</width>
+      <height>26</height>
+      <format>1</format>
+      <precision>4</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FitXMaxLbl</name>
+      <text>Xmax</text>
+      <x>365</x>
+      <y>28</y>
+      <width>40</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>FitXMax</name>
+      <pv_name>$(P)FitXMax</pv_name>
+      <x>410</x>
+      <y>26</y>
+      <width>75</width>
+      <height>26</height>
+      <format>1</format>
+      <precision>4</precision>
+    </widget>
+    <widget type="checkbox" version="2.0.0">
+      <name>FitBgNonNeg</name>
+      <pv_name>$(P)FitBgNonNeg</pv_name>
+      <x>495</x>
+      <y>24</y>
+      <width>95</width>
+      <height>30</height>
+      <label>bg≥0</label>
+      <tooltip>Constant background ≥ 0 (fixes slope=0)</tooltip>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>FitRunBtn</name>
+      <actions>
+        <action type="write_pv">
+          <pv_name>$(P)FitRun</pv_name>
+          <value>1</value>
+          <description>Run fit</description>
+        </action>
+      </actions>
+      <text>Fit</text>
+      <x>600</x>
+      <y>24</y>
+      <width>60</width>
+      <height>30</height>
+      <tooltip>Gaussian + linear background</tooltip>
+    </widget>
+    <widget type="checkbox" version="2.0.0">
+      <name>FitEnable</name>
+      <pv_name>$(P)FitEnable</pv_name>
+      <x>670</x>
+      <y>24</y>
+      <width>80</width>
+      <height>30</height>
+      <label>Show</label>
+      <tooltip>Show red fit model on Graph</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>FitStatus</name>
+      <pv_name>$(P)FitStatus_RBV.$</pv_name>
+      <x>760</x>
+      <y>26</y>
+      <width>320</width>
+      <height>26</height>
+      <format>6</format>
+      <tooltip>Fit status (wait ~0.5 s after Fit)</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FitCenLbl</name>
+      <text>cen</text>
+      <x>5</x>
+      <y>64</y>
+      <width>30</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>FitCen</name>
+      <pv_name>$(P)FitCen_RBV</pv_name>
+      <x>40</x>
+      <y>62</y>
+      <width>85</width>
+      <height>26</height>
+      <format>1</format>
+      <precision>5</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FitAmpLbl</name>
+      <text>amp</text>
+      <x>130</x>
+      <y>64</y>
+      <width>35</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>FitAmp</name>
+      <pv_name>$(P)FitAmp_RBV</pv_name>
+      <x>170</x>
+      <y>62</y>
+      <width>85</width>
+      <height>26</height>
+      <format>1</format>
+      <precision>4</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FitSigLbl</name>
+      <text>σ</text>
+      <x>260</x>
+      <y>64</y>
+      <width>20</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>FitSigma</name>
+      <pv_name>$(P)FitSigma_RBV</pv_name>
+      <x>285</x>
+      <y>62</y>
+      <width>75</width>
+      <height>26</height>
+      <format>1</format>
+      <precision>5</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FitBgLbl</name>
+      <text>bg</text>
+      <x>365</x>
+      <y>64</y>
+      <width>25</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>FitBg</name>
+      <pv_name>$(P)FitBg_RBV</pv_name>
+      <x>395</x>
+      <y>62</y>
+      <width>80</width>
+      <height>26</height>
+      <format>1</format>
+      <precision>4</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FitChiLbl</name>
+      <text>χ²</text>
+      <x>485</x>
+      <y>64</y>
+      <width>25</width>
+      <height>24</height>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>FitChi2</name>
+      <pv_name>$(P)FitChi2_RBV</pv_name>
+      <x>515</x>
+      <y>62</y>
+      <width>90</width>
+      <height>26</height>
+      <format>1</format>
+      <precision>3</precision>
+    </widget>
+  </widget>
+  <widget type="group" version="3.0.0">
+    <name>DataBuffers</name>
+    <x>10</x>
+    <y>960</y>
     <width>1100</width>
     <height>200</height>
     <widget type="label" version="2.0.0">
@@ -1162,9 +1421,9 @@ for wname in ('CombineNormCol', 'CombineXCol', 'CombineYCol'):
   <widget type="group" version="3.0.0">
     <name>DataFileContents</name>
     <x>10</x>
-    <y>1065</y>
+    <y>1170</y>
     <width>1100</width>
-    <height>240</height>
+    <height>220</height>
     <widget type="label" version="2.0.0">
       <name>DataFileHdr</name>
       <text>DataFileContents</text>

@@ -330,3 +330,38 @@ def test_buffer_save_from_combine(tmp_path):
     assert eng.buffer_save() == 1
     assert eng.buffer_nrows_rbv() == eng.combine_nrows_rbv()
     assert eng.combine_status_rbv().startswith("OK")
+
+
+def test_fit_run_from_graph():
+    eng = GraffitiPlotEngine()
+    path = str(FIXTURES / "spice_hb3_exp0382_scan0001_head.dat")
+    eng.set_selected_file(path)
+    eng.set_x_col("s1")
+    eng.set_y_col("detector")
+    eng.set_fit_source(0)  # Graph
+    assert eng.fit_run() == 1
+    assert eng.fit_npts_rbv() >= 5
+    assert eng.fit_status_rbv().startswith("OK")
+    assert eng.fit_sigma_rbv() > 0
+    eng.set_fit_enable(1)
+    assert len(_valid(eng.fit_xdata())) == eng.fit_npts_rbv()
+    assert len(_valid(eng.fit_ydata())) == eng.fit_npts_rbv()
+
+
+def test_fit_run_with_x_range():
+    if not HB3_USER.is_dir():
+        return
+    data = HB3_USER / "exp382" / "Datafiles" / "HB3_exp0382_scan0001.dat"
+    if not data.is_file():
+        return
+    eng = GraffitiPlotEngine()
+    eng.set_selected_file(str(data))
+    eng.set_x_col("s1")
+    eng.set_y_col("detector")
+    eng.set_fit_range_enable(1)
+    eng.set_fit_x_min(126.8)
+    eng.set_fit_x_max(129.0)
+    assert eng.fit_run() == 1
+    assert 127.5 < eng.fit_cen_rbv() < 128.5
+    assert "OK" in eng.fit_status_rbv()
+    assert eng.fit_npts_rbv() < 81  # window uses fewer points than full scan

@@ -6,8 +6,8 @@ Handoff for resuming work after a break.
 
 - **Remote:** https://github.com/kgofron/ioc-tasplot
 - **Branch:** `main` (sync with `origin/main` before long breaks)
-- **Tests:** `44 passed` (`python3 -m pytest -q`)
-- **Latest feature work:** Buffer polish (A/B overplot + table preview) + Data Buffers MVP
+- **Tests:** `48 passed` (`python3 -m pytest -q`)
+- **Latest feature work:** Fit→PVs MVP (Gaussian+bg) + Buffer polish + Data Buffers
 
 ## What works (validated)
 
@@ -25,6 +25,7 @@ Handoff for resuming work after a break.
 - **Combine Data** — `+ list` / `− list` scan #s, Norm to + weight col, Bin tol → green **combine** trace (`CombineRun` / `CombineEnable`). Not full SpICE buffer UI yet.
 - **Data Buffers** — 8 scratch slots; Save from Graph or Combine; Show purple trace; Write ASCII file
 - **PyMca** button — peak fit / overlay (**shipped:** CERTIF SPEC pass-through; **SPiCE → temp SPEC** with named `#L` via `tasplot.export_spec`). Alternative later: **native SPiCE** in upstream PyMca — see [landscape § SPiCE in PyMca](reference/tas-plotting-tools-landscape.md#spice-in-pymca--two-viable-paths).
+- **Peak Fit** — Gaussian + linear bg (`FitRun` / `FitSource` Graph|Buffer|Combine) → `FitCen_RBV` / `FitAmp_RBV` / `FitSigma_RBV` / `FitBg_RBV`; red model curve (`FitEnable`)
 - **DataFileContents** — full-file text via I/O Intr (`DataFileText`, 64 KB)
 - Plot title from `Command_RBV`; Y label from `PlotAxisLabel_RBV` (norm-aware)
 
@@ -83,6 +84,9 @@ caput -S TAS:Plot:NormCol monitor
 | `BufferList_RBV` / `BufferTableText_RBV` | Slot occupancy + read-only table preview |
 | `BufferXdata` / `BufferBXdata` … | Buffer A / B waveforms |
 | `OverlayXdata` / `OverlayYdata` / `OverlayYdataErr` | Overlay waveforms |
+| `FitRun` / `FitSource` / `FitEnable` | Peak fit (Gaussian+bg) + show model |
+| `FitCen_RBV` / `FitAmp_RBV` / `FitSigma_RBV` / `FitBg_RBV` | Fit parameters for scanscripts |
+| `FitXdata` / `FitYdata` | Fit model waveforms |
 | `Xdata` / `Ydata` / `YdataErr` | Primary plot |
 | `DataFileText` | File contents panel |
 
@@ -98,14 +102,14 @@ caput -S TAS:Plot:NormCol monitor
 - [x] Combine Data MVP (+/− lists, bin tol, renorm, green trace)
 - [x] Data Buffers MVP (8 slots, save Graph/Combine, purple trace, ASCII write)
 - [x] Buffer polish — Slot B overplot, slot list, read-only table preview
+- [x] Fit → PVs MVP — Gaussian + linear bg; cen/amp/σ/bg; red model curve
 
 ## Next (when resuming)
 
-1. **Fit → PVs MVP** — Gaussian + background on Graph/Buffer; status + optional model waveform (see [meeting plan](reference/meeting-2026-07-13-plan.md)); PyMca GUI stays for deep interactive fit
-2. **Beamline deploy** — `/epics/iocs/ioc-tasplot`, production paths, autosave; CA address list
-3. **Multi-overlay / alignment history** — more than one overlay or buffer slots for order-parameter / previous cals
-4. **Facility** — PVXS/QSRV 2
-5. Optional: headless PyMca batch fit spike; editable buffer table; 2D→1D cut contract (separate ADR)
+1. **Beamline deploy** — `/epics/iocs/ioc-tasplot`, production paths, autosave; CA address list
+2. **Multi-overlay / alignment history** — more than one overlay or buffer slots for order-parameter / previous cals
+3. **Facility** — PVXS/QSRV 2
+4. Optional: headless PyMca batch fit spike; editable buffer table; 2D→1D cut contract (separate ADR)
 
 **Meeting follow-up:** [meeting-2026-07-13-plan.md](reference/meeting-2026-07-13-plan.md) — TAVI = offline Graffiti replacement; desk = ioc-tasplot; integrity = don’t rewrite raw SpICE files.
 
