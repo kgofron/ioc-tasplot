@@ -4,8 +4,9 @@
 
 epicsEnvSet("IOC", "iocTasplot")
 
-## PV prefix (must match plot.substitutions $(P) and Phoebus macro P).
-## Dev default: TAS:Plot:  |  HB3 beamline: HB3:Plot:  (compose as $(BL):Plot: if useful)
+## PV prefix (must match Phoebus macro P).
+## Dev default: TAS:Plot:  |  HB3 beamline: HB3:Plot:  (or BL + $(BL):Plot:)
+## Note: MSI substitutions files cannot embed $(P); use dbLoadRecords macros below.
 epicsEnvSet("P", "TAS:Plot:")
 #epicsEnvSet("BL", "HB3")
 #epicsEnvSet("P", "$(BL):Plot:")
@@ -19,8 +20,8 @@ cd "${TOP}"
 dbLoadDatabase "${TOP}/dbd/plotApp.dbd"
 plotApp_registerRecordDeviceDriver pdbbase
 
-## Expands $(P) from epicsEnvSet above into record names
-dbLoadTemplate("$(TOP)/db/plot.substitutions")
+## iocsh expands $(P) here; do not put $(P) inside .substitutions (MSI rejects $)
+dbLoadRecords("$(TOP)/plotApp/Db/plot.template", "P=$(P),MAXPTS=4000,DATAFILETEXT=65536")
 
 cd "${TOP}/iocBoot/${IOC}"
 
@@ -43,6 +44,6 @@ pydev("import pydev; pydev.iointr('data_file_text', graffiti_plot.data_file_text
 dbpf("$(P)FileNumber", "1")
 
 ## Smoke test after boot:
-## caget $(P)NRows_RBV
-## caget -S $(P)SelectedFile.VAL$
-## caget -S $(P)FullFileName_RBV.VAL$
+## caget TAS:Plot:NRows_RBV
+## caget -S TAS:Plot:SelectedFile.VAL$
+## (use your epicsEnvSet P value)

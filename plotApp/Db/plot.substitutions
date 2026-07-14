@@ -1,7 +1,8 @@
-# P comes from epicsEnvSet("P", ...) in st.cmd (e.g. TAS:Plot: or HB3:Plot:).
-# Prefer one full prefix macro (HB3 Mot/Det/CS style), not Sys/Dev or P+R.
+# Optional template list for dbLoadTemplate tools.
+# Runtime boot uses dbLoadRecords(..., "P=$(P),...") in st.cmd — MSI cannot
+# expand $(P) inside this file (invalid character '$').
 file "$(TOP)/plotApp/Db/plot.template"
 {
 pattern {P, MAXPTS, DATAFILETEXT}
-{ $(P), 4000, 65536 }
+{ TAS:Plot:, 4000, 65536 }
 }

@@ -84,7 +84,10 @@ flowchart LR
 
 ## PV namespace (TAS default)
 
-Default prefix: `TAS:Plot:` via `epicsEnvSet("P", …)` → `plot.substitutions` `{ $(P), … }`. Beamline: `P=HB3:Plot:` (or `BL=HB3` then `P=$(BL):Plot:`). Phoebus uses the same macro `P`. Single full prefix (HB3 Mot/Det style); not `Sys`/`Dev` or areaDetector `P`+`R`.
+Default prefix: `TAS:Plot:` via `epicsEnvSet("P", …)` then
+`dbLoadRecords("…/plot.template", "P=$(P),MAXPTS=…,DATAFILETEXT=…")`.
+Do **not** put `$(P)` inside `.substitutions` — MSI rejects `$`. Beamline: `P=HB3:Plot:` (or `BL=HB3` then `P=$(BL):Plot:`). Phoebus uses the same macro `P`. Single full prefix (HB3 Mot/Det style); not `Sys`/`Dev` or areaDetector `P`+`R`.
+
 
 | Record | Type | Role |
 |--------|------|------|
