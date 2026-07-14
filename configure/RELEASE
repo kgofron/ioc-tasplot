@@ -1,9 +1,0 @@
-# RELEASE - external module paths (override in configure/RELEASE.local)
-
-EPICS_BASE = /epics/base
-TEMPLATE_TOP = $(EPICS_BASE)/templates/makeBaseApp/top
-
-# Python for PyDevice (override on your machine)
-PYTHON_CONFIG = $(shell which python3-config)
-
--include $(TOP)/configure/RELEASE.local

@@ -11,7 +11,7 @@ Handoff for resuming work after a break.
 
 ## What works (validated)
 
-- IOC boots with PyDevice; prefix **`TAS:Plot:`**
+- IOC boots with PyDevice; prefix macro **`P`** (dev default **`TAS:Plot:`**; HB3 deploy **`HB3:Plot:`** via `st.cmd` / `plot.substitutions`)
 - HB3 SPiCE `.dat` load via `tasplot` (exp382 scans 1–4 tested)
 - Phoebus OPI: `plotApp/op/bob/TASPlot.bob`
 - **Browse** (`SelectedFile` / FileSelector) → auto-load plot
@@ -106,7 +106,7 @@ caput -S TAS:Plot:NormCol monitor
 
 ## Next (when resuming)
 
-1. **Beamline deploy** — `/epics/iocs/ioc-tasplot`, production paths, autosave; CA address list
+1. **Beamline deploy** — site `st.cmd`: `epicsEnvSet("P","HB3:Plot:")` (or `BL`+`P=$(BL):Plot:`); reinstall `db/plot.substitutions`; Phoebus `HB3_TAS.bob` already passes `P=HB3:Plot:`; CA port / beacon if duplicate-server warnings
 2. **Multi-overlay / alignment history** — more than one overlay or buffer slots for order-parameter / previous cals
 3. **Facility** — PVXS/QSRV 2
 4. Optional: headless PyMca batch fit spike; editable buffer table; 2D→1D cut contract (separate ADR)

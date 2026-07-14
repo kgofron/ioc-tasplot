@@ -84,7 +84,7 @@ flowchart LR
 
 ## PV namespace (TAS default)
 
-Default prefix: `TAS:Plot:` (`PREFIX` in `st.cmd` / `plot.substitutions`; beamline deploy may override, e.g. `HB3:Plot:`).
+Default prefix: `TAS:Plot:` via `epicsEnvSet("P", …)` → `plot.substitutions` `{ $(P), … }`. Beamline: `P=HB3:Plot:` (or `BL=HB3` then `P=$(BL):Plot:`). Phoebus uses the same macro `P`. Single full prefix (HB3 Mot/Det style); not `Sys`/`Dev` or areaDetector `P`+`R`.
 
 | Record | Type | Role |
 |--------|------|------|

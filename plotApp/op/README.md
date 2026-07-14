@@ -23,7 +23,7 @@ SPiCE conversion needs the **ioc-tasplot** checkout (package `tasplot`). When sc
 1. Build (after Db changes): `make -sj` from repo root; `make -C plotApp/Db install` if only Db changed
 2. Start IOC: `iocBoot/iocTasplot/./st.cmd` (keep terminal open)
 3. Phoebus → **File → Open** → `plotApp/op/bob/TASPlot.bob`
-4. Macro **`P`** defaults to `TAS:Plot:`
+4. Macro **`P`** defaults to `TAS:Plot:` in the bob; HB3 launcher sets `P=HB3:Plot:` (`Beamlines/HB3/HB3_TAS.bob`). Must match IOC `epicsEnvSet("P", …)`.
 5. If pink borders / **"multiple servers"**: Preferences → EPICS → CA Address List = IOC host
 6. **File** + folder button → `SelectedFile.$` (auto-load)
 7. **Scan #** → rebuilds `*_scanNNNN.dat`; grey header = `FullFileName_RBV.$`

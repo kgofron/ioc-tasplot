@@ -1,4 +1,4 @@
-# ioc-tasplot — TAS plot PyDevice records (default prefix TAS:Plot:)
+# ioc-tasplot — plot PyDevice records. Prefix macro $(P) (e.g. TAS:Plot: or HB3:Plot:).
 # Template follows ioc-hkl PyDevice pattern: DTYP=pydev, INP/OUT=@graffiti_plot.method()
 # Long paths use lsi/lso (EPICS 3.15+); stringin/out are limited to 40 chars.
 
