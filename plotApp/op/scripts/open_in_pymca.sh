@@ -15,10 +15,24 @@ LOG="${TMPDIR:-/tmp}/open_in_pymca.log"
 log() { printf '%s %s\n' "$(date -Is)" "$*" >>"$LOG"; }
 log_err() { printf '%s %s\n' "$(date -Is)" "$*" | tee -a "$LOG" >&2; }
 
+# Scope PyMca/conda to this Phoebus button only (no need for user .bashrc).
+# Override: PYMCA_CONDA, PYTHON, PYMCA_BIN, IOC_TASPLOT_ROOT.
+_PYMCA_CONDA="${PYMCA_CONDA:-/home/controls/common/conda_envs/pymca}"
+if [[ -d "${_PYMCA_CONDA}/bin" ]]; then
+    export PATH="${_PYMCA_CONDA}/bin:${PATH}"
+    log "open_in_pymca: using conda bin ${_PYMCA_CONDA}/bin"
+fi
+if [[ -z "${IOC_TASPLOT_ROOT:-}" \
+    && -f /home/controls/common/ioc-tasplot/main/tasplot/__init__.py ]]; then
+    export IOC_TASPLOT_ROOT="/home/controls/common/ioc-tasplot/main"
+fi
+
 # Ubuntu apt PyMca is built against NumPy 1.x. A newer NumPy under
 # /usr/local (e.g. napari) shadows it and breaks spslut (_ARRAY_API).
+# Skip when conda PyMca is on PATH (RHEL HB3 path).
 _APT_PY="/usr/lib/python3/dist-packages"
-if [[ -d "${_APT_PY}/PyMca5" && -d "${_APT_PY}/numpy" ]]; then
+if [[ ! -x "${_PYMCA_CONDA}/bin/pymca" \
+    && -d "${_APT_PY}/PyMca5" && -d "${_APT_PY}/numpy" ]]; then
     export PYTHONPATH="${_APT_PY}${PYTHONPATH:+:${PYTHONPATH}}"
 fi
 
@@ -29,6 +43,7 @@ _find_tasplot_root() {
         "${IOC_TASPLOT_ROOT:-}" \
         "${TASPLOT_ROOT:-}" \
         "${SCRIPT_DIR}/../../.." \
+        "/home/controls/common/ioc-tasplot/main" \
         "${HOME}/Documents/src/github/ioc-tasplot" \
         "/home/kg1/Documents/src/github/ioc-tasplot"; do
         [[ -n "${cand}" ]] || continue
@@ -87,4 +102,10 @@ if [[ -z "${PATH_FILE}" || ! -f "${PATH_FILE}" ]]; then
 fi
 
 log "open_in_pymca: opening ${PATH_FILE}"
-exec python3 "${SCRIPT_DIR}/open_in_pymca.py" "${PATH_FILE}"
+PYTHON_BIN="${PYTHON:-}"
+if [[ -z "${PYTHON_BIN}" && -x "${_PYMCA_CONDA}/bin/python" ]]; then
+    PYTHON_BIN="${_PYMCA_CONDA}/bin/python"
+fi
+PYTHON_BIN="${PYTHON_BIN:-python3}"
+export PYMCA_BIN="${PYMCA_BIN:-}"
+exec "${PYTHON_BIN}" "${SCRIPT_DIR}/open_in_pymca.py" "${PATH_FILE}"

@@ -1,4 +1,4 @@
-# ioc-tasplot — session checkpoint (2026-07-11)
+# ioc-tasplot — session checkpoint (2026-07-14)
 
 Handoff for resuming work after a break.
 
@@ -106,14 +106,44 @@ caput -S TAS:Plot:NormCol monitor
 
 ## Next (when resuming)
 
-1. **Beamline deploy** — site `st.cmd`: `epicsEnvSet("P","HB3:Plot:")` (or `BL`+`P=$(BL):Plot:`); `dbLoadRecords` already passes `P=$(P)`; Phoebus `HB3_TAS.bob` already passes `P=HB3:Plot:`; CA port / beacon if duplicate-server warnings
+1. **HB3 beamline deploy polish** — see checklist below (prefix + PyMca launcher)
 2. **Multi-overlay / alignment history** — more than one overlay or buffer slots for order-parameter / previous cals
 3. **Facility** — PVXS/QSRV 2
-4. Optional: headless PyMca batch fit spike; editable buffer table; 2D→1D cut contract (separate ADR)
+4. Optional: headless PyMca batch fit spike; editable buffer table; 2D→1D cut contract (separate ADR); teach `open_in_pymca.sh` to honor `PYMCA_BIN` / `PYTHON`
 
 **Meeting follow-up:** [meeting-2026-07-13-plan.md](reference/meeting-2026-07-13-plan.md) — TAVI = offline Graffiti replacement; desk = ioc-tasplot; integrity = don’t rewrite raw SpICE files.
 
-**Monday prep (short):** demo paths (`demo/` + exp382); SPEC `#S` on YongCai `demo/yongcai_20240530.spec`; Phoebus CA address list if duplicate-server magenta borders persist. Briefing: [`demo/ADR-scan-formats.md`](../demo/ADR-scan-formats.md) (SPEC vs SPiCE + CRLF/`^M`). Decks: `demo/Beamlines/` (local).
+## Resume later — HB3 / Phoebus / PyMca
+
+**Done so far (2026-07-14):** IOC on HB3 with `P=HB3:Plot:` via `dbLoadRecords(..., "P=$(P),…")`; spectra show in Phoebus; shared conda PyMca `5.9.6` at `/home/controls/common/conda_envs/pymca`; personal `~/.bashrc` PATH smoke-test on `hb3-dasopi1` works.
+
+**Hosts / paths**
+
+| Role | Host / path |
+|------|-------------|
+| IOC | `hb3-dassrv1` — site boot e.g. `/home/controls/hb3/applications/tasPlot/st.cmd`; tree `/home/controls/common/ioc-tasplot/main` |
+| OPI | `hb3-dasopi1` — bob under `/epics/GUI/SNS/bob/TAS/R1-0/` (`Common/TASPlot.bob`, `Beamlines/HB3/HB3_TAS.bob`, `scripts/`) |
+| PyMca env | `/home/controls/common/conda_envs/pymca` (`bin/pymca`, `bin/python`) |
+
+**Prefix (keep this pattern)**
+
+- Template/OPI use single macro **`P`** (full prefix, e.g. `HB3:Plot:`). Not `Sys`/`Dev` or AD `P`+`R`.
+- MSI `.substitutions` **cannot** embed `$(P)` — always load with:
+  `dbLoadRecords("$(TOP)/plotApp/Db/plot.template", "P=$(P),MAXPTS=4000,DATAFILETEXT=65536")`
+- Site: `epicsEnvSet("P","HB3:Plot:")` (optional `BL=HB3` then `P=$(BL):Plot:`). Phoebus: `HB3_TAS.bob` already sets `P=HB3:Plot:`.
+
+**PyMca from Phoebus button**
+
+- Button: `bash ../scripts/open_in_pymca.sh $(P)` (no change needed).
+- **Preferred:** `open_in_pymca.sh` itself prepends `/home/controls/common/conda_envs/pymca/bin` and defaults `IOC_TASPLOT_ROOT` to `/home/controls/common/ioc-tasplot/main` when present — no shared Phoebus launcher / `.bashrc` required for the button.
+- Deploy updated `scripts/open_in_pymca.{sh,py}` next to the bob (`…/R1-0/scripts/`).
+- Overrides: `PYMCA_CONDA`, `PYTHON`, `PYMCA_BIN`, `IOC_TASPLOT_ROOT`.
+- Failures: `/tmp/open_in_pymca.log`. Personal `.bashrc` PATH is optional debug only.
+
+**Also check when back**
+
+- Site `st.cmd`: drop laptop-only `set_selected_file('/home/kg1/Documents/...')` or point at real User Datafiles.
+- Sync latest `main` (dbLoadRecords fix) to `/home/controls/common/ioc-tasplot/main` if not already.
 
 ## Operational notes
 

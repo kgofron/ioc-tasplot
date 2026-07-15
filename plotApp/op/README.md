@@ -16,7 +16,11 @@ with the process working directory = folder containing the open `.bob`. That mat
 
 Failures log to `/tmp/open_in_pymca.log` and Phoebus Console.
 
-SPiCE conversion needs the **ioc-tasplot** checkout (package `tasplot`). When scripts are deployed under `/epics/GUI/.../scripts/`, set `IOC_TASPLOT_ROOT` to the repo root, or keep a checkout at `~/Documents/src/github/ioc-tasplot` (auto-detected).
+`open_in_pymca.sh` prepends the shared conda PyMca bin (default
+`/home/controls/common/conda_envs/pymca/bin`) and looks for `tasplot` under
+`IOC_TASPLOT_ROOT` or `/home/controls/common/ioc-tasplot/main` — so Phoebus
+does not need those exports in `.bashrc`. Override with `PYMCA_CONDA`,
+`PYTHON`, `PYMCA_BIN`, or `IOC_TASPLOT_ROOT` if needed.
 
 ## Open in Phoebus
 

@@ -86,9 +86,9 @@ def main() -> int:
         print(f"open_in_pymca: prepare failed: {exc}", file=sys.stderr)
         return 1
 
-    # Prefer system pymca CLI when available (opens SpecFile scan window).
-    pymca_bin = shutil.which("pymca")
-    if pymca_bin:
+    # Prefer explicit PYMCA_BIN, else pymca on PATH (conda bin prepended by .sh).
+    pymca_bin = os.environ.get("PYMCA_BIN") or shutil.which("pymca")
+    if pymca_bin and os.path.isfile(pymca_bin) and os.access(pymca_bin, os.X_OK):
         os.execv(pymca_bin, [pymca_bin, open_path])
 
     try:
